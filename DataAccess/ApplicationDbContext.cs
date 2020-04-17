@@ -1,4 +1,5 @@
-﻿using EventManager.DataAccess.Core.Enums;
+﻿using EventManager.DataAccess.Core.Constants;
+using EventManager.DataAccess.Core.Enums;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -24,24 +25,23 @@ namespace EventManager.DataAccess
                                                           ApplicationRoleClaim,
                                                           ApplicationUserToken>
     {
-        private const string systemUserId = "11111111-1111-1111-1111-111111111111";
         private string _currentUserId;
         public string CurrentUserId
         {
-            get => string.IsNullOrEmpty(_currentUserId) ? systemUserId : _currentUserId;
+            get => string.IsNullOrEmpty(_currentUserId) ? Ids.SystemUserId : _currentUserId;
             set => _currentUserId = value;
         }
 
         public DbSet<ExtendedLog> Logs { get; set; }
         public DbSet<Demerit> Demerits { get; set; }
         public DbSet<Event> Events { get; set; }
-        public DbSet<EventOccurance> EventOccurances { get; set; }
+        public DbSet<EventOccurrence> EventOccurrences { get; set; }
         public DbSet<EventLocation> EventLocations { get; set; }
         public DbSet<EventSchedule> EventSchedules { get; set; }
         public DbSet<EventService> EventServices { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Guest> Guests { get; set; }
-        public DbSet<GuestEventOccurance> GuestEventOccurances { get; set; }
+        public DbSet<GuestEventOccurrence> GuestEventOccurrences { get; set; }
         public DbSet<Service> Services { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -119,7 +119,7 @@ namespace EventManager.DataAccess
             // Demerits
             builder.Entity<Demerit>().SetupEntityTable("Demerits");
             builder.Entity<Demerit>().HasIndex(d => d.GuestId);
-            builder.Entity<Demerit>().HasIndex(d => d.EventOccuranceId);
+            builder.Entity<Demerit>().HasIndex(d => d.EventOccurrenceId);
             builder.Entity<Demerit>().Property(d => d.DateTime).SetupDateTimeEntityProperty();
             builder.Entity<Demerit>().HasOne(d => d.Guest)
                 .WithMany(g => g.Demerits)
@@ -127,10 +127,10 @@ namespace EventManager.DataAccess
                 .HasForeignKey(d => d.GuestId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<Demerit>().HasOne(d => d.EventOccurance)
+            builder.Entity<Demerit>().HasOne(d => d.EventOccurrence)
                .WithMany(o => o.Demerits)
                .HasPrincipalKey(o => o.Id)
-               .HasForeignKey(d => d.EventOccuranceId)
+               .HasForeignKey(d => d.EventOccurrenceId)
                .IsRequired()
                .OnDelete(DeleteBehavior.NoAction);
 
@@ -148,7 +148,7 @@ namespace EventManager.DataAccess
                 .HasForeignKey(e => e.EventId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Event>().HasMany(e => e.Occurances)
+            builder.Entity<Event>().HasMany(e => e.Occurrences)
                .WithOne(o => o.Event)
                .HasPrincipalKey(e => e.Id)
                .HasForeignKey(e => e.EventId)
@@ -170,7 +170,7 @@ namespace EventManager.DataAccess
               .HasForeignKey(s => s.EventLocationId)
               .IsRequired()
               .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<EventLocation>().HasMany(l => l.Occurances)
+            builder.Entity<EventLocation>().HasMany(l => l.Occurrences)
              .WithOne(o => o.Location)
              .HasPrincipalKey(l => l.Id)
              .HasForeignKey(o => o.EventLocationId)
@@ -194,7 +194,7 @@ namespace EventManager.DataAccess
             builder.Entity<EventSchedule>().Property(s => s.EndTime).SetupTimeOfDayEntityProperty();
             builder.Entity<EventSchedule>().Property(s => s.CheckInStartTime).SetupTimeOfDayEntityProperty();
             builder.Entity<EventSchedule>().Property(s => s.CheckInEndTime).SetupTimeOfDayEntityProperty();
-            builder.Entity<EventSchedule>().HasMany(s => s.Occurances)
+            builder.Entity<EventSchedule>().HasMany(s => s.Occurrences)
               .WithOne(o => o.Schedule)
               .HasPrincipalKey(s => s.Id)
               .HasForeignKey(o => o.EventScheduleId)
@@ -213,32 +213,32 @@ namespace EventManager.DataAccess
               .IsRequired()
               .OnDelete(DeleteBehavior.NoAction);
 
-            // EventOccurances
-            builder.Entity<EventOccurance>().SetupEntityTable("EventOccurances");
-            builder.Entity<EventOccurance>().HasIndex(o => o.EventId);
-            builder.Entity<EventOccurance>().HasIndex(o => o.EventScheduleId);
-            builder.Entity<EventOccurance>().HasIndex(o => o.EventLocationId);
-            builder.Entity<EventOccurance>().Property(o => o.Date).SetupDateTimeEntityProperty();
-            builder.Entity<EventOccurance>().HasMany(o => o.Demerits)
-              .WithOne(d => d.EventOccurance)
+            // EventOccurrences
+            builder.Entity<EventOccurrence>().SetupEntityTable("EventOccurrences");
+            builder.Entity<EventOccurrence>().HasIndex(o => o.EventId);
+            builder.Entity<EventOccurrence>().HasIndex(o => o.EventScheduleId);
+            builder.Entity<EventOccurrence>().HasIndex(o => o.EventLocationId);
+            builder.Entity<EventOccurrence>().Property(o => o.Date).SetupDateTimeEntityProperty();
+            builder.Entity<EventOccurrence>().HasMany(o => o.Demerits)
+              .WithOne(d => d.EventOccurrence)
               .HasPrincipalKey(o => o.Id)
-              .HasForeignKey(d => d.EventOccuranceId)
+              .HasForeignKey(d => d.EventOccurrenceId)
               .IsRequired()
               .OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<EventOccurance>().HasOne(o => o.Event)
-               .WithMany(e => e.Occurances)
+            builder.Entity<EventOccurrence>().HasOne(o => o.Event)
+               .WithMany(e => e.Occurrences)
                .HasPrincipalKey(e => e.Id)
                .HasForeignKey(o => o.EventId)
                .IsRequired()
                .OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<EventOccurance>().HasOne(o => o.Schedule)
-               .WithMany(s => s.Occurances)
+            builder.Entity<EventOccurrence>().HasOne(o => o.Schedule)
+               .WithMany(s => s.Occurrences)
                .HasPrincipalKey(s => s.Id)
                .HasForeignKey(o => o.EventScheduleId)
                .IsRequired()
                .OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<EventOccurance>().HasOne(o => o.Location)
-               .WithMany(l => l.Occurances)
+            builder.Entity<EventOccurrence>().HasOne(o => o.Location)
+               .WithMany(l => l.Occurrences)
                .HasPrincipalKey(l => l.Id)
                .HasForeignKey(o => o.EventLocationId)
                .IsRequired()
@@ -281,19 +281,19 @@ namespace EventManager.DataAccess
               .HasForeignKey(d => d.GuestId)
               .IsRequired()
               .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Guest>().HasMany(g => g.EventOccurances)
+            builder.Entity<Guest>().HasMany(g => g.EventOccurrences)
              .WithOne(o => o.Guest)
              .HasPrincipalKey(g => g.Id)
              .HasForeignKey(o => o.GuestId)
              .IsRequired()
              .OnDelete(DeleteBehavior.Cascade);
 
-            // GuestEventOccurances
-            builder.Entity<GuestEventOccurance>().SetupEntityTable("GuestEventOccurances");
-            builder.Entity<GuestEventOccurance>().HasIndex(geo => geo.EventOccuranceId);
-            builder.Entity<GuestEventOccurance>().HasIndex(geo => geo.GuestId);
-            builder.Entity<GuestEventOccurance>().HasOne(geo => geo.Guest)
-              .WithMany(g => g.EventOccurances)
+            // GuestEventOccurrences
+            builder.Entity<GuestEventOccurrence>().SetupEntityTable("GuestEventOccurrences");
+            builder.Entity<GuestEventOccurrence>().HasIndex(geo => geo.EventOccurrenceId);
+            builder.Entity<GuestEventOccurrence>().HasIndex(geo => geo.GuestId);
+            builder.Entity<GuestEventOccurrence>().HasOne(geo => geo.Guest)
+              .WithMany(g => g.EventOccurrences)
               .HasPrincipalKey(g => g.Id)
               .HasForeignKey(geo => geo.GuestId)
               .IsRequired()

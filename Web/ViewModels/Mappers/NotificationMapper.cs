@@ -1,4 +1,4 @@
-﻿using Arch.EntityFrameworkCore.UnitOfWork;
+﻿/*using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using EventManager.DataAccess.Models;
 
@@ -50,3 +50,4 @@ namespace EventManager.Web.ViewModels.Mappers
         }
     }
 }
+*/

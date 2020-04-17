@@ -1,4 +1,6 @@
-﻿namespace EventManager.DataAccess.Core.Constants
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+
+namespace EventManager.DataAccess.Core.Constants
 {
     public static class Properties
     {

@@ -15,6 +15,7 @@ namespace EventManager.DataAccess.Models
         }
 
         [NotMapped]
+        [Display(Name = "Friendly Name", GroupName = "ApplicationUser")]
         public virtual string FriendlyName
         {
             get
@@ -28,57 +29,70 @@ namespace EventManager.DataAccess.Models
             }
         }
 
-        [MaxLength(100)]
+        [StringLength(100, ErrorMessage = "{0} length must be less than {1}.")]
+        [Display(Name = "Job Title", GroupName = "ApplicationUser")]
         public string JobTitle { get; set; }
 
-        [MaxLength(250)]
+        [StringLength(250, ErrorMessage = "{0} length must be less than {1}.")]
+        [Display(Name = "Full Name", GroupName = "ApplicationUser")]
         public string FullName { get; set; }
 
-        [MaxLength(250)]
+        [StringLength(250, ErrorMessage = "{0} length must be less than {1}.")]
+        [Display(Name = "Configuration", GroupName = "ApplicationUser")]
         public string Configuration { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "INTEGER")]
+        [Display(Name = "IsEnabled", GroupName = "ApplicationUser")]
         public bool IsEnabled { get; set; }
 
         [NotMapped]
+        [Display(Name = "IsLockedOut", GroupName = "ApplicationUser")]
         public bool IsLockedOut => this.LockoutEnabled && this.LockoutEnd >= DateTimeOffset.UtcNow;
 
+
         #region IAuditableEntity
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Created By", GroupName = "ApplicationUser")]
         public string CreatedBy { get; set; }
 
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Updated By", GroupName = "ApplicationUser")]
         public string UpdatedBy { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Updated Date", GroupName = "ApplicationUser")]
         public DateTime UpdatedDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Created Date", GroupName = "ApplicationUser")]
         public DateTime CreatedDate { get; set; }
         #endregion
 
         #region IConcurrencyTrackingEntity
         [Timestamp]
-        //[Required]
         [Column(TypeName = "BLOB")]
+        [Display(Name = "Row Version", GroupName = "ApplicationUser")]
         public byte[] RowVersion { get; set; }
         #endregion
+
 
         /// <summary>
         /// Navigation property for the roles this user belongs to.
         /// </summary>
+        [Display(Name = "Roles", GroupName = "ApplicationUser")]
         public virtual ICollection<ApplicationUserRole> Roles { get; set; }
 
         /// <summary>
         /// Navigation property for the claims this user possesses.
         /// </summary>
+        [Display(Name = "Claims", GroupName = "ApplicationUser")]
         public virtual ICollection<ApplicationUserClaim> Claims { get; set; }
 
     }

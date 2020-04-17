@@ -9,31 +9,37 @@ namespace EventManager.DataAccess.Models
     public class ApplicationUserClaim : IdentityUserClaim<string>, IAuditableEntity, IConcurrencyTrackingEntity
     {
 
+
         #region IAuditableEntity
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Created By", GroupName = "ApplicationUserClaim")]
         public string CreatedBy { get; set; }
 
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Updated By", GroupName = "ApplicationUserClaim")]
         public string UpdatedBy { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Updated Date", GroupName = "ApplicationUserClaim")]
         public DateTime UpdatedDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Created Date", GroupName = "ApplicationUserClaim")]
         public DateTime CreatedDate { get; set; }
         #endregion
 
         #region IConcurrencyTrackingEntity
         [Timestamp]
-        //[Required]
         [Column(TypeName = "BLOB")]
+        [Display(Name = "Row Version", GroupName = "ApplicationUserClaim")]
         public byte[] RowVersion { get; set; }
         #endregion
+
     }
 }

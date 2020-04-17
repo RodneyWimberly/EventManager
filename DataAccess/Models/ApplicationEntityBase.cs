@@ -9,30 +9,33 @@ namespace EventManager.DataAccess.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
+        [Display(Name = "Id", GroupName = "ApplicationEntityBase")]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Created By", GroupName = "ApplicationEntityBase")]
         public string CreatedBy { get; set; }
 
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Updated By", GroupName = "ApplicationEntityBase")]
         public string UpdatedBy { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [Display(Name = "Updated Date", GroupName = "ApplicationEntityBase")]
         public DateTime UpdatedDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [Display(Name = "Created Date", GroupName = "ApplicationEntityBase")]
         public DateTime CreatedDate { get; set; }
 
         [Timestamp]
-        //[Required]
         [Column(TypeName = "BLOB")]
+        [Display(Name = "Row Version", GroupName = "ApplicationEntityBase")]
         public byte[] RowVersion { get; set; }
     }
 }

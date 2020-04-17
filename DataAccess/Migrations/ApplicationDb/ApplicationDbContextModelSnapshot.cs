@@ -429,7 +429,7 @@ namespace EventManager.DataAccess.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(250);
 
-                    b.Property<int>("EventOccuranceId")
+                    b.Property<int>("EventOccurrenceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("GuestId")
@@ -452,7 +452,7 @@ namespace EventManager.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventOccuranceId");
+                    b.HasIndex("EventOccurrenceId");
 
                     b.HasIndex("GuestId");
 
@@ -583,7 +583,7 @@ namespace EventManager.DataAccess.Migrations
                     b.ToTable("EventLocations");
                 });
 
-            modelBuilder.Entity("EventManager.DataAccess.Models.EventOccurance", b =>
+            modelBuilder.Entity("EventManager.DataAccess.Models.EventOccurrence", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -644,7 +644,7 @@ namespace EventManager.DataAccess.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("EventOccurances");
+                    b.ToTable("EventOccurrences");
                 });
 
             modelBuilder.Entity("EventManager.DataAccess.Models.EventSchedule", b =>
@@ -991,7 +991,7 @@ namespace EventManager.DataAccess.Migrations
                     b.ToTable("Guests");
                 });
 
-            modelBuilder.Entity("EventManager.DataAccess.Models.GuestEventOccurance", b =>
+            modelBuilder.Entity("EventManager.DataAccess.Models.GuestEventOccurrence", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1007,7 +1007,7 @@ namespace EventManager.DataAccess.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(28);
 
-                    b.Property<int>("EventOccuranceId")
+                    b.Property<int>("EventOccurrenceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("GuestId")
@@ -1030,14 +1030,14 @@ namespace EventManager.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventOccuranceId");
+                    b.HasIndex("EventOccurrenceId");
 
                     b.HasIndex("GuestId");
 
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("GuestEventOccurances");
+                    b.ToTable("GuestEventOccurrences");
                 });
 
             modelBuilder.Entity("EventManager.DataAccess.Models.Notification", b =>
@@ -1205,9 +1205,9 @@ namespace EventManager.DataAccess.Migrations
 
             modelBuilder.Entity("EventManager.DataAccess.Models.Demerit", b =>
                 {
-                    b.HasOne("EventManager.DataAccess.Models.EventOccurance", "EventOccurance")
+                    b.HasOne("EventManager.DataAccess.Models.EventOccurrence", "EventOccurrence")
                         .WithMany("Demerits")
-                        .HasForeignKey("EventOccuranceId")
+                        .HasForeignKey("EventOccurrenceId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -1227,22 +1227,22 @@ namespace EventManager.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EventManager.DataAccess.Models.EventOccurance", b =>
+            modelBuilder.Entity("EventManager.DataAccess.Models.EventOccurrence", b =>
                 {
                     b.HasOne("EventManager.DataAccess.Models.Event", "Event")
-                        .WithMany("Occurances")
+                        .WithMany("Occurrences")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("EventManager.DataAccess.Models.EventLocation", "Location")
-                        .WithMany("Occurances")
+                        .WithMany("Occurrences")
                         .HasForeignKey("EventLocationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("EventManager.DataAccess.Models.EventSchedule", "Schedule")
-                        .WithMany("Occurances")
+                        .WithMany("Occurrences")
                         .HasForeignKey("EventScheduleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1278,16 +1278,16 @@ namespace EventManager.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EventManager.DataAccess.Models.GuestEventOccurance", b =>
+            modelBuilder.Entity("EventManager.DataAccess.Models.GuestEventOccurrence", b =>
                 {
-                    b.HasOne("EventManager.DataAccess.Models.EventOccurance", "EventOccurance")
+                    b.HasOne("EventManager.DataAccess.Models.EventOccurrence", "EventOccurrence")
                         .WithMany()
-                        .HasForeignKey("EventOccuranceId")
+                        .HasForeignKey("EventOccurrenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EventManager.DataAccess.Models.Guest", "Guest")
-                        .WithMany("EventOccurances")
+                        .WithMany("EventOccurrences")
                         .HasForeignKey("GuestId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();

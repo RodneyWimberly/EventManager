@@ -1,4 +1,4 @@
-﻿using Arch.EntityFrameworkCore.UnitOfWork;
+﻿/*using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
 using EventManager.DataAccess.Models;
@@ -178,4 +178,4 @@ namespace EventManager.Web.Controllers
         }
 
     }
-}
+}*/

@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using EventManager.DataAccess.Models;
+using FluentValidation;
 
 
 namespace EventManager.Web.ViewModels.Validators
 {
+
     public class UserViewModelValidator : AbstractValidator<UserViewModel>
     {
         public UserViewModelValidator()

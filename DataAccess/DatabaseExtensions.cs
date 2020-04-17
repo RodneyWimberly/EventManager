@@ -373,20 +373,20 @@ namespace EventManager.DataAccess
             ");
             migrationBuilder.Sql(
                 @"
-                CREATE TRIGGER EventOccurancesOnUpdate
-                AFTER UPDATE ON EventOccurances
+                CREATE TRIGGER EventOccurrencesOnUpdate
+                AFTER UPDATE ON EventOccurrences
                 BEGIN
-                    UPDATE EventOccurances
+                    UPDATE EventOccurrences
                     SET RowVersion = randomblob(8)
                     WHERE rowid = NEW.rowid;
                 END
             ");
             migrationBuilder.Sql(
                 @"
-                CREATE TRIGGER EventOccurancesOnInsert
-                AFTER INSERT ON EventOccurances
+                CREATE TRIGGER EventOccurrencesOnInsert
+                AFTER INSERT ON EventOccurrences
                 BEGIN
-                    UPDATE EventOccurances
+                    UPDATE EventOccurrences
                     SET RowVersion = randomblob(8)
                     WHERE rowid = NEW.rowid;
                 END
@@ -413,20 +413,20 @@ namespace EventManager.DataAccess
             ");
             migrationBuilder.Sql(
                 @"
-                CREATE TRIGGER GuestEventOccurancesOnUpdate
-                AFTER UPDATE ON GuestEventOccurances
+                CREATE TRIGGER GuestEventOccurrencesOnUpdate
+                AFTER UPDATE ON GuestEventOccurrences
                 BEGIN
-                    UPDATE GuestEventOccurances
+                    UPDATE GuestEventOccurrences
                     SET RowVersion = randomblob(8)
                     WHERE rowid = NEW.rowid;
                 END
             ");
             migrationBuilder.Sql(
                 @"
-                CREATE TRIGGER GuestEventOccurancesOnInsert
-                AFTER INSERT ON GuestEventOccurances
+                CREATE TRIGGER GuestEventOccurrencesOnInsert
+                AFTER INSERT ON GuestEventOccurrences
                 BEGIN
-                    UPDATE GuestEventOccurances
+                    UPDATE GuestEventOccurrences
                     SET RowVersion = randomblob(8)
                     WHERE rowid = NEW.rowid;
                 END

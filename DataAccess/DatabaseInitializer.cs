@@ -508,12 +508,12 @@ namespace EventManager.DataAccess
                     _logger.LogInformation("EventSchedules generation completed");
                 }
 
-                // EventOccurances
-                if (!await _applicationContext.EventOccurances.AnyAsync())
+                // EventOccurrences
+                if (!await _applicationContext.EventOccurrences.AnyAsync())
                 {
-                    _logger.LogInformation("Generating EventOccurances");
+                    _logger.LogInformation("Generating EventOccurrences");
 
-                    await _applicationContext.EventOccurances.AddAsync(new EventOccurance
+                    await _applicationContext.EventOccurrences.AddAsync(new EventOccurrence
                     {
                         Id = 1,
                         EventId = 1,
@@ -523,7 +523,7 @@ namespace EventManager.DataAccess
                         Lead = "Jeff"
                     });
 
-                    await _applicationContext.EventOccurances.AddAsync(new EventOccurance
+                    await _applicationContext.EventOccurrences.AddAsync(new EventOccurrence
                     {
                         Id = 2,
                         EventId = 2,
@@ -533,7 +533,7 @@ namespace EventManager.DataAccess
                         Lead = "Tori"
                     });
 
-                    await _applicationContext.EventOccurances.AddAsync(new EventOccurance
+                    await _applicationContext.EventOccurrences.AddAsync(new EventOccurrence
                     {
                         Id = 3,
                         EventId = 1,
@@ -544,44 +544,44 @@ namespace EventManager.DataAccess
                     });
 
                     await _applicationContext.SaveChangesAsync();
-                    _logger.LogInformation("EventOccurances generation completed");
+                    _logger.LogInformation("EventOccurrences generation completed");
                 }
 
-                // GuestEventOccurances
-                if (!await _applicationContext.GuestEventOccurances.AnyAsync())
+                // GuestEventOccurrences
+                if (!await _applicationContext.GuestEventOccurrences.AnyAsync())
                 {
-                    _logger.LogInformation("Generating GuestEventOccurances");
+                    _logger.LogInformation("Generating GuestEventOccurrences");
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _applicationContext.GuestEventOccurrences.AddAsync(new GuestEventOccurrence
                     {
                         Id = 1,
                         GuestId = 1,
-                        EventOccuranceId = 1
+                        EventOccurrenceId = 1
                     });
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _applicationContext.GuestEventOccurrences.AddAsync(new GuestEventOccurrence
                     {
                         Id = 2,
                         GuestId = 2,
-                        EventOccuranceId = 1
+                        EventOccurrenceId = 1
                     });
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _applicationContext.GuestEventOccurrences.AddAsync(new GuestEventOccurrence
                     {
                         Id = 3,
                         GuestId = 3,
-                        EventOccuranceId = 1
+                        EventOccurrenceId = 1
                     });
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _applicationContext.GuestEventOccurrences.AddAsync(new GuestEventOccurrence
                     {
                         Id = 4,
                         GuestId = 4,
-                        EventOccuranceId = 1
+                        EventOccurrenceId = 1
                     });
 
                     await _applicationContext.SaveChangesAsync();
-                    _logger.LogInformation("GuestEventOccurance generation completed");
+                    _logger.LogInformation("GuestEventOccurrence generation completed");
                 }
 
                 // Demerits
@@ -593,7 +593,7 @@ namespace EventManager.DataAccess
                     {
                         Id = 1,
                         GuestId = 1,
-                        EventOccuranceId = 1,
+                        EventOccurrenceId = 1,
                         Description = "Caught smoking pot on premises after verbal warning."
                     });
 

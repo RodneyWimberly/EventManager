@@ -5,10 +5,7 @@ using EventManager.Core.Logging;
 using EventManager.DataAccess;
 using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Constants;
-using EventManager.DataAccess.Models;
 using EventManager.Web.Authorization;
-using EventManager.Web.ViewModels;
-using EventManager.Web.ViewModels.Mappers;
 using FluentValidation;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -53,6 +50,7 @@ namespace EventManager.Web
 
             // Configure JSON serializer to not complain when returning entities plus reference and navigational properties
             services.AddMvc()
+                .AddMvcOptions(options => options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => "The field is required."))
                 .AddControllersAsServices()
                 .AddNewtonsoftJson(options =>
                 {
@@ -107,11 +105,11 @@ namespace EventManager.Web
             // Serve up SinglePageApplication files
             services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/dist");
 
-            //  Fluent Validators for ViewModelx
+            //  Fluent Validators for ViewModels
             services.AddValidatorsFromAssembly(thisAssembly);
 
             // AutoMapper type mappers
-            services.AddScoped<ITypeConverter<NotificationViewModel, Notification>, NotificationMapper>();
+            //services.AddScoped<ITypeConverter<NotificationViewModel, Notification>, GenericConcurrencyMapper<NotificationViewModel, Notification>>();
             services.AddAutoMapper(thisAssembly);
 
             // Reads SMTP Configurations from appsettings.json

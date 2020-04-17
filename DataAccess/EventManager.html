@@ -1,0 +1,3124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>EventManager.db Database Schema</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style type="text/css">
+                    body { background-color: #fff; color: #000; font-family: Consolas, monospace}
+                    a:link { color: #03d; }
+                    a:visited { color: #039; }
+                    a:hover { color: #09f; }
+                    table { border-collapse: collapse; width: 100%; }
+                    table caption { color: #666; text-align: right; font-size: 65%; margin-bottom: .5ex; }
+                    table td, table th { border: solid 1px #666; border-collapse: collapse; padding: .3ex .5ex; vertical-align: top; }
+                    table tbody tr:hover { background-color: #ffc; }
+                    table thead th { text-align: left; background-color: #ccc; }
+                    table tbody th { text-align: left; white-space: nowrap; }
+                    .table { page-break-inside: avoid; }
+                    .pk { float: right; cursor: arrow; color: #999; }
+                    .type { white-space: nowrap; }
+                    .null { text-align: center; }
+                    .flag { white-space: nowrap; font-size: 70%; display: inline-block; border: solid 1px #ccc; padding: .25ex .5ex; background-color: #ddd; margin-right: 1ex; }
+                    .tocref { float: right; text-decoration: none; font-weight: normal; }
+                    .footer { text-align: center; margin-top: 1em; font-size: 80%;}
+                    li.view:before { content: "VIEW"; font-size: 70%; display: inline-block; border: solid 1px #ccc; padding: .25ex .5ex; background-color: #ddd; margin-right: 1ex; }
+                    @media print {
+                    body { font-size: .8em; }
+                    #toc, .tocref { display: none; }
+                    a:link, a:visited { color: #000; text-decoration: none; }
+                    }
+                </style>
+  </head>
+  <body>
+    <h1>EventManager.db Database Schema</h1>
+    <div id="toc">
+      <ul>
+        <li class="table"><a href="#ApiClaims">ApiClaims</a></li>
+        <li class="table"><a href="#ApiProperties">ApiProperties</a></li>
+        <li class="table"><a href="#ApiResources">ApiResources</a></li>
+        <li class="table"><a href="#ApiScopeClaims">ApiScopeClaims</a></li>
+        <li class="table"><a href="#ApiScopes">ApiScopes</a></li>
+        <li class="table"><a href="#ApiSecrets">ApiSecrets</a></li>
+        <li class="table"><a href="#ClientClaims">ClientClaims</a></li>
+        <li class="table"><a href="#ClientCorsOrigins">ClientCorsOrigins</a></li>
+        <li class="table"><a href="#ClientGrantTypes">ClientGrantTypes</a></li>
+        <li class="table"><a href="#ClientIdPRestrictions">ClientIdPRestrictions</a></li>
+        <li class="table"><a href="#ClientPostLogoutRedirectUris">ClientPostLogoutRedirectUris</a></li>
+        <li class="table"><a href="#ClientProperties">ClientProperties</a></li>
+        <li class="table"><a href="#ClientRedirectUris">ClientRedirectUris</a></li>
+        <li class="table"><a href="#Clients">Clients</a></li>
+        <li class="table"><a href="#ClientScopes">ClientScopes</a></li>
+        <li class="table"><a href="#ClientSecrets">ClientSecrets</a></li>
+        <li class="table"><a href="#Demerits">Demerits</a></li>
+        <li class="table"><a href="#DeviceCodes">DeviceCodes</a></li>
+        <li class="table"><a href="#EventLocations">EventLocations</a></li>
+        <li class="table"><a href="#EventOccurrences">EventOccurrences</a></li>
+        <li class="table"><a href="#Events">Events</a></li>
+        <li class="table"><a href="#EventSchedules">EventSchedules</a></li>
+        <li class="table"><a href="#EventServices">EventServices</a></li>
+        <li class="table"><a href="#GuestEventOccurrences">GuestEventOccurrences</a></li>
+        <li class="table"><a href="#Guests">Guests</a></li>
+        <li class="table"><a href="#IdentityClaims">IdentityClaims</a></li>
+        <li class="table"><a href="#IdentityProperties">IdentityProperties</a></li>
+        <li class="table"><a href="#IdentityResources">IdentityResources</a></li>
+        <li class="table"><a href="#Logs">Logs</a></li>
+        <li class="table"><a href="#Notifications">Notifications</a></li>
+        <li class="table"><a href="#PersistedGrants">PersistedGrants</a></li>
+        <li class="table"><a href="#RoleClaims">RoleClaims</a></li>
+        <li class="table"><a href="#Roles">Roles</a></li>
+        <li class="table"><a href="#Services">Services</a></li>
+        <li class="table"><a href="#UserClaims">UserClaims</a></li>
+        <li class="table"><a href="#UserLogins">UserLogins</a></li>
+        <li class="table"><a href="#UserRoles">UserRoles</a></li>
+        <li class="table"><a href="#Users">Users</a></li>
+        <li class="table"><a href="#UserTokens">UserTokens</a></li>
+      </ul>
+    </div>
+    <div class="table">
+      <h2 id=""><a href="#toc" class="tocref">⇧</a>
+        Database Properties
+      </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="type">Database</td>
+            <td class="type">C:\Projects\EventManager\Web\EventManager.db</td>
+          </tr>
+          <tr>
+            <td class="type">ServerVersion</td>
+            <td class="type">3.30.1</td>
+          </tr>
+          <tr>
+            <td class="type">DatabaseSize</td>
+            <td class="type">524 KB</td>
+          </tr>
+          <tr>
+            <td class="type">Created</td>
+            <td class="type">4/9/2020 11:41 PM</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ApiClaims"><a href="#toc" class="tocref">⇧</a>Table ApiClaims</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ApiClaims">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ApiResourceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ApiClaims_0_0">⇨ <a href="#ApiResources">ApiResources</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ApiProperties"><a href="#toc" class="tocref">⇧</a>Table ApiProperties</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ApiProperties">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Value</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ApiResourceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ApiProperties_0_0">⇨ <a href="#ApiResources">ApiResources</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ApiResources"><a href="#toc" class="tocref">⇧</a>Table ApiResources</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ApiResources">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Enabled</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>DisplayName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Created</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Updated</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LastAccessed</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>NonEditable</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ApiScopeClaims"><a href="#toc" class="tocref">⇧</a>Table ApiScopeClaims</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ApiScopeClaims">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ApiScopeId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ApiScopeClaims_0_0">⇨ <a href="#ApiScopes">ApiScopes</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ApiScopes"><a href="#toc" class="tocref">⇧</a>Table ApiScopes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ApiScopes">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>DisplayName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Required</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Emphasize</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ShowInDiscoveryDocument</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ApiResourceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ApiScopes_0_0">⇨ <a href="#ApiResources">ApiResources</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ApiSecrets"><a href="#toc" class="tocref">⇧</a>Table ApiSecrets</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ApiSecrets">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Value</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Expiration</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Created</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ApiResourceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ApiSecrets_0_0">⇨ <a href="#ApiResources">ApiResources</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientClaims"><a href="#toc" class="tocref">⇧</a>Table ClientClaims</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientClaims">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Value</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientClaims_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientCorsOrigins"><a href="#toc" class="tocref">⇧</a>Table ClientCorsOrigins</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientCorsOrigins">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Origin</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientCorsOrigins_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientGrantTypes"><a href="#toc" class="tocref">⇧</a>Table ClientGrantTypes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientGrantTypes">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>GrantType</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientGrantTypes_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientIdPRestrictions"><a href="#toc" class="tocref">⇧</a>Table ClientIdPRestrictions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientIdPRestrictions">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Provider</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientIdPRestrictions_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientPostLogoutRedirectUris"><a href="#toc" class="tocref">⇧</a>Table ClientPostLogoutRedirectUris</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientPostLogoutRedirectUris">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>PostLogoutRedirectUri</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientPostLogoutRedirectUris_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientProperties"><a href="#toc" class="tocref">⇧</a>Table ClientProperties</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientProperties">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Value</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientProperties_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientRedirectUris"><a href="#toc" class="tocref">⇧</a>Table ClientRedirectUris</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientRedirectUris">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>RedirectUri</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientRedirectUris_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Clients"><a href="#toc" class="tocref">⇧</a>Table Clients</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_Clients">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Enabled</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ProtocolType</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RequireClientSecret</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientUri</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LogoUri</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RequireConsent</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AllowRememberConsent</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AlwaysIncludeUserClaimsInIdToken</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RequirePkce</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AllowPlainTextPkce</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AllowAccessTokensViaBrowser</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FrontChannelLogoutUri</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FrontChannelLogoutSessionRequired</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>BackChannelLogoutUri</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>BackChannelLogoutSessionRequired</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AllowOfflineAccess</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IdentityTokenLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AccessTokenLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AuthorizationCodeLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ConsentLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AbsoluteRefreshTokenLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>SlidingRefreshTokenLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RefreshTokenUsage</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdateAccessTokenClaimsOnRefresh</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RefreshTokenExpiration</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AccessTokenType</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EnableLocalLogin</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IncludeJwtId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AlwaysSendClientClaims</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientClaimsPrefix</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>PairWiseSubjectSalt</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Created</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Updated</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LastAccessed</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UserSsoLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UserCodeType</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>DeviceCodeLifetime</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>NonEditable</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientScopes"><a href="#toc" class="tocref">⇧</a>Table ClientScopes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientScopes">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Scope</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientScopes_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="ClientSecrets"><a href="#toc" class="tocref">⇧</a>Table ClientSecrets</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_ClientSecrets">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Value</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Expiration</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Created</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_ClientSecrets_0_0">⇨ <a href="#Clients">Clients</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Demerits"><a href="#toc" class="tocref">⇧</a>Table Demerits</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_Demerits">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>GuestId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Demerits_0_0">⇨ <a href="#Guests">Guests</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>EventOccurrenceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_Demerits_1_0">⇨ <a href="#EventOccurrences">EventOccurrences</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>DateTime</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="DeviceCodes"><a href="#toc" class="tocref">⇧</a>Table DeviceCodes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_DeviceCodes_1">◆</span>UserCode</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>DeviceCode</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>SubjectId</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreationTime</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Expiration</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Data</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="EventLocations"><a href="#toc" class="tocref">⇧</a>Table EventLocations</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_EventLocations">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EventId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventLocations_0_0">⇨ <a href="#Events">Events</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Address1</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Address2</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>City</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>State</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ZipCode</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="EventOccurrences"><a href="#toc" class="tocref">⇧</a>Table EventOccurrences</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_EventOccurrences">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EventId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventOccurrences_2_0">⇨ <a href="#Events">Events</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>EventLocationId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventOccurrences_1_0">⇨ <a href="#EventLocations">EventLocations</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>EventScheduleId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventOccurrences_0_0">⇨ <a href="#EventSchedules">EventSchedules</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>Date</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Lead</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Events"><a href="#toc" class="tocref">⇧</a>Table Events</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_Events">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="EventSchedules"><a href="#toc" class="tocref">⇧</a>Table EventSchedules</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_EventSchedules">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EventId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventSchedules_1_0">⇨ <a href="#Events">Events</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>EventLocationId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventSchedules_0_0">⇨ <a href="#EventLocations">EventLocations</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>DaysOfTheWeek</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>StartDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EndDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>StartTime</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EndTime</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CheckInStartTime</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CheckInEndTime</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="EventServices"><a href="#toc" class="tocref">⇧</a>Table EventServices</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_EventServices">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EventId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventServices_1_0">⇨ <a href="#Events">Events</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>ServiceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_EventServices_0_0">⇨ <a href="#Services">Services</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="GuestEventOccurrences"><a href="#toc" class="tocref">⇧</a>Table GuestEventOccurrences</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_GuestEventOccurrences">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>GuestId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_GuestEventOccurrences_0_0">⇨ <a href="#Guests">Guests</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>EventOccurrenceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_GuestEventOccurrences_1_0">⇨ <a href="#EventOccurrences">EventOccurrences</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Guests"><a href="#toc" class="tocref">⇧</a>Table Guests</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_Guests">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UniqueId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Prefix</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FirstName</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>MiddleName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LastName</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Suffix</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Sex</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>BirthDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>PhoneNumber</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EmailAddress</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Password</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Address1</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Address2</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>City</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>State</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ZipCode</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EstablishedGuest</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Image</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="IdentityClaims"><a href="#toc" class="tocref">⇧</a>Table IdentityClaims</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_IdentityClaims">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IdentityResourceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_IdentityClaims_0_0">⇨ <a href="#IdentityResources">IdentityResources</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="IdentityProperties"><a href="#toc" class="tocref">⇧</a>Table IdentityProperties</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_IdentityProperties">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Key</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Value</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IdentityResourceId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_IdentityProperties_0_0">⇨ <a href="#IdentityResources">IdentityResources</a>.Id</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="IdentityResources"><a href="#toc" class="tocref">⇧</a>Table IdentityResources</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_IdentityResources">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>Enabled</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>DisplayName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Required</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Emphasize</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ShowInDiscoveryDocument</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Created</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Updated</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>NonEditable</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Logs"><a href="#toc" class="tocref">⇧</a>Table Logs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_Logs">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>EventId</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Level</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Message</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>TimeStamp</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Browser</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Host</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Path</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>User</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Method</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>StatusCode</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ServerVariables</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Cookies</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FormVariables</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>QueryString</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Notifications"><a href="#toc" class="tocref">⇧</a>Table Notifications</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_Notifications">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Header</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Body</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IsRead</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IsPinned</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Date</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="PersistedGrants"><a href="#toc" class="tocref">⇧</a>Table PersistedGrants</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_PersistedGrants_1">◆</span>Key</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>SubjectId</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClientId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreationTime</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Expiration</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Data</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="RoleClaims"><a href="#toc" class="tocref">⇧</a>Table RoleClaims</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_RoleClaims">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>RoleId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_RoleClaims_0_0">⇨ <a href="#Roles">Roles</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>ClaimType</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClaimValue</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Roles"><a href="#toc" class="tocref">⇧</a>Table Roles</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_Roles_1">◆</span>Id</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>NormalizedName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ConcurrencyStamp</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Services"><a href="#toc" class="tocref">⇧</a>Table Services</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_Services">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ServiceType</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="UserClaims"><a href="#toc" class="tocref">⇧</a>Table UserClaims</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_master_PK_UserClaims">◆</span>Id</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td><span class="flag">IDENTITY (1,1)</span></td>
+          </tr>
+          <tr>
+            <th>UserId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_UserClaims_0_0">⇨ <a href="#Users">Users</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>ClaimType</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ClaimValue</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="UserLogins"><a href="#toc" class="tocref">⇧</a>Table UserLogins</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_UserLogins_1">◆</span>LoginProvider</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_UserLogins_1">◆</span>ProviderKey</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ProviderDisplayName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UserId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_UserLogins_0_0">⇨ <a href="#Users">Users</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="UserRoles"><a href="#toc" class="tocref">⇧</a>Table UserRoles</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_UserRoles_1">◆</span>UserId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_UserRoles_0_0">⇨ <a href="#Users">Users</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_UserRoles_1">◆</span>RoleId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_UserRoles_1_0">⇨ <a href="#Roles">Roles</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="Users"><a href="#toc" class="tocref">⇧</a>Table Users</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_Users_1">◆</span>Id</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UserName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>NormalizedUserName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>NormalizedEmail</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>EmailConfirmed</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>PasswordHash</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>SecurityStamp</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>ConcurrencyStamp</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>PhoneNumber</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>PhoneNumberConfirmed</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>TwoFactorEnabled</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LockoutEnd</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>LockoutEnabled</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>AccessFailedCount</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>JobTitle</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>FullName</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Configuration</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>IsEnabled</th>
+            <td class="type">bigint</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table">
+      <h2 id="UserTokens"><a href="#toc" class="tocref">⇧</a>Table UserTokens</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30ex">Name</th>
+            <th style="width:20ex">Type</th>
+            <th style="width:4ex">NULL</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_UserTokens_1">◆</span>UserId</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td><span class="flag" title="FK_UserTokens_0_0">⇨ <a href="#Users">Users</a>.Id</span></td>
+          </tr>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_UserTokens_1">◆</span>LoginProvider</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th><span class="pk" title="PRIMARY KEY sqlite_autoindex_UserTokens_1">◆</span>Name</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>Value</th>
+            <td class="type">text</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedBy</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>UpdatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>CreatedDate</th>
+            <td class="type">text</td>
+            <td class="null">☐</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th>RowVersion</th>
+            <td class="type">image</td>
+            <td class="null">☒</td>
+            <td>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">
+                    Generated by <a href="http://SqlDbDoc.codeplex.com/">DB&gt;doc</a> and <a href="https://github.com/ErikEJ/SqlCeToolbox">SQLite/SQL Server Compact Toolbox</a> on
+                    April 16, 2020, 07:24:02</div>
+  </body>
+</html>

@@ -416,7 +416,7 @@ namespace EventManager.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventOccurances",
+                name: "EventOccurrences",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -434,19 +434,19 @@ namespace EventManager.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EventOccurances", x => x.Id);
+                    table.PrimaryKey("PK_EventOccurrences", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EventOccurances_Events_EventId",
+                        name: "FK_EventOccurrences_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_EventOccurances_EventLocations_EventLocationId",
+                        name: "FK_EventOccurrences_EventLocations_EventLocationId",
                         column: x => x.EventLocationId,
                         principalTable: "EventLocations",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_EventOccurances_EventSchedules_EventScheduleId",
+                        name: "FK_EventOccurrences_EventSchedules_EventScheduleId",
                         column: x => x.EventScheduleId,
                         principalTable: "EventSchedules",
                         principalColumn: "Id");
@@ -464,7 +464,7 @@ namespace EventManager.DataAccess.Migrations
                     CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     GuestId = table.Column<int>(nullable: false),
-                    EventOccuranceId = table.Column<int>(nullable: false),
+                    EventOccurrenceId = table.Column<int>(nullable: false),
                     DateTime = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: false)
                 },
@@ -472,9 +472,9 @@ namespace EventManager.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_Demerits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Demerits_EventOccurances_EventOccuranceId",
-                        column: x => x.EventOccuranceId,
-                        principalTable: "EventOccurances",
+                        name: "FK_Demerits_EventOccurrences_EventOccurrenceId",
+                        column: x => x.EventOccurrenceId,
+                        principalTable: "EventOccurrences",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Demerits_Guests_GuestId",
@@ -485,7 +485,7 @@ namespace EventManager.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GuestEventOccurances",
+                name: "GuestEventOccurrences",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -496,19 +496,19 @@ namespace EventManager.DataAccess.Migrations
                     CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     GuestId = table.Column<int>(nullable: false),
-                    EventOccuranceId = table.Column<int>(nullable: false)
+                    EventOccurrenceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GuestEventOccurances", x => x.Id);
+                    table.PrimaryKey("PK_GuestEventOccurrences", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GuestEventOccurances_EventOccurances_EventOccuranceId",
-                        column: x => x.EventOccuranceId,
-                        principalTable: "EventOccurances",
+                        name: "FK_GuestEventOccurrences_EventOccurrences_EventOccurrenceId",
+                        column: x => x.EventOccurrenceId,
+                        principalTable: "EventOccurrences",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GuestEventOccurances_Guests_GuestId",
+                        name: "FK_GuestEventOccurrences_Guests_GuestId",
                         column: x => x.GuestId,
                         principalTable: "Guests",
                         principalColumn: "Id",
@@ -516,9 +516,9 @@ namespace EventManager.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Demerits_EventOccuranceId",
+                name: "IX_Demerits_EventOccurrenceId",
                 table: "Demerits",
-                column: "EventOccuranceId");
+                column: "EventOccurrenceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Demerits_GuestId",
@@ -543,23 +543,23 @@ namespace EventManager.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventOccurances_EventId",
-                table: "EventOccurances",
+                name: "IX_EventOccurrences_EventId",
+                table: "EventOccurrences",
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventOccurances_EventLocationId",
-                table: "EventOccurances",
+                name: "IX_EventOccurrences_EventLocationId",
+                table: "EventOccurrences",
                 column: "EventLocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventOccurances_EventScheduleId",
-                table: "EventOccurances",
+                name: "IX_EventOccurrences_EventScheduleId",
+                table: "EventOccurrences",
                 column: "EventScheduleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventOccurances_Id",
-                table: "EventOccurances",
+                name: "IX_EventOccurrences_Id",
+                table: "EventOccurrences",
                 column: "Id",
                 unique: true);
 
@@ -602,18 +602,18 @@ namespace EventManager.DataAccess.Migrations
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GuestEventOccurances_EventOccuranceId",
-                table: "GuestEventOccurances",
-                column: "EventOccuranceId");
+                name: "IX_GuestEventOccurrences_EventOccurrenceId",
+                table: "GuestEventOccurrences",
+                column: "EventOccurrenceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GuestEventOccurances_GuestId",
-                table: "GuestEventOccurances",
+                name: "IX_GuestEventOccurrences_GuestId",
+                table: "GuestEventOccurrences",
                 column: "GuestId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GuestEventOccurances_Id",
-                table: "GuestEventOccurances",
+                name: "IX_GuestEventOccurrences_Id",
+                table: "GuestEventOccurrences",
                 column: "Id",
                 unique: true);
 
@@ -705,7 +705,7 @@ namespace EventManager.DataAccess.Migrations
                 name: "EventServices");
 
             migrationBuilder.DropTable(
-                name: "GuestEventOccurances");
+                name: "GuestEventOccurrences");
 
             migrationBuilder.DropTable(
                 name: "Logs");
@@ -732,7 +732,7 @@ namespace EventManager.DataAccess.Migrations
                 name: "Services");
 
             migrationBuilder.DropTable(
-                name: "EventOccurances");
+                name: "EventOccurrences");
 
             migrationBuilder.DropTable(
                 name: "Guests");

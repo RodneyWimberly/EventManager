@@ -1,0 +1,862 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="Database" Label="EventManager.db" Category="Database" Group="Expanded" />
+    <Node Id="ApiClaims" Label="ApiClaims" Category="Table" Group="Collapsed" />
+    <Node Id="ApiClaims_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ApiClaims_Type" Label="Type" Category="Field" Description="text" />
+    <Node Id="ApiClaims_ApiResourceId" Label="ApiResourceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ApiProperties" Label="ApiProperties" Category="Table" Group="Collapsed" />
+    <Node Id="ApiProperties_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ApiProperties_Key" Label="Key" Category="Field" Description="text" />
+    <Node Id="ApiProperties_Value" Label="Value" Category="Field" Description="text" />
+    <Node Id="ApiProperties_ApiResourceId" Label="ApiResourceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ApiResources" Label="ApiResources" Category="Table" Group="Collapsed" />
+    <Node Id="ApiResources_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ApiResources_Enabled" Label="Enabled" Category="Field" Description="bigint" />
+    <Node Id="ApiResources_Name" Label="Name" Category="Field" Description="text" />
+    <Node Id="ApiResources_DisplayName" Label="DisplayName" Category="Field Optional" Description="text" />
+    <Node Id="ApiResources_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="ApiResources_Created" Label="Created" Category="Field" Description="text" />
+    <Node Id="ApiResources_Updated" Label="Updated" Category="Field Optional" Description="text" />
+    <Node Id="ApiResources_LastAccessed" Label="LastAccessed" Category="Field Optional" Description="text" />
+    <Node Id="ApiResources_NonEditable" Label="NonEditable" Category="Field" Description="bigint" />
+    <Node Id="ApiScopeClaims" Label="ApiScopeClaims" Category="Table" Group="Collapsed" />
+    <Node Id="ApiScopeClaims_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ApiScopeClaims_Type" Label="Type" Category="Field" Description="text" />
+    <Node Id="ApiScopeClaims_ApiScopeId" Label="ApiScopeId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ApiScopes" Label="ApiScopes" Category="Table" Group="Collapsed" />
+    <Node Id="ApiScopes_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ApiScopes_Name" Label="Name" Category="Field" Description="text" />
+    <Node Id="ApiScopes_DisplayName" Label="DisplayName" Category="Field Optional" Description="text" />
+    <Node Id="ApiScopes_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="ApiScopes_Required" Label="Required" Category="Field" Description="bigint" />
+    <Node Id="ApiScopes_Emphasize" Label="Emphasize" Category="Field" Description="bigint" />
+    <Node Id="ApiScopes_ShowInDiscoveryDocument" Label="ShowInDiscoveryDocument" Category="Field" Description="bigint" />
+    <Node Id="ApiScopes_ApiResourceId" Label="ApiResourceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ApiSecrets" Label="ApiSecrets" Category="Table" Group="Collapsed" />
+    <Node Id="ApiSecrets_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ApiSecrets_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="ApiSecrets_Value" Label="Value" Category="Field" Description="text" />
+    <Node Id="ApiSecrets_Expiration" Label="Expiration" Category="Field Optional" Description="text" />
+    <Node Id="ApiSecrets_Type" Label="Type" Category="Field" Description="text" />
+    <Node Id="ApiSecrets_Created" Label="Created" Category="Field" Description="text" />
+    <Node Id="ApiSecrets_ApiResourceId" Label="ApiResourceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientClaims" Label="ClientClaims" Category="Table" Group="Collapsed" />
+    <Node Id="ClientClaims_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientClaims_Type" Label="Type" Category="Field" Description="text" />
+    <Node Id="ClientClaims_Value" Label="Value" Category="Field" Description="text" />
+    <Node Id="ClientClaims_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientCorsOrigins" Label="ClientCorsOrigins" Category="Table" Group="Collapsed" />
+    <Node Id="ClientCorsOrigins_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientCorsOrigins_Origin" Label="Origin" Category="Field" Description="text" />
+    <Node Id="ClientCorsOrigins_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientGrantTypes" Label="ClientGrantTypes" Category="Table" Group="Collapsed" />
+    <Node Id="ClientGrantTypes_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientGrantTypes_GrantType" Label="GrantType" Category="Field" Description="text" />
+    <Node Id="ClientGrantTypes_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientIdPRestrictions" Label="ClientIdPRestrictions" Category="Table" Group="Collapsed" />
+    <Node Id="ClientIdPRestrictions_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientIdPRestrictions_Provider" Label="Provider" Category="Field" Description="text" />
+    <Node Id="ClientIdPRestrictions_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientPostLogoutRedirectUris" Label="ClientPostLogoutRedirectUris" Category="Table" Group="Collapsed" />
+    <Node Id="ClientPostLogoutRedirectUris_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientPostLogoutRedirectUris_PostLogoutRedirectUri" Label="PostLogoutRedirectUri" Category="Field" Description="text" />
+    <Node Id="ClientPostLogoutRedirectUris_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientProperties" Label="ClientProperties" Category="Table" Group="Collapsed" />
+    <Node Id="ClientProperties_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientProperties_Key" Label="Key" Category="Field" Description="text" />
+    <Node Id="ClientProperties_Value" Label="Value" Category="Field" Description="text" />
+    <Node Id="ClientProperties_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientRedirectUris" Label="ClientRedirectUris" Category="Table" Group="Collapsed" />
+    <Node Id="ClientRedirectUris_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientRedirectUris_RedirectUri" Label="RedirectUri" Category="Field" Description="text" />
+    <Node Id="ClientRedirectUris_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="Clients" Label="Clients" Category="Table" Group="Collapsed" />
+    <Node Id="Clients_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="Clients_Enabled" Label="Enabled" Category="Field" Description="bigint" />
+    <Node Id="Clients_ClientId" Label="ClientId" Category="Field" Description="text" />
+    <Node Id="Clients_ProtocolType" Label="ProtocolType" Category="Field" Description="text" />
+    <Node Id="Clients_RequireClientSecret" Label="RequireClientSecret" Category="Field" Description="bigint" />
+    <Node Id="Clients_ClientName" Label="ClientName" Category="Field Optional" Description="text" />
+    <Node Id="Clients_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="Clients_ClientUri" Label="ClientUri" Category="Field Optional" Description="text" />
+    <Node Id="Clients_LogoUri" Label="LogoUri" Category="Field Optional" Description="text" />
+    <Node Id="Clients_RequireConsent" Label="RequireConsent" Category="Field" Description="bigint" />
+    <Node Id="Clients_AllowRememberConsent" Label="AllowRememberConsent" Category="Field" Description="bigint" />
+    <Node Id="Clients_AlwaysIncludeUserClaimsInIdToken" Label="AlwaysIncludeUserClaimsInIdToken" Category="Field" Description="bigint" />
+    <Node Id="Clients_RequirePkce" Label="RequirePkce" Category="Field" Description="bigint" />
+    <Node Id="Clients_AllowPlainTextPkce" Label="AllowPlainTextPkce" Category="Field" Description="bigint" />
+    <Node Id="Clients_AllowAccessTokensViaBrowser" Label="AllowAccessTokensViaBrowser" Category="Field" Description="bigint" />
+    <Node Id="Clients_FrontChannelLogoutUri" Label="FrontChannelLogoutUri" Category="Field Optional" Description="text" />
+    <Node Id="Clients_FrontChannelLogoutSessionRequired" Label="FrontChannelLogoutSessionRequired" Category="Field" Description="bigint" />
+    <Node Id="Clients_BackChannelLogoutUri" Label="BackChannelLogoutUri" Category="Field Optional" Description="text" />
+    <Node Id="Clients_BackChannelLogoutSessionRequired" Label="BackChannelLogoutSessionRequired" Category="Field" Description="bigint" />
+    <Node Id="Clients_AllowOfflineAccess" Label="AllowOfflineAccess" Category="Field" Description="bigint" />
+    <Node Id="Clients_IdentityTokenLifetime" Label="IdentityTokenLifetime" Category="Field" Description="bigint" />
+    <Node Id="Clients_AccessTokenLifetime" Label="AccessTokenLifetime" Category="Field" Description="bigint" />
+    <Node Id="Clients_AuthorizationCodeLifetime" Label="AuthorizationCodeLifetime" Category="Field" Description="bigint" />
+    <Node Id="Clients_ConsentLifetime" Label="ConsentLifetime" Category="Field Optional" Description="bigint" />
+    <Node Id="Clients_AbsoluteRefreshTokenLifetime" Label="AbsoluteRefreshTokenLifetime" Category="Field" Description="bigint" />
+    <Node Id="Clients_SlidingRefreshTokenLifetime" Label="SlidingRefreshTokenLifetime" Category="Field" Description="bigint" />
+    <Node Id="Clients_RefreshTokenUsage" Label="RefreshTokenUsage" Category="Field" Description="bigint" />
+    <Node Id="Clients_UpdateAccessTokenClaimsOnRefresh" Label="UpdateAccessTokenClaimsOnRefresh" Category="Field" Description="bigint" />
+    <Node Id="Clients_RefreshTokenExpiration" Label="RefreshTokenExpiration" Category="Field" Description="bigint" />
+    <Node Id="Clients_AccessTokenType" Label="AccessTokenType" Category="Field" Description="bigint" />
+    <Node Id="Clients_EnableLocalLogin" Label="EnableLocalLogin" Category="Field" Description="bigint" />
+    <Node Id="Clients_IncludeJwtId" Label="IncludeJwtId" Category="Field" Description="bigint" />
+    <Node Id="Clients_AlwaysSendClientClaims" Label="AlwaysSendClientClaims" Category="Field" Description="bigint" />
+    <Node Id="Clients_ClientClaimsPrefix" Label="ClientClaimsPrefix" Category="Field Optional" Description="text" />
+    <Node Id="Clients_PairWiseSubjectSalt" Label="PairWiseSubjectSalt" Category="Field Optional" Description="text" />
+    <Node Id="Clients_Created" Label="Created" Category="Field" Description="text" />
+    <Node Id="Clients_Updated" Label="Updated" Category="Field Optional" Description="text" />
+    <Node Id="Clients_LastAccessed" Label="LastAccessed" Category="Field Optional" Description="text" />
+    <Node Id="Clients_UserSsoLifetime" Label="UserSsoLifetime" Category="Field Optional" Description="bigint" />
+    <Node Id="Clients_UserCodeType" Label="UserCodeType" Category="Field Optional" Description="text" />
+    <Node Id="Clients_DeviceCodeLifetime" Label="DeviceCodeLifetime" Category="Field" Description="bigint" />
+    <Node Id="Clients_NonEditable" Label="NonEditable" Category="Field" Description="bigint" />
+    <Node Id="ClientScopes" Label="ClientScopes" Category="Table" Group="Collapsed" />
+    <Node Id="ClientScopes_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientScopes_Scope" Label="Scope" Category="Field" Description="text" />
+    <Node Id="ClientScopes_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="ClientSecrets" Label="ClientSecrets" Category="Table" Group="Collapsed" />
+    <Node Id="ClientSecrets_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="ClientSecrets_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="ClientSecrets_Value" Label="Value" Category="Field" Description="text" />
+    <Node Id="ClientSecrets_Expiration" Label="Expiration" Category="Field Optional" Description="text" />
+    <Node Id="ClientSecrets_Type" Label="Type" Category="Field" Description="text" />
+    <Node Id="ClientSecrets_Created" Label="Created" Category="Field" Description="text" />
+    <Node Id="ClientSecrets_ClientId" Label="ClientId" Category="Field Foreign" Description="bigint" />
+    <Node Id="Demerits" Label="Demerits" Category="Table" Group="Collapsed" />
+    <Node Id="Demerits_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="Demerits_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Demerits_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Demerits_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Demerits_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Demerits_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Demerits_GuestId" Label="GuestId" Category="Field Foreign" Description="bigint" />
+    <Node Id="Demerits_EventOccurrenceId" Label="EventOccurrenceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="Demerits_DateTime" Label="DateTime" Category="Field" Description="text" />
+    <Node Id="Demerits_Description" Label="Description" Category="Field" Description="text" />
+    <Node Id="DeviceCodes" Label="DeviceCodes" Category="Table" Group="Collapsed" />
+    <Node Id="DeviceCodes_UserCode" Label="UserCode" Category="Field Primary" Description="text" />
+    <Node Id="DeviceCodes_DeviceCode" Label="DeviceCode" Category="Field" Description="text" />
+    <Node Id="DeviceCodes_SubjectId" Label="SubjectId" Category="Field Optional" Description="text" />
+    <Node Id="DeviceCodes_ClientId" Label="ClientId" Category="Field" Description="text" />
+    <Node Id="DeviceCodes_CreationTime" Label="CreationTime" Category="Field" Description="text" />
+    <Node Id="DeviceCodes_Expiration" Label="Expiration" Category="Field" Description="text" />
+    <Node Id="DeviceCodes_Data" Label="Data" Category="Field" Description="text" />
+    <Node Id="EventLocations" Label="EventLocations" Category="Table" Group="Collapsed" />
+    <Node Id="EventLocations_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="EventLocations_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="EventLocations_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="EventLocations_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="EventLocations_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="EventLocations_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="EventLocations_EventId" Label="EventId" Category="Field Foreign" Description="bigint" />
+    <Node Id="EventLocations_Name" Label="Name" Category="Field" Description="text" />
+    <Node Id="EventLocations_Address1" Label="Address1" Category="Field" Description="text" />
+    <Node Id="EventLocations_Address2" Label="Address2" Category="Field Optional" Description="text" />
+    <Node Id="EventLocations_City" Label="City" Category="Field" Description="text" />
+    <Node Id="EventLocations_State" Label="State" Category="Field" Description="text" />
+    <Node Id="EventLocations_ZipCode" Label="ZipCode" Category="Field" Description="text" />
+    <Node Id="EventOccurrences" Label="EventOccurrences" Category="Table" Group="Collapsed" />
+    <Node Id="EventOccurrences_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="EventOccurrences_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="EventOccurrences_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="EventOccurrences_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="EventOccurrences_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="EventOccurrences_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="EventOccurrences_EventId" Label="EventId" Category="Field Foreign" Description="bigint" />
+    <Node Id="EventOccurrences_EventLocationId" Label="EventLocationId" Category="Field Foreign" Description="bigint" />
+    <Node Id="EventOccurrences_EventScheduleId" Label="EventScheduleId" Category="Field Foreign" Description="bigint" />
+    <Node Id="EventOccurrences_Date" Label="Date" Category="Field" Description="text" />
+    <Node Id="EventOccurrences_Lead" Label="Lead" Category="Field" Description="text" />
+    <Node Id="Events" Label="Events" Category="Table" Group="Collapsed" />
+    <Node Id="Events_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="Events_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Events_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Events_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Events_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Events_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Events_Name" Label="Name" Category="Field" Description="text" />
+    <Node Id="Events_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="EventSchedules" Label="EventSchedules" Category="Table" Group="Collapsed" />
+    <Node Id="EventSchedules_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="EventSchedules_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="EventSchedules_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="EventSchedules_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="EventSchedules_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="EventSchedules_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="EventSchedules_EventId" Label="EventId" Category="Field Foreign" Description="bigint" />
+    <Node Id="EventSchedules_EventLocationId" Label="EventLocationId" Category="Field Foreign" Description="bigint" />
+    <Node Id="EventSchedules_DaysOfTheWeek" Label="DaysOfTheWeek" Category="Field" Description="bigint" />
+    <Node Id="EventSchedules_StartDate" Label="StartDate" Category="Field" Description="text" />
+    <Node Id="EventSchedules_EndDate" Label="EndDate" Category="Field" Description="text" />
+    <Node Id="EventSchedules_StartTime" Label="StartTime" Category="Field" Description="text" />
+    <Node Id="EventSchedules_EndTime" Label="EndTime" Category="Field" Description="text" />
+    <Node Id="EventSchedules_CheckInStartTime" Label="CheckInStartTime" Category="Field" Description="text" />
+    <Node Id="EventSchedules_CheckInEndTime" Label="CheckInEndTime" Category="Field" Description="text" />
+    <Node Id="EventServices" Label="EventServices" Category="Table" Group="Collapsed" />
+    <Node Id="EventServices_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="EventServices_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="EventServices_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="EventServices_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="EventServices_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="EventServices_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="EventServices_EventId" Label="EventId" Category="Field Foreign" Description="bigint" />
+    <Node Id="EventServices_ServiceId" Label="ServiceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="GuestEventOccurrences" Label="GuestEventOccurrences" Category="Table" Group="Collapsed" />
+    <Node Id="GuestEventOccurrences_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="GuestEventOccurrences_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="GuestEventOccurrences_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="GuestEventOccurrences_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="GuestEventOccurrences_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="GuestEventOccurrences_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="GuestEventOccurrences_GuestId" Label="GuestId" Category="Field Foreign" Description="bigint" />
+    <Node Id="GuestEventOccurrences_EventOccurrenceId" Label="EventOccurrenceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="Guests" Label="Guests" Category="Table" Group="Collapsed" />
+    <Node Id="Guests_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="Guests_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Guests_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Guests_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Guests_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Guests_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Guests_UniqueId" Label="UniqueId" Category="Field" Description="text" />
+    <Node Id="Guests_Prefix" Label="Prefix" Category="Field Optional" Description="text" />
+    <Node Id="Guests_FirstName" Label="FirstName" Category="Field" Description="text" />
+    <Node Id="Guests_MiddleName" Label="MiddleName" Category="Field Optional" Description="text" />
+    <Node Id="Guests_LastName" Label="LastName" Category="Field" Description="text" />
+    <Node Id="Guests_Suffix" Label="Suffix" Category="Field Optional" Description="text" />
+    <Node Id="Guests_Sex" Label="Sex" Category="Field" Description="bigint" />
+    <Node Id="Guests_BirthDate" Label="BirthDate" Category="Field" Description="text" />
+    <Node Id="Guests_PhoneNumber" Label="PhoneNumber" Category="Field Optional" Description="text" />
+    <Node Id="Guests_EmailAddress" Label="EmailAddress" Category="Field Optional" Description="text" />
+    <Node Id="Guests_Password" Label="Password" Category="Field" Description="text" />
+    <Node Id="Guests_Address1" Label="Address1" Category="Field Optional" Description="text" />
+    <Node Id="Guests_Address2" Label="Address2" Category="Field Optional" Description="text" />
+    <Node Id="Guests_City" Label="City" Category="Field Optional" Description="text" />
+    <Node Id="Guests_State" Label="State" Category="Field Optional" Description="text" />
+    <Node Id="Guests_ZipCode" Label="ZipCode" Category="Field Optional" Description="text" />
+    <Node Id="Guests_EstablishedGuest" Label="EstablishedGuest" Category="Field" Description="bigint" />
+    <Node Id="Guests_Image" Label="Image" Category="Field Optional" Description="image" />
+    <Node Id="IdentityClaims" Label="IdentityClaims" Category="Table" Group="Collapsed" />
+    <Node Id="IdentityClaims_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="IdentityClaims_Type" Label="Type" Category="Field" Description="text" />
+    <Node Id="IdentityClaims_IdentityResourceId" Label="IdentityResourceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="IdentityProperties" Label="IdentityProperties" Category="Table" Group="Collapsed" />
+    <Node Id="IdentityProperties_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="IdentityProperties_Key" Label="Key" Category="Field" Description="text" />
+    <Node Id="IdentityProperties_Value" Label="Value" Category="Field" Description="text" />
+    <Node Id="IdentityProperties_IdentityResourceId" Label="IdentityResourceId" Category="Field Foreign" Description="bigint" />
+    <Node Id="IdentityResources" Label="IdentityResources" Category="Table" Group="Collapsed" />
+    <Node Id="IdentityResources_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="IdentityResources_Enabled" Label="Enabled" Category="Field" Description="bigint" />
+    <Node Id="IdentityResources_Name" Label="Name" Category="Field" Description="text" />
+    <Node Id="IdentityResources_DisplayName" Label="DisplayName" Category="Field Optional" Description="text" />
+    <Node Id="IdentityResources_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="IdentityResources_Required" Label="Required" Category="Field" Description="bigint" />
+    <Node Id="IdentityResources_Emphasize" Label="Emphasize" Category="Field" Description="bigint" />
+    <Node Id="IdentityResources_ShowInDiscoveryDocument" Label="ShowInDiscoveryDocument" Category="Field" Description="bigint" />
+    <Node Id="IdentityResources_Created" Label="Created" Category="Field" Description="text" />
+    <Node Id="IdentityResources_Updated" Label="Updated" Category="Field Optional" Description="text" />
+    <Node Id="IdentityResources_NonEditable" Label="NonEditable" Category="Field" Description="bigint" />
+    <Node Id="Logs" Label="Logs" Category="Table" Group="Collapsed" />
+    <Node Id="Logs_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="Logs_EventId" Label="EventId" Category="Field" Description="bigint" />
+    <Node Id="Logs_Level" Label="Level" Category="Field" Description="bigint" />
+    <Node Id="Logs_Message" Label="Message" Category="Field Optional" Description="text" />
+    <Node Id="Logs_Name" Label="Name" Category="Field Optional" Description="text" />
+    <Node Id="Logs_TimeStamp" Label="TimeStamp" Category="Field" Description="text" />
+    <Node Id="Logs_Browser" Label="Browser" Category="Field Optional" Description="text" />
+    <Node Id="Logs_Host" Label="Host" Category="Field Optional" Description="text" />
+    <Node Id="Logs_Path" Label="Path" Category="Field Optional" Description="text" />
+    <Node Id="Logs_User" Label="User" Category="Field Optional" Description="text" />
+    <Node Id="Logs_Method" Label="Method" Category="Field Optional" Description="text" />
+    <Node Id="Logs_StatusCode" Label="StatusCode" Category="Field" Description="bigint" />
+    <Node Id="Logs_ServerVariables" Label="ServerVariables" Category="Field Optional" Description="text" />
+    <Node Id="Logs_Cookies" Label="Cookies" Category="Field Optional" Description="text" />
+    <Node Id="Logs_FormVariables" Label="FormVariables" Category="Field Optional" Description="text" />
+    <Node Id="Logs_QueryString" Label="QueryString" Category="Field Optional" Description="text" />
+    <Node Id="Logs_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Logs_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Logs_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Logs_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Logs_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Notifications" Label="Notifications" Category="Table" Group="Collapsed" />
+    <Node Id="Notifications_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="Notifications_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Notifications_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Notifications_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Notifications_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Notifications_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Notifications_Header" Label="Header" Category="Field" Description="text" />
+    <Node Id="Notifications_Body" Label="Body" Category="Field" Description="text" />
+    <Node Id="Notifications_IsRead" Label="IsRead" Category="Field" Description="bigint" />
+    <Node Id="Notifications_IsPinned" Label="IsPinned" Category="Field" Description="bigint" />
+    <Node Id="Notifications_Date" Label="Date" Category="Field" Description="text" />
+    <Node Id="PersistedGrants" Label="PersistedGrants" Category="Table" Group="Collapsed" />
+    <Node Id="PersistedGrants_Key" Label="Key" Category="Field Primary" Description="text" />
+    <Node Id="PersistedGrants_Type" Label="Type" Category="Field" Description="text" />
+    <Node Id="PersistedGrants_SubjectId" Label="SubjectId" Category="Field Optional" Description="text" />
+    <Node Id="PersistedGrants_ClientId" Label="ClientId" Category="Field" Description="text" />
+    <Node Id="PersistedGrants_CreationTime" Label="CreationTime" Category="Field" Description="text" />
+    <Node Id="PersistedGrants_Expiration" Label="Expiration" Category="Field Optional" Description="text" />
+    <Node Id="PersistedGrants_Data" Label="Data" Category="Field" Description="text" />
+    <Node Id="RoleClaims" Label="RoleClaims" Category="Table" Group="Collapsed" />
+    <Node Id="RoleClaims_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="RoleClaims_RoleId" Label="RoleId" Category="Field Foreign" Description="text" />
+    <Node Id="RoleClaims_ClaimType" Label="ClaimType" Category="Field Optional" Description="text" />
+    <Node Id="RoleClaims_ClaimValue" Label="ClaimValue" Category="Field Optional" Description="text" />
+    <Node Id="RoleClaims_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="RoleClaims_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="RoleClaims_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="RoleClaims_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="RoleClaims_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Roles" Label="Roles" Category="Table" Group="Collapsed" />
+    <Node Id="Roles_Id" Label="Id" Category="Field Primary" Description="text" />
+    <Node Id="Roles_Name" Label="Name" Category="Field Optional" Description="text" />
+    <Node Id="Roles_NormalizedName" Label="NormalizedName" Category="Field Optional" Description="text" />
+    <Node Id="Roles_ConcurrencyStamp" Label="ConcurrencyStamp" Category="Field Optional" Description="text" />
+    <Node Id="Roles_Description" Label="Description" Category="Field Optional" Description="text" />
+    <Node Id="Roles_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Roles_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Roles_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Roles_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Roles_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Services" Label="Services" Category="Table" Group="Collapsed" />
+    <Node Id="Services_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="Services_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Services_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Services_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Services_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Services_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Services_Name" Label="Name" Category="Field" Description="text" />
+    <Node Id="Services_Description" Label="Description" Category="Field" Description="text" />
+    <Node Id="Services_ServiceType" Label="ServiceType" Category="Field" Description="bigint" />
+    <Node Id="UserClaims" Label="UserClaims" Category="Table" Group="Collapsed" />
+    <Node Id="UserClaims_Id" Label="Id" Category="Field Primary" Description="bigint" />
+    <Node Id="UserClaims_UserId" Label="UserId" Category="Field Foreign" Description="text" />
+    <Node Id="UserClaims_ClaimType" Label="ClaimType" Category="Field Optional" Description="text" />
+    <Node Id="UserClaims_ClaimValue" Label="ClaimValue" Category="Field Optional" Description="text" />
+    <Node Id="UserClaims_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="UserClaims_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="UserClaims_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="UserClaims_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="UserClaims_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="UserLogins" Label="UserLogins" Category="Table" Group="Collapsed" />
+    <Node Id="UserLogins_LoginProvider" Label="LoginProvider" Category="Field Primary" Description="text" />
+    <Node Id="UserLogins_ProviderKey" Label="ProviderKey" Category="Field Primary" Description="text" />
+    <Node Id="UserLogins_ProviderDisplayName" Label="ProviderDisplayName" Category="Field Optional" Description="text" />
+    <Node Id="UserLogins_UserId" Label="UserId" Category="Field Foreign" Description="text" />
+    <Node Id="UserLogins_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="UserLogins_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="UserLogins_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="UserLogins_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="UserLogins_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="UserRoles" Label="UserRoles" Category="Table" Group="Collapsed" />
+    <Node Id="UserRoles_UserId" Label="UserId" Category="Field Primary" Description="text" />
+    <Node Id="UserRoles_RoleId" Label="RoleId" Category="Field Primary" Description="text" />
+    <Node Id="UserRoles_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="UserRoles_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="UserRoles_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="UserRoles_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="UserRoles_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="Users" Label="Users" Category="Table" Group="Collapsed" />
+    <Node Id="Users_Id" Label="Id" Category="Field Primary" Description="text" />
+    <Node Id="Users_UserName" Label="UserName" Category="Field Optional" Description="text" />
+    <Node Id="Users_NormalizedUserName" Label="NormalizedUserName" Category="Field Optional" Description="text" />
+    <Node Id="Users_Email" Label="Email" Category="Field Optional" Description="text" />
+    <Node Id="Users_NormalizedEmail" Label="NormalizedEmail" Category="Field Optional" Description="text" />
+    <Node Id="Users_EmailConfirmed" Label="EmailConfirmed" Category="Field" Description="bigint" />
+    <Node Id="Users_PasswordHash" Label="PasswordHash" Category="Field Optional" Description="text" />
+    <Node Id="Users_SecurityStamp" Label="SecurityStamp" Category="Field Optional" Description="text" />
+    <Node Id="Users_ConcurrencyStamp" Label="ConcurrencyStamp" Category="Field Optional" Description="text" />
+    <Node Id="Users_PhoneNumber" Label="PhoneNumber" Category="Field Optional" Description="text" />
+    <Node Id="Users_PhoneNumberConfirmed" Label="PhoneNumberConfirmed" Category="Field" Description="bigint" />
+    <Node Id="Users_TwoFactorEnabled" Label="TwoFactorEnabled" Category="Field" Description="bigint" />
+    <Node Id="Users_LockoutEnd" Label="LockoutEnd" Category="Field Optional" Description="text" />
+    <Node Id="Users_LockoutEnabled" Label="LockoutEnabled" Category="Field" Description="bigint" />
+    <Node Id="Users_AccessFailedCount" Label="AccessFailedCount" Category="Field" Description="bigint" />
+    <Node Id="Users_JobTitle" Label="JobTitle" Category="Field Optional" Description="text" />
+    <Node Id="Users_FullName" Label="FullName" Category="Field Optional" Description="text" />
+    <Node Id="Users_Configuration" Label="Configuration" Category="Field Optional" Description="text" />
+    <Node Id="Users_IsEnabled" Label="IsEnabled" Category="Field" Description="bigint" />
+    <Node Id="Users_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="Users_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="Users_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="Users_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="Users_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+    <Node Id="UserTokens" Label="UserTokens" Category="Table" Group="Collapsed" />
+    <Node Id="UserTokens_UserId" Label="UserId" Category="Field Primary" Description="text" />
+    <Node Id="UserTokens_LoginProvider" Label="LoginProvider" Category="Field Primary" Description="text" />
+    <Node Id="UserTokens_Name" Label="Name" Category="Field Primary" Description="text" />
+    <Node Id="UserTokens_Value" Label="Value" Category="Field Optional" Description="text" />
+    <Node Id="UserTokens_CreatedBy" Label="CreatedBy" Category="Field" Description="text" />
+    <Node Id="UserTokens_UpdatedBy" Label="UpdatedBy" Category="Field" Description="text" />
+    <Node Id="UserTokens_UpdatedDate" Label="UpdatedDate" Category="Field" Description="text" />
+    <Node Id="UserTokens_CreatedDate" Label="CreatedDate" Category="Field" Description="text" />
+    <Node Id="UserTokens_RowVersion" Label="RowVersion" Category="Field Optional" Description="image" />
+  </Nodes>
+  <Links>
+    <Link Source="Database" Target="ApiClaims" Category="Contains" />
+    <Link Source="ApiClaims" Target="ApiClaims_Id" Category="Contains" />
+    <Link Source="ApiClaims" Target="ApiClaims_Type" Category="Contains" />
+    <Link Source="ApiClaims" Target="ApiClaims_ApiResourceId" Category="Contains" />
+    <Link Source="ApiClaims_ApiResourceId" Target="ApiResources_Id" Label="FK_ApiClaims_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ApiProperties" Category="Contains" />
+    <Link Source="ApiProperties" Target="ApiProperties_Id" Category="Contains" />
+    <Link Source="ApiProperties" Target="ApiProperties_Key" Category="Contains" />
+    <Link Source="ApiProperties" Target="ApiProperties_Value" Category="Contains" />
+    <Link Source="ApiProperties" Target="ApiProperties_ApiResourceId" Category="Contains" />
+    <Link Source="ApiProperties_ApiResourceId" Target="ApiResources_Id" Label="FK_ApiProperties_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ApiResources" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_Id" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_Enabled" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_Name" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_DisplayName" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_Description" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_Created" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_Updated" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_LastAccessed" Category="Contains" />
+    <Link Source="ApiResources" Target="ApiResources_NonEditable" Category="Contains" />
+    <Link Source="Database" Target="ApiScopeClaims" Category="Contains" />
+    <Link Source="ApiScopeClaims" Target="ApiScopeClaims_Id" Category="Contains" />
+    <Link Source="ApiScopeClaims" Target="ApiScopeClaims_Type" Category="Contains" />
+    <Link Source="ApiScopeClaims" Target="ApiScopeClaims_ApiScopeId" Category="Contains" />
+    <Link Source="ApiScopeClaims_ApiScopeId" Target="ApiScopes_Id" Label="FK_ApiScopeClaims_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ApiScopes" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_Id" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_Name" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_DisplayName" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_Description" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_Required" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_Emphasize" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_ShowInDiscoveryDocument" Category="Contains" />
+    <Link Source="ApiScopes" Target="ApiScopes_ApiResourceId" Category="Contains" />
+    <Link Source="ApiScopes_ApiResourceId" Target="ApiResources_Id" Label="FK_ApiScopes_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ApiSecrets" Category="Contains" />
+    <Link Source="ApiSecrets" Target="ApiSecrets_Id" Category="Contains" />
+    <Link Source="ApiSecrets" Target="ApiSecrets_Description" Category="Contains" />
+    <Link Source="ApiSecrets" Target="ApiSecrets_Value" Category="Contains" />
+    <Link Source="ApiSecrets" Target="ApiSecrets_Expiration" Category="Contains" />
+    <Link Source="ApiSecrets" Target="ApiSecrets_Type" Category="Contains" />
+    <Link Source="ApiSecrets" Target="ApiSecrets_Created" Category="Contains" />
+    <Link Source="ApiSecrets" Target="ApiSecrets_ApiResourceId" Category="Contains" />
+    <Link Source="ApiSecrets_ApiResourceId" Target="ApiResources_Id" Label="FK_ApiSecrets_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientClaims" Category="Contains" />
+    <Link Source="ClientClaims" Target="ClientClaims_Id" Category="Contains" />
+    <Link Source="ClientClaims" Target="ClientClaims_Type" Category="Contains" />
+    <Link Source="ClientClaims" Target="ClientClaims_Value" Category="Contains" />
+    <Link Source="ClientClaims" Target="ClientClaims_ClientId" Category="Contains" />
+    <Link Source="ClientClaims_ClientId" Target="Clients_Id" Label="FK_ClientClaims_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientCorsOrigins" Category="Contains" />
+    <Link Source="ClientCorsOrigins" Target="ClientCorsOrigins_Id" Category="Contains" />
+    <Link Source="ClientCorsOrigins" Target="ClientCorsOrigins_Origin" Category="Contains" />
+    <Link Source="ClientCorsOrigins" Target="ClientCorsOrigins_ClientId" Category="Contains" />
+    <Link Source="ClientCorsOrigins_ClientId" Target="Clients_Id" Label="FK_ClientCorsOrigins_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientGrantTypes" Category="Contains" />
+    <Link Source="ClientGrantTypes" Target="ClientGrantTypes_Id" Category="Contains" />
+    <Link Source="ClientGrantTypes" Target="ClientGrantTypes_GrantType" Category="Contains" />
+    <Link Source="ClientGrantTypes" Target="ClientGrantTypes_ClientId" Category="Contains" />
+    <Link Source="ClientGrantTypes_ClientId" Target="Clients_Id" Label="FK_ClientGrantTypes_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientIdPRestrictions" Category="Contains" />
+    <Link Source="ClientIdPRestrictions" Target="ClientIdPRestrictions_Id" Category="Contains" />
+    <Link Source="ClientIdPRestrictions" Target="ClientIdPRestrictions_Provider" Category="Contains" />
+    <Link Source="ClientIdPRestrictions" Target="ClientIdPRestrictions_ClientId" Category="Contains" />
+    <Link Source="ClientIdPRestrictions_ClientId" Target="Clients_Id" Label="FK_ClientIdPRestrictions_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientPostLogoutRedirectUris" Category="Contains" />
+    <Link Source="ClientPostLogoutRedirectUris" Target="ClientPostLogoutRedirectUris_Id" Category="Contains" />
+    <Link Source="ClientPostLogoutRedirectUris" Target="ClientPostLogoutRedirectUris_PostLogoutRedirectUri" Category="Contains" />
+    <Link Source="ClientPostLogoutRedirectUris" Target="ClientPostLogoutRedirectUris_ClientId" Category="Contains" />
+    <Link Source="ClientPostLogoutRedirectUris_ClientId" Target="Clients_Id" Label="FK_ClientPostLogoutRedirectUris_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientProperties" Category="Contains" />
+    <Link Source="ClientProperties" Target="ClientProperties_Id" Category="Contains" />
+    <Link Source="ClientProperties" Target="ClientProperties_Key" Category="Contains" />
+    <Link Source="ClientProperties" Target="ClientProperties_Value" Category="Contains" />
+    <Link Source="ClientProperties" Target="ClientProperties_ClientId" Category="Contains" />
+    <Link Source="ClientProperties_ClientId" Target="Clients_Id" Label="FK_ClientProperties_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientRedirectUris" Category="Contains" />
+    <Link Source="ClientRedirectUris" Target="ClientRedirectUris_Id" Category="Contains" />
+    <Link Source="ClientRedirectUris" Target="ClientRedirectUris_RedirectUri" Category="Contains" />
+    <Link Source="ClientRedirectUris" Target="ClientRedirectUris_ClientId" Category="Contains" />
+    <Link Source="ClientRedirectUris_ClientId" Target="Clients_Id" Label="FK_ClientRedirectUris_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="Clients" Category="Contains" />
+    <Link Source="Clients" Target="Clients_Id" Category="Contains" />
+    <Link Source="Clients" Target="Clients_Enabled" Category="Contains" />
+    <Link Source="Clients" Target="Clients_ClientId" Category="Contains" />
+    <Link Source="Clients" Target="Clients_ProtocolType" Category="Contains" />
+    <Link Source="Clients" Target="Clients_RequireClientSecret" Category="Contains" />
+    <Link Source="Clients" Target="Clients_ClientName" Category="Contains" />
+    <Link Source="Clients" Target="Clients_Description" Category="Contains" />
+    <Link Source="Clients" Target="Clients_ClientUri" Category="Contains" />
+    <Link Source="Clients" Target="Clients_LogoUri" Category="Contains" />
+    <Link Source="Clients" Target="Clients_RequireConsent" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AllowRememberConsent" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AlwaysIncludeUserClaimsInIdToken" Category="Contains" />
+    <Link Source="Clients" Target="Clients_RequirePkce" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AllowPlainTextPkce" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AllowAccessTokensViaBrowser" Category="Contains" />
+    <Link Source="Clients" Target="Clients_FrontChannelLogoutUri" Category="Contains" />
+    <Link Source="Clients" Target="Clients_FrontChannelLogoutSessionRequired" Category="Contains" />
+    <Link Source="Clients" Target="Clients_BackChannelLogoutUri" Category="Contains" />
+    <Link Source="Clients" Target="Clients_BackChannelLogoutSessionRequired" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AllowOfflineAccess" Category="Contains" />
+    <Link Source="Clients" Target="Clients_IdentityTokenLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AccessTokenLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AuthorizationCodeLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_ConsentLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AbsoluteRefreshTokenLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_SlidingRefreshTokenLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_RefreshTokenUsage" Category="Contains" />
+    <Link Source="Clients" Target="Clients_UpdateAccessTokenClaimsOnRefresh" Category="Contains" />
+    <Link Source="Clients" Target="Clients_RefreshTokenExpiration" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AccessTokenType" Category="Contains" />
+    <Link Source="Clients" Target="Clients_EnableLocalLogin" Category="Contains" />
+    <Link Source="Clients" Target="Clients_IncludeJwtId" Category="Contains" />
+    <Link Source="Clients" Target="Clients_AlwaysSendClientClaims" Category="Contains" />
+    <Link Source="Clients" Target="Clients_ClientClaimsPrefix" Category="Contains" />
+    <Link Source="Clients" Target="Clients_PairWiseSubjectSalt" Category="Contains" />
+    <Link Source="Clients" Target="Clients_Created" Category="Contains" />
+    <Link Source="Clients" Target="Clients_Updated" Category="Contains" />
+    <Link Source="Clients" Target="Clients_LastAccessed" Category="Contains" />
+    <Link Source="Clients" Target="Clients_UserSsoLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_UserCodeType" Category="Contains" />
+    <Link Source="Clients" Target="Clients_DeviceCodeLifetime" Category="Contains" />
+    <Link Source="Clients" Target="Clients_NonEditable" Category="Contains" />
+    <Link Source="Database" Target="ClientScopes" Category="Contains" />
+    <Link Source="ClientScopes" Target="ClientScopes_Id" Category="Contains" />
+    <Link Source="ClientScopes" Target="ClientScopes_Scope" Category="Contains" />
+    <Link Source="ClientScopes" Target="ClientScopes_ClientId" Category="Contains" />
+    <Link Source="ClientScopes_ClientId" Target="Clients_Id" Label="FK_ClientScopes_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="ClientSecrets" Category="Contains" />
+    <Link Source="ClientSecrets" Target="ClientSecrets_Id" Category="Contains" />
+    <Link Source="ClientSecrets" Target="ClientSecrets_Description" Category="Contains" />
+    <Link Source="ClientSecrets" Target="ClientSecrets_Value" Category="Contains" />
+    <Link Source="ClientSecrets" Target="ClientSecrets_Expiration" Category="Contains" />
+    <Link Source="ClientSecrets" Target="ClientSecrets_Type" Category="Contains" />
+    <Link Source="ClientSecrets" Target="ClientSecrets_Created" Category="Contains" />
+    <Link Source="ClientSecrets" Target="ClientSecrets_ClientId" Category="Contains" />
+    <Link Source="ClientSecrets_ClientId" Target="Clients_Id" Label="FK_ClientSecrets_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="Demerits" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_Id" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_CreatedBy" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_UpdatedBy" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_UpdatedDate" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_CreatedDate" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_RowVersion" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_GuestId" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_EventOccurrenceId" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_DateTime" Category="Contains" />
+    <Link Source="Demerits" Target="Demerits_Description" Category="Contains" />
+    <Link Source="Demerits_GuestId" Target="Guests_Id" Label="FK_Demerits_0_0" Category="Foreign Key" />
+    <Link Source="Demerits_EventOccurrenceId" Target="EventOccurrences_Id" Label="FK_Demerits_1_0" Category="Foreign Key" />
+    <Link Source="Database" Target="DeviceCodes" Category="Contains" />
+    <Link Source="DeviceCodes" Target="DeviceCodes_UserCode" Category="Contains" />
+    <Link Source="DeviceCodes" Target="DeviceCodes_DeviceCode" Category="Contains" />
+    <Link Source="DeviceCodes" Target="DeviceCodes_SubjectId" Category="Contains" />
+    <Link Source="DeviceCodes" Target="DeviceCodes_ClientId" Category="Contains" />
+    <Link Source="DeviceCodes" Target="DeviceCodes_CreationTime" Category="Contains" />
+    <Link Source="DeviceCodes" Target="DeviceCodes_Expiration" Category="Contains" />
+    <Link Source="DeviceCodes" Target="DeviceCodes_Data" Category="Contains" />
+    <Link Source="Database" Target="EventLocations" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_Id" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_CreatedBy" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_UpdatedBy" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_UpdatedDate" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_CreatedDate" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_RowVersion" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_EventId" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_Name" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_Address1" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_Address2" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_City" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_State" Category="Contains" />
+    <Link Source="EventLocations" Target="EventLocations_ZipCode" Category="Contains" />
+    <Link Source="EventLocations_EventId" Target="Events_Id" Label="FK_EventLocations_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="EventOccurrences" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_Id" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_CreatedBy" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_UpdatedBy" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_UpdatedDate" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_CreatedDate" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_RowVersion" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_EventId" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_EventLocationId" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_EventScheduleId" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_Date" Category="Contains" />
+    <Link Source="EventOccurrences" Target="EventOccurrences_Lead" Category="Contains" />
+    <Link Source="EventOccurrences_EventScheduleId" Target="EventSchedules_Id" Label="FK_EventOccurrences_0_0" Category="Foreign Key" />
+    <Link Source="EventOccurrences_EventLocationId" Target="EventLocations_Id" Label="FK_EventOccurrences_1_0" Category="Foreign Key" />
+    <Link Source="EventOccurrences_EventId" Target="Events_Id" Label="FK_EventOccurrences_2_0" Category="Foreign Key" />
+    <Link Source="Database" Target="Events" Category="Contains" />
+    <Link Source="Events" Target="Events_Id" Category="Contains" />
+    <Link Source="Events" Target="Events_CreatedBy" Category="Contains" />
+    <Link Source="Events" Target="Events_UpdatedBy" Category="Contains" />
+    <Link Source="Events" Target="Events_UpdatedDate" Category="Contains" />
+    <Link Source="Events" Target="Events_CreatedDate" Category="Contains" />
+    <Link Source="Events" Target="Events_RowVersion" Category="Contains" />
+    <Link Source="Events" Target="Events_Name" Category="Contains" />
+    <Link Source="Events" Target="Events_Description" Category="Contains" />
+    <Link Source="Database" Target="EventSchedules" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_Id" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_CreatedBy" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_UpdatedBy" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_UpdatedDate" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_CreatedDate" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_RowVersion" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_EventId" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_EventLocationId" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_DaysOfTheWeek" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_StartDate" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_EndDate" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_StartTime" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_EndTime" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_CheckInStartTime" Category="Contains" />
+    <Link Source="EventSchedules" Target="EventSchedules_CheckInEndTime" Category="Contains" />
+    <Link Source="EventSchedules_EventLocationId" Target="EventLocations_Id" Label="FK_EventSchedules_0_0" Category="Foreign Key" />
+    <Link Source="EventSchedules_EventId" Target="Events_Id" Label="FK_EventSchedules_1_0" Category="Foreign Key" />
+    <Link Source="Database" Target="EventServices" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_Id" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_CreatedBy" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_UpdatedBy" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_UpdatedDate" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_CreatedDate" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_RowVersion" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_EventId" Category="Contains" />
+    <Link Source="EventServices" Target="EventServices_ServiceId" Category="Contains" />
+    <Link Source="EventServices_ServiceId" Target="Services_Id" Label="FK_EventServices_0_0" Category="Foreign Key" />
+    <Link Source="EventServices_EventId" Target="Events_Id" Label="FK_EventServices_1_0" Category="Foreign Key" />
+    <Link Source="Database" Target="GuestEventOccurrences" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_Id" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_CreatedBy" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_UpdatedBy" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_UpdatedDate" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_CreatedDate" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_RowVersion" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_GuestId" Category="Contains" />
+    <Link Source="GuestEventOccurrences" Target="GuestEventOccurrences_EventOccurrenceId" Category="Contains" />
+    <Link Source="GuestEventOccurrences_GuestId" Target="Guests_Id" Label="FK_GuestEventOccurrences_0_0" Category="Foreign Key" />
+    <Link Source="GuestEventOccurrences_EventOccurrenceId" Target="EventOccurrences_Id" Label="FK_GuestEventOccurrences_1_0" Category="Foreign Key" />
+    <Link Source="Database" Target="Guests" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Id" Category="Contains" />
+    <Link Source="Guests" Target="Guests_CreatedBy" Category="Contains" />
+    <Link Source="Guests" Target="Guests_UpdatedBy" Category="Contains" />
+    <Link Source="Guests" Target="Guests_UpdatedDate" Category="Contains" />
+    <Link Source="Guests" Target="Guests_CreatedDate" Category="Contains" />
+    <Link Source="Guests" Target="Guests_RowVersion" Category="Contains" />
+    <Link Source="Guests" Target="Guests_UniqueId" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Prefix" Category="Contains" />
+    <Link Source="Guests" Target="Guests_FirstName" Category="Contains" />
+    <Link Source="Guests" Target="Guests_MiddleName" Category="Contains" />
+    <Link Source="Guests" Target="Guests_LastName" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Suffix" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Sex" Category="Contains" />
+    <Link Source="Guests" Target="Guests_BirthDate" Category="Contains" />
+    <Link Source="Guests" Target="Guests_PhoneNumber" Category="Contains" />
+    <Link Source="Guests" Target="Guests_EmailAddress" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Password" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Address1" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Address2" Category="Contains" />
+    <Link Source="Guests" Target="Guests_City" Category="Contains" />
+    <Link Source="Guests" Target="Guests_State" Category="Contains" />
+    <Link Source="Guests" Target="Guests_ZipCode" Category="Contains" />
+    <Link Source="Guests" Target="Guests_EstablishedGuest" Category="Contains" />
+    <Link Source="Guests" Target="Guests_Image" Category="Contains" />
+    <Link Source="Database" Target="IdentityClaims" Category="Contains" />
+    <Link Source="IdentityClaims" Target="IdentityClaims_Id" Category="Contains" />
+    <Link Source="IdentityClaims" Target="IdentityClaims_Type" Category="Contains" />
+    <Link Source="IdentityClaims" Target="IdentityClaims_IdentityResourceId" Category="Contains" />
+    <Link Source="IdentityClaims_IdentityResourceId" Target="IdentityResources_Id" Label="FK_IdentityClaims_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="IdentityProperties" Category="Contains" />
+    <Link Source="IdentityProperties" Target="IdentityProperties_Id" Category="Contains" />
+    <Link Source="IdentityProperties" Target="IdentityProperties_Key" Category="Contains" />
+    <Link Source="IdentityProperties" Target="IdentityProperties_Value" Category="Contains" />
+    <Link Source="IdentityProperties" Target="IdentityProperties_IdentityResourceId" Category="Contains" />
+    <Link Source="IdentityProperties_IdentityResourceId" Target="IdentityResources_Id" Label="FK_IdentityProperties_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="IdentityResources" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Id" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Enabled" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Name" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_DisplayName" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Description" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Required" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Emphasize" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_ShowInDiscoveryDocument" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Created" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_Updated" Category="Contains" />
+    <Link Source="IdentityResources" Target="IdentityResources_NonEditable" Category="Contains" />
+    <Link Source="Database" Target="Logs" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Id" Category="Contains" />
+    <Link Source="Logs" Target="Logs_EventId" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Level" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Message" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Name" Category="Contains" />
+    <Link Source="Logs" Target="Logs_TimeStamp" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Browser" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Host" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Path" Category="Contains" />
+    <Link Source="Logs" Target="Logs_User" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Method" Category="Contains" />
+    <Link Source="Logs" Target="Logs_StatusCode" Category="Contains" />
+    <Link Source="Logs" Target="Logs_ServerVariables" Category="Contains" />
+    <Link Source="Logs" Target="Logs_Cookies" Category="Contains" />
+    <Link Source="Logs" Target="Logs_FormVariables" Category="Contains" />
+    <Link Source="Logs" Target="Logs_QueryString" Category="Contains" />
+    <Link Source="Logs" Target="Logs_CreatedBy" Category="Contains" />
+    <Link Source="Logs" Target="Logs_UpdatedBy" Category="Contains" />
+    <Link Source="Logs" Target="Logs_UpdatedDate" Category="Contains" />
+    <Link Source="Logs" Target="Logs_CreatedDate" Category="Contains" />
+    <Link Source="Logs" Target="Logs_RowVersion" Category="Contains" />
+    <Link Source="Database" Target="Notifications" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_Id" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_CreatedBy" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_UpdatedBy" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_UpdatedDate" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_CreatedDate" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_RowVersion" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_Header" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_Body" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_IsRead" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_IsPinned" Category="Contains" />
+    <Link Source="Notifications" Target="Notifications_Date" Category="Contains" />
+    <Link Source="Database" Target="PersistedGrants" Category="Contains" />
+    <Link Source="PersistedGrants" Target="PersistedGrants_Key" Category="Contains" />
+    <Link Source="PersistedGrants" Target="PersistedGrants_Type" Category="Contains" />
+    <Link Source="PersistedGrants" Target="PersistedGrants_SubjectId" Category="Contains" />
+    <Link Source="PersistedGrants" Target="PersistedGrants_ClientId" Category="Contains" />
+    <Link Source="PersistedGrants" Target="PersistedGrants_CreationTime" Category="Contains" />
+    <Link Source="PersistedGrants" Target="PersistedGrants_Expiration" Category="Contains" />
+    <Link Source="PersistedGrants" Target="PersistedGrants_Data" Category="Contains" />
+    <Link Source="Database" Target="RoleClaims" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_Id" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_RoleId" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_ClaimType" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_ClaimValue" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_CreatedBy" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_UpdatedBy" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_UpdatedDate" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_CreatedDate" Category="Contains" />
+    <Link Source="RoleClaims" Target="RoleClaims_RowVersion" Category="Contains" />
+    <Link Source="RoleClaims_RoleId" Target="Roles_Id" Label="FK_RoleClaims_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="Roles" Category="Contains" />
+    <Link Source="Roles" Target="Roles_Id" Category="Contains" />
+    <Link Source="Roles" Target="Roles_Name" Category="Contains" />
+    <Link Source="Roles" Target="Roles_NormalizedName" Category="Contains" />
+    <Link Source="Roles" Target="Roles_ConcurrencyStamp" Category="Contains" />
+    <Link Source="Roles" Target="Roles_Description" Category="Contains" />
+    <Link Source="Roles" Target="Roles_CreatedBy" Category="Contains" />
+    <Link Source="Roles" Target="Roles_UpdatedBy" Category="Contains" />
+    <Link Source="Roles" Target="Roles_UpdatedDate" Category="Contains" />
+    <Link Source="Roles" Target="Roles_CreatedDate" Category="Contains" />
+    <Link Source="Roles" Target="Roles_RowVersion" Category="Contains" />
+    <Link Source="Database" Target="Services" Category="Contains" />
+    <Link Source="Services" Target="Services_Id" Category="Contains" />
+    <Link Source="Services" Target="Services_CreatedBy" Category="Contains" />
+    <Link Source="Services" Target="Services_UpdatedBy" Category="Contains" />
+    <Link Source="Services" Target="Services_UpdatedDate" Category="Contains" />
+    <Link Source="Services" Target="Services_CreatedDate" Category="Contains" />
+    <Link Source="Services" Target="Services_RowVersion" Category="Contains" />
+    <Link Source="Services" Target="Services_Name" Category="Contains" />
+    <Link Source="Services" Target="Services_Description" Category="Contains" />
+    <Link Source="Services" Target="Services_ServiceType" Category="Contains" />
+    <Link Source="Database" Target="UserClaims" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_Id" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_UserId" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_ClaimType" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_ClaimValue" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_CreatedBy" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_UpdatedBy" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_UpdatedDate" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_CreatedDate" Category="Contains" />
+    <Link Source="UserClaims" Target="UserClaims_RowVersion" Category="Contains" />
+    <Link Source="UserClaims_UserId" Target="Users_Id" Label="FK_UserClaims_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="UserLogins" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_LoginProvider" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_ProviderKey" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_ProviderDisplayName" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_UserId" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_CreatedBy" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_UpdatedBy" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_UpdatedDate" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_CreatedDate" Category="Contains" />
+    <Link Source="UserLogins" Target="UserLogins_RowVersion" Category="Contains" />
+    <Link Source="UserLogins_UserId" Target="Users_Id" Label="FK_UserLogins_0_0" Category="Foreign Key" />
+    <Link Source="Database" Target="UserRoles" Category="Contains" />
+    <Link Source="UserRoles" Target="UserRoles_UserId" Category="Contains" />
+    <Link Source="UserRoles" Target="UserRoles_RoleId" Category="Contains" />
+    <Link Source="UserRoles" Target="UserRoles_CreatedBy" Category="Contains" />
+    <Link Source="UserRoles" Target="UserRoles_UpdatedBy" Category="Contains" />
+    <Link Source="UserRoles" Target="UserRoles_UpdatedDate" Category="Contains" />
+    <Link Source="UserRoles" Target="UserRoles_CreatedDate" Category="Contains" />
+    <Link Source="UserRoles" Target="UserRoles_RowVersion" Category="Contains" />
+    <Link Source="UserRoles_UserId" Target="Users_Id" Label="FK_UserRoles_0_0" Category="Foreign Key" />
+    <Link Source="UserRoles_RoleId" Target="Roles_Id" Label="FK_UserRoles_1_0" Category="Foreign Key" />
+    <Link Source="Database" Target="Users" Category="Contains" />
+    <Link Source="Users" Target="Users_Id" Category="Contains" />
+    <Link Source="Users" Target="Users_UserName" Category="Contains" />
+    <Link Source="Users" Target="Users_NormalizedUserName" Category="Contains" />
+    <Link Source="Users" Target="Users_Email" Category="Contains" />
+    <Link Source="Users" Target="Users_NormalizedEmail" Category="Contains" />
+    <Link Source="Users" Target="Users_EmailConfirmed" Category="Contains" />
+    <Link Source="Users" Target="Users_PasswordHash" Category="Contains" />
+    <Link Source="Users" Target="Users_SecurityStamp" Category="Contains" />
+    <Link Source="Users" Target="Users_ConcurrencyStamp" Category="Contains" />
+    <Link Source="Users" Target="Users_PhoneNumber" Category="Contains" />
+    <Link Source="Users" Target="Users_PhoneNumberConfirmed" Category="Contains" />
+    <Link Source="Users" Target="Users_TwoFactorEnabled" Category="Contains" />
+    <Link Source="Users" Target="Users_LockoutEnd" Category="Contains" />
+    <Link Source="Users" Target="Users_LockoutEnabled" Category="Contains" />
+    <Link Source="Users" Target="Users_AccessFailedCount" Category="Contains" />
+    <Link Source="Users" Target="Users_JobTitle" Category="Contains" />
+    <Link Source="Users" Target="Users_FullName" Category="Contains" />
+    <Link Source="Users" Target="Users_Configuration" Category="Contains" />
+    <Link Source="Users" Target="Users_IsEnabled" Category="Contains" />
+    <Link Source="Users" Target="Users_CreatedBy" Category="Contains" />
+    <Link Source="Users" Target="Users_UpdatedBy" Category="Contains" />
+    <Link Source="Users" Target="Users_UpdatedDate" Category="Contains" />
+    <Link Source="Users" Target="Users_CreatedDate" Category="Contains" />
+    <Link Source="Users" Target="Users_RowVersion" Category="Contains" />
+    <Link Source="Database" Target="UserTokens" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_UserId" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_LoginProvider" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_Name" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_Value" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_CreatedBy" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_UpdatedBy" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_UpdatedDate" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_CreatedDate" Category="Contains" />
+    <Link Source="UserTokens" Target="UserTokens_RowVersion" Category="Contains" />
+    <Link Source="UserTokens_UserId" Target="Users_Id" Label="FK_UserTokens_0_0" Category="Foreign Key" />
+  </Links>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Table" ValueLabel="True">
+      <Condition Expression="HasCategory('Table')" />
+      <Setter Property="Background" Value="#FFC0C0C0" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Schema" ValueLabel="True">
+      <Condition Expression="HasCategory('Schema')" />
+      <Setter Property="Background" Value="#FF7F9169" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Field Primary" ValueLabel="True">
+      <Condition Expression="HasCategory('Field Primary')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Field Optional" ValueLabel="True">
+      <Condition Expression="HasCategory('Field Optional')" />
+      <Setter Property="Background" Value="#FF808040" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Field Foreign" ValueLabel="True">
+      <Condition Expression="HasCategory('Field Foreign')" />
+      <Setter Property="Background" Value="#FF8080FF" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Field" ValueLabel="True">
+      <Condition Expression="HasCategory('Field')" />
+      <Setter Property="Background" Value="#FFC0A000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Database" ValueLabel="True">
+      <Condition Expression="HasCategory('Database')" />
+      <Setter Property="Background" Value="#FFFFFFFF" />
+    </Style>
+  </Styles>
+</DirectedGraph>

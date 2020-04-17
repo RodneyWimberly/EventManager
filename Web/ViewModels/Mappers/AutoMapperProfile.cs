@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Models;
-using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 
 namespace EventManager.Web.ViewModels.Mappers
 {
@@ -32,7 +30,7 @@ namespace EventManager.Web.ViewModels.Mappers
             CreateMap<RoleViewModel, ApplicationRole>()
                 .ForMember(d => d.Id, map => map.Condition(src => src.Id != null));
 
-            CreateMap<IdentityRoleClaim<string>, ClaimViewModel>()
+            CreateMap<ApplicationRoleClaim, ClaimViewModel>()
                 .ForMember(d => d.Type, map => map.MapFrom(s => s.ClaimType))
                 .ForMember(d => d.Value, map => map.MapFrom(s => s.ClaimValue))
                 .ReverseMap();
@@ -40,9 +38,10 @@ namespace EventManager.Web.ViewModels.Mappers
             CreateMap<ApplicationPermission, PermissionViewModel>()
                 .ReverseMap();
 
-            CreateMap<IdentityRoleClaim<string>, PermissionViewModel>()
+            CreateMap<ApplicationRoleClaim, PermissionViewModel>()
                 .ConvertUsing(s => (PermissionViewModel)ApplicationPermissions.GetPermissionByValue(s.ClaimValue));
 
+            /*
             CreateMap<ExtendedLog, ExtendedLogViewModel>();
             CreateMap<ExtendedLogViewModel, ExtendedLog>()
                 .ForMember(e => e.Browser, map => map.Ignore())
@@ -52,7 +51,15 @@ namespace EventManager.Web.ViewModels.Mappers
 
             CreateMap<Notification, NotificationViewModel>();
             CreateMap<NotificationViewModel, Notification>()
-                .ConvertUsing<NotificationMapper>();
+                .ConvertUsing<GenericConcurrencyMapper<NotificationViewModel, Notification>>();
+
+            CreateMap<Event, EventViewModel>();
+            CreateMap<EventViewModel, Event>()
+                .ConvertUsing<GenericConcurrencyMapper<EventViewModel, Event>>();
+            CreateMap<ICollection<EventViewModel>, ICollection<Event>>()
+                .ConvertUsing<GenericCollectionConcurrencyMapper<EventViewModel, Event>>();
+*/
+
         }
     }
 }

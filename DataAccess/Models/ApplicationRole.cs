@@ -49,44 +49,51 @@ namespace EventManager.DataAccess.Models
         /// <summary>
         /// Gets or sets the description for this role.
         /// </summary>
-        [MaxLength(250)]
+        [StringLength(250, ErrorMessage = "{0} length must be less than {1}.")]
+        [Display(Name = "Description", GroupName = "ApplicationRole")]
         public string Description { get; set; }
 
         #region IAuditableEntity
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Created By", GroupName = "ApplicationRole")]
         public string CreatedBy { get; set; }
 
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        [Display(Name = "Updated By", GroupName = "ApplicationRole")]
         public string UpdatedBy { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Updated Date", GroupName = "ApplicationRole")]
         public DateTime UpdatedDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]
-        [MaxLength(28)]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Created Date", GroupName = "ApplicationRole")]
         public DateTime CreatedDate { get; set; }
         #endregion
 
         #region IConcurrencyTrackingEntity
         [Timestamp]
-        //[Required]
         [Column(TypeName = "BLOB")]
+        [Display(Name = "Row Version", GroupName = "ApplicationRole")]
         public byte[] RowVersion { get; set; }
         #endregion
 
         /// <summary>
         /// Navigation property for the users in this role.
         /// </summary>
+        [Display(Name = "Users", GroupName = "ApplicationRole")]
         public virtual ICollection<ApplicationUserRole> Users { get; set; }
 
         /// <summary>
         /// Navigation property for claims in this role.
         /// </summary>
+        [Display(Name = "Claims", GroupName = "ApplicationRole")]
         public virtual ICollection<ApplicationRoleClaim> Claims { get; set; }
     }
 }

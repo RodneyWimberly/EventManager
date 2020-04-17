@@ -55,6 +55,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="StackifyMiddleware" Version="3.0.5.2" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
     <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="2.1.1" />
   </ItemGroup>
 
@@ -124,6 +125,6 @@
     </ItemGroup>
   </Target>
 
-  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties clientapp_4dist_4main-es2015_1js_1map__JsonSchema="" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
