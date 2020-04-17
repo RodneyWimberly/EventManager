@@ -1,5 +1,5 @@
 ﻿{
-  "x-generator": "NSwag v13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))",
+  "x-generator": "NSwag v13.4.1.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "EventManager WebAPI",
@@ -939,1585 +939,39 @@
         }
       }
     },
-    "/api/ActionDevice/{getDisabled}": {
-      "get": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_GetAll",
-        "parameters": [
-          {
-            "name": "getDisabled",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "boolean",
-              "default": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ActionDeviceViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/ActionDevice/{pageNumber}/{pageSize}/{getDisabled}": {
-      "get": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_GetAllPaged",
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "pageSize",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "getDisabled",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "boolean",
-              "default": true
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ActionDeviceViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/ActionDevice/{actionDeviceId}": {
-      "get": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_Get",
-        "parameters": [
-          {
-            "name": "actionDeviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ActionDeviceViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_Delete",
-        "parameters": [
-          {
-            "name": "actionDeviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ActionDeviceViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_Put",
-        "parameters": [
-          {
-            "name": "actionDeviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "actionDeviceVM",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ActionDeviceViewModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_Patch",
-        "parameters": [
-          {
-            "name": "actionDeviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "patch",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Operation"
-                }
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/ActionDevice": {
-      "post": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_Post",
-        "requestBody": {
-          "x-name": "actionDeviceVM",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ActionDeviceViewModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ActionDeviceViewModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/ActionDevice/SetState/{actionDeviceId}": {
-      "put": {
-        "tags": [
-          "ActionDevice"
-        ],
-        "operationId": "ActionDevice_PutState",
-        "parameters": [
-          {
-            "name": "actionDeviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "state",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ActionDeviceStates"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataPoint/{getDisabled}": {
-      "get": {
-        "tags": [
-          "DataPoint"
-        ],
-        "operationId": "DataPoint_GetAll",
-        "parameters": [
-          {
-            "name": "getDisabled",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "boolean",
-              "default": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DataPointViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataPoint/{pageNumber}/{pageSize}/{getDisabled}": {
-      "get": {
-        "tags": [
-          "DataPoint"
-        ],
-        "operationId": "DataPoint_GetAllPaged",
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "pageSize",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "getDisabled",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "boolean",
-              "default": true
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DataPointViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataPoint/{dataPointId}": {
-      "get": {
-        "tags": [
-          "DataPoint"
-        ],
-        "operationId": "DataPoint_Get",
-        "parameters": [
-          {
-            "name": "dataPointId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataPointViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "DataPoint"
-        ],
-        "operationId": "DataPoint_Delete",
-        "parameters": [
-          {
-            "name": "dataPointId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataPointViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "DataPoint"
-        ],
-        "operationId": "DataPoint_Put",
-        "parameters": [
-          {
-            "name": "dataPointId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "dataPointVM",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataPointViewModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "DataPoint"
-        ],
-        "operationId": "DataPoint_Patch",
-        "parameters": [
-          {
-            "name": "dataPointId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "patch",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Operation"
-                }
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataPoint": {
-      "post": {
-        "tags": [
-          "DataPoint"
-        ],
-        "operationId": "DataPoint_Post",
-        "requestBody": {
-          "x-name": "dataPointVM",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataPointViewModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataPointViewModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/EventCondition": {
-      "get": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_GetAll",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventConditionViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_Post",
-        "requestBody": {
-          "x-name": "eventConditionVM",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EventConditionViewModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventConditionViewModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/EventCondition/{pageNumber}/{pageSize}": {
-      "get": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_GetAllPaged",
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "pageSize",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventConditionViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/EventCondition/{eventConditionId}": {
-      "get": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_Get",
-        "parameters": [
-          {
-            "name": "eventConditionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventConditionViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_Delete",
-        "parameters": [
-          {
-            "name": "eventConditionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventConditionViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_Put",
-        "parameters": [
-          {
-            "name": "eventConditionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "eventConditionVM",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EventConditionViewModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventConditionViewModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_Patch",
-        "parameters": [
-          {
-            "name": "eventConditionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "patch",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Operation"
-                }
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventConditionViewModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/EventCondition/{eventId}": {
-      "get": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_GetByEventId",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventConditionViewModel"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/EventCondition/{eventId}/{pageNumber}/{pageSize}": {
-      "get": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_GetByEventIdPaged",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "pageNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "pageSize",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventConditionViewModel"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/EventCondition/{dataPointId}": {
-      "get": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_GetByDataPointId",
-        "parameters": [
-          {
-            "name": "dataPointId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventConditionViewModel"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/EventCondition/{dataPointId}/{pageNumber}/{pageSize}": {
-      "get": {
-        "tags": [
-          "EventCondition"
-        ],
-        "operationId": "EventCondition_GetByDataPointIdPaged",
-        "parameters": [
-          {
-            "name": "dataPointId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "pageNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "pageSize",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventConditionViewModel"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Event/{getDisabled}": {
-      "get": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_GetAll",
-        "parameters": [
-          {
-            "name": "getDisabled",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "boolean",
-              "default": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Event/{pageNumber}/{pageSize}/{getDisabled}": {
-      "get": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_GetAllPaged",
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "pageSize",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "getDisabled",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "boolean",
-              "default": true
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventViewModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Event/{actionDeviceId}": {
-      "get": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_GetByActionDeviceId",
-        "parameters": [
-          {
-            "name": "actionDeviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventViewModel"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Event/{actionDeviceId}/{pageNumber}/{pageSize}": {
-      "get": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_GetByActionDeviceIdPaged",
-        "parameters": [
-          {
-            "name": "actionDeviceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "pageNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "pageSize",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventViewModel"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Event/{eventId}": {
-      "get": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_Get",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_Delete",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventViewModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_Put",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "eventVM",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EventViewModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventViewModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "Event_Patch",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "patch",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Operation"
-                }
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventViewModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Event": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEvents",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "Event"
         ],
-        "operationId": "Event_Post",
+        "operationId": "Event_PostEvent",
         "requestBody": {
-          "x-name": "eventVM",
+          "x-name": "entity",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EventViewModel"
+                "$ref": "#/components/schemas/Event"
               }
             }
           },
@@ -2530,10 +984,223 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EventViewModel"
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{pageNumber}/{pageSize}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventsPaged",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{id}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_DeleteEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PutEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PatchEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "patch",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
           },
           "400": {
             "description": "",
@@ -2553,7 +1220,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_GetAll",
+        "operationId": "ExtendedLog_GetAllExtendedLogs",
         "responses": {
           "200": {
             "description": "",
@@ -2562,7 +1229,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ExtendedLogViewModel"
+                    "$ref": "#/components/schemas/ExtendedLog"
                   }
                 }
               }
@@ -2574,7 +1241,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_DeleteAll",
+        "operationId": "ExtendedLog_DeleteAllExtendedLogs",
         "responses": {
           "204": {
             "description": ""
@@ -2585,13 +1252,13 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_Post",
+        "operationId": "ExtendedLog_PostExtendedLog",
         "requestBody": {
-          "x-name": "extendedLogVM",
+          "x-name": "entity",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ExtendedLogViewModel"
+                "$ref": "#/components/schemas/ExtendedLog"
               }
             }
           },
@@ -2604,7 +1271,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExtendedLogViewModel"
+                  "$ref": "#/components/schemas/ExtendedLog"
                 }
               }
             }
@@ -2627,7 +1294,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_GetAllPaged",
+        "operationId": "ExtendedLog_GetAllExtendedLogsPaged",
         "parameters": [
           {
             "name": "pageNumber",
@@ -2658,7 +1325,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ExtendedLogViewModel"
+                    "$ref": "#/components/schemas/ExtendedLog"
                   }
                 }
               }
@@ -2672,7 +1339,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_GetByLevel",
+        "operationId": "ExtendedLog_GetExtendedLogsByLevel",
         "parameters": [
           {
             "name": "level",
@@ -2693,7 +1360,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ExtendedLogViewModel"
+                    "$ref": "#/components/schemas/ExtendedLog"
                   }
                 }
               }
@@ -2717,7 +1384,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_GetByLevelPaged",
+        "operationId": "ExtendedLog_GetExtendedLogsByLevelPaged",
         "parameters": [
           {
             "name": "level",
@@ -2758,7 +1425,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ExtendedLogViewModel"
+                    "$ref": "#/components/schemas/ExtendedLog"
                   }
                 }
               }
@@ -2782,7 +1449,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_Get",
+        "operationId": "ExtendedLog_GetExtendedLog",
         "parameters": [
           {
             "name": "id",
@@ -2801,7 +1468,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExtendedLogViewModel"
+                  "$ref": "#/components/schemas/ExtendedLog"
                 }
               }
             }
@@ -2822,7 +1489,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_Delete",
+        "operationId": "ExtendedLog_DeleteExtendedLog",
         "parameters": [
           {
             "name": "id",
@@ -2837,14 +1504,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExtendedLogViewModel"
-                }
-              }
-            }
+            "description": ""
           },
           "404": {
             "description": "",
@@ -2862,7 +1522,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_Put",
+        "operationId": "ExtendedLog_PutExtendedLog",
         "parameters": [
           {
             "name": "id",
@@ -2876,11 +1536,11 @@
           }
         ],
         "requestBody": {
-          "x-name": "extendedLogVM",
+          "x-name": "entity",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ExtendedLogViewModel"
+                "$ref": "#/components/schemas/ExtendedLog"
               }
             }
           },
@@ -2907,7 +1567,7 @@
         "tags": [
           "ExtendedLog"
         ],
-        "operationId": "ExtendedLog_Patch",
+        "operationId": "ExtendedLog_PatchExtendedLog",
         "parameters": [
           {
             "name": "id",
@@ -2957,7 +1617,7 @@
         "tags": [
           "Notification"
         ],
-        "operationId": "Notification_GetAll",
+        "operationId": "Notification_GetAllNotifications",
         "responses": {
           "200": {
             "description": "",
@@ -2966,7 +1626,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/NotificationViewModel"
+                    "$ref": "#/components/schemas/Notification"
                   }
                 }
               }
@@ -2978,13 +1638,13 @@
         "tags": [
           "Notification"
         ],
-        "operationId": "Notification_Post",
+        "operationId": "Notification_PostNotification",
         "requestBody": {
-          "x-name": "notificationVM",
+          "x-name": "entity",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NotificationViewModel"
+                "$ref": "#/components/schemas/Notification"
               }
             }
           },
@@ -2997,7 +1657,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotificationViewModel"
+                  "$ref": "#/components/schemas/Notification"
                 }
               }
             }
@@ -3020,7 +1680,7 @@
         "tags": [
           "Notification"
         ],
-        "operationId": "Notification_GetAllPaged",
+        "operationId": "Notification_GetAllNotificationsPaged",
         "parameters": [
           {
             "name": "pageNumber",
@@ -3051,7 +1711,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/NotificationViewModel"
+                    "$ref": "#/components/schemas/Notification"
                   }
                 }
               }
@@ -3060,15 +1720,15 @@
         }
       }
     },
-    "/api/Notification/{notificationId}": {
+    "/api/Notification/{id}": {
       "get": {
         "tags": [
           "Notification"
         ],
-        "operationId": "Notification_Get",
+        "operationId": "Notification_GetNotification",
         "parameters": [
           {
-            "name": "notificationId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -3084,7 +1744,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotificationViewModel"
+                  "$ref": "#/components/schemas/Notification"
                 }
               }
             }
@@ -3105,10 +1765,10 @@
         "tags": [
           "Notification"
         ],
-        "operationId": "Notification_Delete",
+        "operationId": "Notification_DeleteNotification",
         "parameters": [
           {
-            "name": "notificationId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -3120,14 +1780,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationViewModel"
-                }
-              }
-            }
+            "description": ""
           },
           "404": {
             "description": "",
@@ -3145,10 +1798,10 @@
         "tags": [
           "Notification"
         ],
-        "operationId": "Notification_Put",
+        "operationId": "Notification_PutNotification",
         "parameters": [
           {
-            "name": "notificationId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -3159,11 +1812,11 @@
           }
         ],
         "requestBody": {
-          "x-name": "notificationVM",
+          "x-name": "entity",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NotificationViewModel"
+                "$ref": "#/components/schemas/Notification"
               }
             }
           },
@@ -3190,10 +1843,10 @@
         "tags": [
           "Notification"
         ],
-        "operationId": "Notification_Patch",
+        "operationId": "Notification_PatchNotification",
         "parameters": [
           {
-            "name": "notificationId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -3262,77 +1915,40 @@
         ]
       },
       "UserBaseViewModel": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
-          },
-          {
-            "type": "object",
-            "x-abstract": true,
-            "additionalProperties": false,
-            "properties": {
-              "id": {
-                "type": "string",
-                "nullable": true
-              },
-              "userName": {
-                "type": "string",
-                "nullable": true
-              },
-              "fullName": {
-                "type": "string",
-                "nullable": true
-              },
-              "email": {
-                "type": "string",
-                "nullable": true
-              },
-              "jobTitle": {
-                "type": "string",
-                "nullable": true
-              },
-              "phoneNumber": {
-                "type": "string",
-                "nullable": true
-              },
-              "configuration": {
-                "type": "string",
-                "nullable": true
-              },
-              "isEnabled": {
-                "type": "boolean"
-              }
-            }
-          }
-        ]
-      },
-      "ApplicationViewModelBase": {
         "type": "object",
         "x-abstract": true,
         "additionalProperties": false,
         "properties": {
-          "createdBy": {
+          "id": {
             "type": "string",
-            "maxLength": 256,
             "nullable": true
           },
-          "updatedBy": {
+          "userName": {
             "type": "string",
-            "maxLength": 256,
             "nullable": true
           },
-          "updatedDate": {
+          "fullName": {
             "type": "string",
-            "format": "date-time"
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "rowVersion": {
-            "type": "string",
-            "format": "byte",
             "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "configuration": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean"
           }
         }
       },
@@ -3431,9 +2047,64 @@
         }
       },
       "RoleViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 2
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "usersCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "permissions": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PermissionViewModel"
+            }
+          }
+        }
+      },
+      "PermissionViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          },
+          "groupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Event": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
+            "$ref": "#/components/schemas/ApplicationEntityBase"
           },
           {
             "type": "object",
@@ -3442,395 +2113,1032 @@
               "name"
             ],
             "properties": {
-              "id": {
-                "type": "string",
-                "nullable": true
-              },
               "name": {
+                "title": "Name",
                 "type": "string",
-                "maxLength": 200,
-                "minLength": 2
+                "maxLength": 100,
+                "minLength": 1
               },
               "description": {
+                "title": "Description",
                 "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
                 "nullable": true
               },
-              "usersCount": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "permissions": {
+              "locations": {
+                "title": "Locations",
                 "type": "array",
                 "nullable": true,
                 "items": {
-                  "$ref": "#/components/schemas/PermissionViewModel"
+                  "$ref": "#/components/schemas/EventLocation"
+                }
+              },
+              "schedules": {
+                "title": "Schedules",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/EventSchedule"
+                }
+              },
+              "occurrences": {
+                "title": "Occurrences",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/EventOccurrence"
+                }
+              },
+              "services": {
+                "title": "Services",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/EventService"
                 }
               }
             }
           }
         ]
       },
-      "PermissionViewModel": {
+      "EventLocation": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
+            "$ref": "#/components/schemas/ApplicationEntityBase"
           },
           {
             "type": "object",
             "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": "string",
-                "nullable": true
-              },
-              "value": {
-                "type": "string",
-                "nullable": true
-              },
-              "groupName": {
-                "type": "string",
-                "nullable": true
-              },
-              "description": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "ActionDeviceViewModel": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "actionDeviceId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "name": {
-                "type": "string",
-                "nullable": true
-              },
-              "type": {
-                "$ref": "#/components/schemas/ActionDeviceTypes"
-              },
-              "typeDescription": {
-                "type": "string",
-                "nullable": true
-              },
-              "parameters": {
-                "type": "string",
-                "nullable": true
-              },
-              "isEnabled": {
-                "type": "boolean"
-              },
-              "events": {
-                "type": "array",
-                "nullable": true,
-                "items": {
-                  "$ref": "#/components/schemas/EventViewModel"
-                }
-              }
-            }
-          }
-        ]
-      },
-      "ActionDeviceTypes": {
-        "type": "integer",
-        "description": "0 = X10\n1 = ZWave\n2 = ZeeBee\n3 = iHome\n4 = WiFi",
-        "x-enumNames": [
-          "X10",
-          "ZWave",
-          "ZeeBee",
-          "iHome",
-          "WiFi"
-        ],
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      "EventViewModel": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
+            "required": [
+              "eventId",
+              "name",
+              "address1",
+              "city",
+              "state",
+              "zipCode"
+            ],
             "properties": {
               "eventId": {
+                "title": "EventId",
                 "type": "integer",
                 "format": "int32"
               },
-              "name": {
-                "type": "string",
-                "nullable": true
-              },
-              "actionDeviceId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "actionDevice": {
+              "event": {
+                "title": "Event",
                 "nullable": true,
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/ActionDeviceViewModel"
+                    "$ref": "#/components/schemas/Event"
                   }
                 ]
               },
-              "state": {
-                "$ref": "#/components/schemas/ActionDeviceStates"
-              },
-              "stateDescription": {
-                "type": "string",
-                "nullable": true
-              },
-              "isEnabled": {
-                "type": "boolean"
-              },
-              "eventConditions": {
+              "schedules": {
+                "title": "Schedules",
                 "type": "array",
                 "nullable": true,
                 "items": {
-                  "$ref": "#/components/schemas/EventConditionViewModel"
+                  "$ref": "#/components/schemas/EventSchedule"
+                }
+              },
+              "occurrences": {
+                "title": "Occurrences",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/EventOccurrence"
+                }
+              },
+              "name": {
+                "title": "Name",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "address1": {
+                "title": "Address1",
+                "type": "string",
+                "maxLength": 250,
+                "minLength": 1
+              },
+              "address2": {
+                "title": "Address2",
+                "type": "string",
+                "maxLength": 250,
+                "minLength": 1,
+                "nullable": true
+              },
+              "city": {
+                "title": "City",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "state": {
+                "title": "State",
+                "type": "string",
+                "maxLength": 2,
+                "minLength": 1
+              },
+              "zipCode": {
+                "title": "ZipCode",
+                "type": "string",
+                "maxLength": 10,
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      },
+      "EventSchedule": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApplicationEntityBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "eventId",
+              "eventLocationId",
+              "daysOfTheWeek",
+              "startDate",
+              "endDate",
+              "startTime",
+              "endTime",
+              "checkInStartTime",
+              "checkInEndTime"
+            ],
+            "properties": {
+              "eventId": {
+                "title": "EventId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "event": {
+                "title": "Event",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                ]
+              },
+              "eventLocationId": {
+                "title": "EventLocationId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "location": {
+                "title": "Location",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EventLocation"
+                  }
+                ]
+              },
+              "occurrences": {
+                "title": "Occurrences",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/EventOccurrence"
+                }
+              },
+              "daysOfTheWeek": {
+                "title": "DaysOfTheWeek",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Days"
+                  }
+                ]
+              },
+              "startDate": {
+                "title": "StartDate",
+                "type": "string",
+                "format": "date",
+                "minLength": 1
+              },
+              "endDate": {
+                "title": "EndDate",
+                "type": "string",
+                "format": "date",
+                "minLength": 1
+              },
+              "startTime": {
+                "title": "StartTime",
+                "format": "time",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TimeOfDay"
+                  }
+                ]
+              },
+              "endTime": {
+                "title": "EndTime",
+                "format": "time",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TimeOfDay"
+                  }
+                ]
+              },
+              "checkInStartTime": {
+                "title": "CheckInStartTime",
+                "format": "time",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TimeOfDay"
+                  }
+                ]
+              },
+              "checkInEndTime": {
+                "title": "CheckInEndTime",
+                "format": "time",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TimeOfDay"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "EventOccurrence": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApplicationEntityBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "eventId",
+              "eventLocationId",
+              "eventScheduleId",
+              "date",
+              "lead"
+            ],
+            "properties": {
+              "eventId": {
+                "title": "EventId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "event": {
+                "title": "Event",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                ]
+              },
+              "eventLocationId": {
+                "title": "EventLocationId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "location": {
+                "title": "Location",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EventLocation"
+                  }
+                ]
+              },
+              "eventScheduleId": {
+                "title": "EventScheduleId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "schedule": {
+                "title": "Schedule",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                ]
+              },
+              "date": {
+                "title": "Date",
+                "type": "string",
+                "format": "date",
+                "minLength": 1
+              },
+              "lead": {
+                "title": "Lead",
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              "demerits": {
+                "title": "Demerits",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/Demerit"
                 }
               }
             }
           }
         ]
       },
-      "ActionDeviceStates": {
+      "Demerit": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApplicationEntityBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "guestId",
+              "eventOccurrenceId",
+              "dateTime",
+              "description"
+            ],
+            "properties": {
+              "guestId": {
+                "title": "GuestId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "guest": {
+                "title": "Guest",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Guest"
+                  }
+                ]
+              },
+              "eventOccurrenceId": {
+                "title": "EventOccurrenceId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "eventOccurrence": {
+                "title": "EventOccurrence",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                ]
+              },
+              "dateTime": {
+                "title": "DateTime",
+                "type": "string",
+                "format": "date-time",
+                "minLength": 1
+              },
+              "description": {
+                "title": "Description",
+                "type": "string",
+                "maxLength": 250,
+                "minLength": 0
+              }
+            }
+          }
+        ]
+      },
+      "Guest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApplicationEntityBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "uniqueId",
+              "firstName",
+              "lastName",
+              "sex",
+              "birthDate",
+              "password",
+              "establishedGuest"
+            ],
+            "properties": {
+              "demerits": {
+                "title": "Demerits",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/Demerit"
+                }
+              },
+              "eventOccurrences": {
+                "title": "Event Occurrences",
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/GuestEventOccurrence"
+                }
+              },
+              "uniqueId": {
+                "title": "Unique Id",
+                "type": "string",
+                "maxLength": 25,
+                "minLength": 1
+              },
+              "prefix": {
+                "title": "Prefix",
+                "type": "string",
+                "maxLength": 10,
+                "minLength": 0,
+                "nullable": true
+              },
+              "firstName": {
+                "title": "First Name",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "middleName": {
+                "title": "Middle Name",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 0,
+                "nullable": true
+              },
+              "lastName": {
+                "title": "Last Name",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "suffix": {
+                "title": "Suffix",
+                "type": "string",
+                "maxLength": 10,
+                "minLength": 0,
+                "nullable": true
+              },
+              "sex": {
+                "title": "Sex",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Sexes"
+                  }
+                ]
+              },
+              "birthDate": {
+                "title": "Birth Date",
+                "type": "string",
+                "format": "date",
+                "minLength": 1
+              },
+              "phoneNumber": {
+                "title": "Phone Number",
+                "type": "string",
+                "format": "phone",
+                "maxLength": 20,
+                "minLength": 0,
+                "nullable": true
+              },
+              "emailAddress": {
+                "title": "Email Address",
+                "type": "string",
+                "format": "email",
+                "maxLength": 250,
+                "minLength": 0,
+                "nullable": true
+              },
+              "password": {
+                "title": "Password",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              "address1": {
+                "title": "Address1",
+                "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
+                "nullable": true
+              },
+              "address2": {
+                "title": "Address2",
+                "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
+                "nullable": true
+              },
+              "city": {
+                "title": "City",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 0,
+                "nullable": true
+              },
+              "state": {
+                "title": "State",
+                "type": "string",
+                "maxLength": 2,
+                "minLength": 0,
+                "nullable": true
+              },
+              "zipCode": {
+                "title": "Zip Code",
+                "type": "string",
+                "maxLength": 10,
+                "minLength": 0,
+                "nullable": true
+              },
+              "establishedGuest": {
+                "title": "Established Guest",
+                "type": "boolean"
+              },
+              "image": {
+                "title": "Image",
+                "type": "string",
+                "format": "byte",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "GuestEventOccurrence": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApplicationEntityBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "guestId",
+              "eventOccurrenceId"
+            ],
+            "properties": {
+              "guestId": {
+                "title": "GuestId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "guest": {
+                "title": "Guest",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Guest"
+                  }
+                ]
+              },
+              "eventOccurrenceId": {
+                "title": "EventOccurrenceId",
+                "type": "integer",
+                "format": "int32"
+              },
+              "eventOccurrence": {
+                "title": "EventOccurrence",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "ApplicationEntityBase": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "createdBy",
+          "updatedBy",
+          "updatedDate",
+          "createdDate"
+        ],
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdBy": {
+            "title": "Created By",
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 1
+          },
+          "updatedBy": {
+            "title": "Updated By",
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 1
+          },
+          "updatedDate": {
+            "title": "Updated Date",
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1
+          },
+          "createdDate": {
+            "title": "Created Date",
+            "type": "string",
+            "format": "date-time",
+            "minLength": 1
+          },
+          "rowVersion": {
+            "title": "Row Version",
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          }
+        }
+      },
+      "Sexes": {
         "type": "integer",
-        "description": "0 = Off\n1 = On",
+        "description": "0 = Male\n1 = Female",
         "x-enumNames": [
-          "Off",
-          "On"
+          "Male",
+          "Female"
         ],
         "enum": [
           0,
           1
         ]
       },
-      "EventConditionViewModel": {
+      "Days": {
+        "type": "integer",
+        "description": "0 = Sunday\n1 = Monday\n2 = Tuesday\n3 = Wednesday\n4 = Thursday\n5 = Friday\n6 = Saturaday",
+        "x-enumFlags": true,
+        "x-enumNames": [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturaday"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "TimeOfDay": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "hhmmss": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "second": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDays": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalMinutes": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalSeconds": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "EventService": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
+            "$ref": "#/components/schemas/ApplicationEntityBase"
           },
           {
             "type": "object",
             "additionalProperties": false,
+            "required": [
+              "eventId",
+              "serviceId"
+            ],
             "properties": {
-              "eventConditionId": {
-                "type": "integer",
-                "format": "int32"
-              },
               "eventId": {
+                "title": "EventId",
                 "type": "integer",
                 "format": "int32"
               },
               "event": {
+                "title": "Event",
                 "nullable": true,
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/EventViewModel"
+                    "$ref": "#/components/schemas/Event"
                   }
                 ]
               },
-              "dataPointId": {
+              "serviceId": {
+                "title": "ServiceId",
                 "type": "integer",
                 "format": "int32"
               },
-              "dataPoint": {
+              "service": {
+                "title": "Service",
                 "nullable": true,
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/DataPointViewModel"
+                    "$ref": "#/components/schemas/Service"
                   }
                 ]
-              },
-              "operator": {
-                "$ref": "#/components/schemas/Operators"
-              },
-              "operatorDescription": {
-                "type": "string",
-                "nullable": true
-              },
-              "value": {
-                "type": "string",
-                "nullable": true
               }
             }
           }
         ]
       },
-      "DataPointViewModel": {
+      "Service": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
+            "$ref": "#/components/schemas/ApplicationEntityBase"
           },
           {
             "type": "object",
             "additionalProperties": false,
+            "required": [
+              "name",
+              "description",
+              "serviceType"
+            ],
             "properties": {
-              "dataPointId": {
-                "type": "integer",
-                "format": "int32"
-              },
               "name": {
+                "title": "Name",
                 "type": "string",
-                "nullable": true
+                "maxLength": 100,
+                "minLength": 1
               },
-              "isEnabled": {
-                "type": "boolean"
+              "description": {
+                "title": "Description",
+                "type": "string",
+                "maxLength": 250,
+                "minLength": 1
               },
-              "eventConditions": {
+              "serviceType": {
+                "title": "Service Type",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ServiceTypes"
+                  }
+                ]
+              },
+              "eventServices": {
+                "title": "Event Services",
                 "type": "array",
                 "nullable": true,
                 "items": {
-                  "$ref": "#/components/schemas/EventConditionViewModel"
+                  "$ref": "#/components/schemas/EventService"
                 }
               }
             }
           }
         ]
       },
-      "Operators": {
+      "ServiceTypes": {
         "type": "integer",
-        "description": "0 = Equal\n1 = NotEqual\n2 = GreaterThan\n3 = LessThan",
+        "description": "0 = Normal\n1 = Queue\n2 = Time",
         "x-enumNames": [
-          "Equal",
-          "NotEqual",
-          "GreaterThan",
-          "LessThan"
+          "Normal",
+          "Queue",
+          "Time"
         ],
         "enum": [
           0,
           1,
-          2,
-          3
+          2
         ]
       },
-      "ExtendedLogViewModel": {
+      "ExtendedLog": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
+            "$ref": "#/components/schemas/Log"
           },
           {
             "type": "object",
             "additionalProperties": false,
+            "required": [
+              "createdBy",
+              "updatedBy",
+              "updatedDate",
+              "createdDate"
+            ],
             "properties": {
-              "browser": {
+              "levelDescription": {
+                "title": "Level Description",
                 "type": "string",
+                "nullable": true
+              },
+              "browser": {
+                "title": "Browser",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 0,
                 "nullable": true
               },
               "host": {
+                "title": "Host",
                 "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
                 "nullable": true
               },
               "path": {
+                "title": "Path",
                 "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
                 "nullable": true
               },
               "user": {
+                "title": "User",
                 "type": "string",
-                "nullable": true
-              },
-              "eventId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "id": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "level": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "levelDescription": {
-                "type": "string",
-                "nullable": true
-              },
-              "message": {
-                "type": "string",
-                "nullable": true
-              },
-              "name": {
-                "type": "string",
+                "maxLength": 100,
+                "minLength": 0,
                 "nullable": true
               },
               "method": {
+                "title": "Method",
                 "type": "string",
+                "maxLength": 100,
+                "minLength": 0,
                 "nullable": true
               },
               "statusCode": {
+                "title": "Status Code",
                 "type": "integer",
                 "format": "int32"
               },
               "serverVariables": {
+                "title": "Server Variables",
                 "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
                 "nullable": true
               },
               "cookies": {
+                "title": "Cookies",
                 "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
                 "nullable": true
               },
               "formVariables": {
+                "title": "Form Variables",
                 "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
                 "nullable": true
               },
               "queryString": {
+                "title": "Query String",
                 "type": "string",
+                "maxLength": 250,
+                "minLength": 0,
                 "nullable": true
               },
-              "timeStamp": {
+              "createdBy": {
+                "title": "Created By",
                 "type": "string",
-                "format": "date-time"
+                "maxLength": 36,
+                "minLength": 1
+              },
+              "updatedBy": {
+                "title": "Updated By",
+                "type": "string",
+                "maxLength": 36,
+                "minLength": 1
+              },
+              "updatedDate": {
+                "title": "Updated Date",
+                "type": "string",
+                "format": "date-time",
+                "minLength": 1
+              },
+              "createdDate": {
+                "title": "Created Date",
+                "type": "string",
+                "format": "date-time",
+                "minLength": 1
+              },
+              "rowVersion": {
+                "title": "Row Version",
+                "type": "string",
+                "format": "byte",
+                "nullable": true
               }
             }
           }
         ]
       },
-      "NotificationViewModel": {
+      "Log": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/ApplicationViewModelBase"
+            "$ref": "#/components/schemas/LogOfInteger"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "LogOfInteger": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "eventId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeStamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Notification": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApplicationEntityBase"
           },
           {
             "type": "object",
             "additionalProperties": false,
+            "required": [
+              "header",
+              "body",
+              "date"
+            ],
             "properties": {
-              "notificationId": {
-                "type": "integer",
-                "format": "int32"
-              },
               "header": {
+                "title": "Header",
                 "type": "string",
-                "nullable": true
+                "maxLength": 100,
+                "minLength": 1
               },
               "body": {
+                "title": "Body",
                 "type": "string",
-                "nullable": true
+                "maxLength": 250,
+                "minLength": 1
               },
               "isRead": {
+                "title": "IsRead",
                 "type": "boolean"
               },
               "isPinned": {
+                "title": "IsPinned",
                 "type": "boolean"
               },
               "date": {
+                "title": "Date",
                 "type": "string",
-                "format": "date-time"
+                "format": "date",
+                "minLength": 1
               }
             }
           }

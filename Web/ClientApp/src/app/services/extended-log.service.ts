@@ -7,21 +7,21 @@ export class ExtendedLogService {
 
     }
 
-    addExtendedLog(extendedLog: generated.ExtendedLogViewModel) {
-        return this.extendedLogEndpointService.post(extendedLog);
+    addExtendedLog(extendedLog: generated.ExtendedLog) {
+      return this.extendedLogEndpointService.postExtendedLog(extendedLog);
     }
 
     getExtendedLogs(pageNumber?: number, pageSize?: number) {
-        return pageNumber && pageSize ? this.extendedLogEndpointService.getAllPaged(pageNumber, pageSize) :
-            this.extendedLogEndpointService.getAll();
+      return pageNumber && pageSize ? this.extendedLogEndpointService.getAllExtendedLogsPaged(pageNumber, pageSize) :
+        this.extendedLogEndpointService.getAllExtendedLogs();
     }
 
     getExtendedLogsByLevel(level: number, pageNumber?: number, pageSize?: number) {
-        return pageNumber && pageSize ? this.extendedLogEndpointService.getByLevelPaged(level, pageNumber, pageSize) :
-            this.extendedLogEndpointService.getByLevel(level);
+      return pageNumber && pageSize ? this.extendedLogEndpointService.getExtendedLogsByLevelPaged(level, pageNumber, pageSize) :
+        this.extendedLogEndpointService.getExtendedLogsByLevel(level);
     }
 
     clearExtendedLogs() {
-        return this.extendedLogEndpointService.deleteAll();
+        return this.extendedLogEndpointService.deleteAllExtendedLogs();
     }
 }

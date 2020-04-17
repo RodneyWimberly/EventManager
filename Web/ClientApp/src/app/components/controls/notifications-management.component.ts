@@ -14,7 +14,7 @@ import { Utilities } from '../../helpers/utilities';
 })
 export class NotificationsManagementComponent implements OnInit, OnDestroy {
     columns: any[] = [];
-    rows: generated.NotificationViewModel[] = [];
+    rows: generated.Notification[] = [];
     loadingIndicator: boolean;
 
     dataLoadingConsecutiveFailurs = 0;
@@ -120,7 +120,7 @@ export class NotificationsManagementComponent implements OnInit, OnDestroy {
     }
 
 
-    private processResults(notifications: generated.NotificationViewModel[]) {
+    private processResults(notifications: generated.Notification[]) {
 
         if (this.isViewOnly) {
             notifications.sort((a, b) => {
@@ -140,12 +140,12 @@ export class NotificationsManagementComponent implements OnInit, OnDestroy {
     }
 
 
-    deleteNotification(row: generated.NotificationViewModel) {
+    deleteNotification(row: generated.Notification) {
         this.alertService.showDialog('Are you sure you want to delete the notification \"' + row.header + '\"?', DialogType.confirm, () => this.deleteNotificationHelper(row));
     }
 
 
-    deleteNotificationHelper(row: generated.NotificationViewModel) {
+    deleteNotificationHelper(row: generated.Notification) {
 
         this.alertService.startLoadingMessage('Deleting...');
         this.loadingIndicator = true;
@@ -155,7 +155,7 @@ export class NotificationsManagementComponent implements OnInit, OnDestroy {
                 this.alertService.stopLoadingMessage();
                 this.loadingIndicator = false;
 
-                this.rows = this.rows.filter(item => item.notificationId != row.notificationId);
+                this.rows = this.rows.filter(item => item.id != row.id);
             },
             error => {
                 this.alertService.stopLoadingMessage();
@@ -167,7 +167,7 @@ export class NotificationsManagementComponent implements OnInit, OnDestroy {
     }
 
 
-    togglePin(row: generated.NotificationViewModel) {
+    togglePin(row: generated.Notification) {
 
         const pin = !row.isPinned;
         const opText = pin ? 'Pinning' : 'Unpinning';

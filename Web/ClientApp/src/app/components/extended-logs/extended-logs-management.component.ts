@@ -15,10 +15,10 @@ import * as generated from '../../services/endpoint.services';
 
 export class ExtendedLogsManagementComponent implements OnInit, AfterViewInit {
   columns: any[] = [];
-  rows: generated.ExtendedLogViewModel[] = [];
-  rowsCache: generated.ExtendedLogViewModel[] = [];
-  editedLog: generated.ExtendedLogViewModel;
-  sourceLog: generated.ExtendedLogViewModel;
+  rows: generated.ExtendedLog[] = [];
+  rowsCache: generated.ExtendedLog[] = [];
+  editedLog: generated.ExtendedLog;
+  sourceLog: generated.ExtendedLog;
   editingLogId: { id: number };
   loadingIndicator: boolean;
 
@@ -105,7 +105,7 @@ export class ExtendedLogsManagementComponent implements OnInit, AfterViewInit {
     this.logEditor.resetForm(true);
   }
 
-  editLog(row: generated.ExtendedLogViewModel) {
+  editLog(row: generated.ExtendedLog) {
     this.editingLogId = { id: row.id };
     this.sourceLog = row;
     this.editedLog = this.logEditor.editLog(row);

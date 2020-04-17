@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManager.Web.ViewModels
 {
-    public class RoleViewModel : ApplicationViewModelBase
+    public class RoleViewModel
     {
         public new string Id { get; set; }
 

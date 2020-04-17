@@ -9,7 +9,7 @@ import * as generated from '../../services/endpoint.services';
 })
 export class ExtendedLogEditorComponent {
     private editingLogId: number;
-    public logEdit: generated.ExtendedLogViewModel = new generated.ExtendedLogViewModel();
+    public logEdit: generated.ExtendedLog = new generated.ExtendedLog();
     public selectedValues: { [key: string]: boolean; } = {};
     public formResetToggle = true;
     public changesCancelledCallback: () => void;
@@ -21,7 +21,7 @@ export class ExtendedLogEditorComponent {
     }
 
     cancel() {
-        this.logEdit = new generated.ExtendedLogViewModel();
+        this.logEdit = new generated.ExtendedLog();
         this.resetForm();
         if (this.changesCancelledCallback) {
             this.changesCancelledCallback();
@@ -41,11 +41,11 @@ export class ExtendedLogEditorComponent {
         }
     }
 
-    editLog(log: generated.ExtendedLogViewModel) {
+    editLog(log: generated.ExtendedLog) {
         if (log) {
             this.editingLogId = log.id;
             this.selectedValues = {};
-            this.logEdit = new generated.ExtendedLogViewModel();
+            this.logEdit = new generated.ExtendedLog();
             Object.assign(this.logEdit, log);
 
             return this.logEdit;

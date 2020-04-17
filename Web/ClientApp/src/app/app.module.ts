@@ -28,9 +28,6 @@ import { NotificationService } from './services/notification.service';
 import { NotificationMockService } from './services/notification-mock.service';
 import { AccountService } from "./services/account.service";
 import { EventService } from "./services/event.service";
-import { EventConditionService } from "./services/event-condition.service";
-import { ActionDeviceService } from "./services/action-device.service";
-import { DataPointService } from "./services/data-point.service";
 import { ExtendedLogService } from "./services/extended-log.service";
 import * as generated from './services/endpoint.services';
 

@@ -19,10 +19,10 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   protected editingEventName: { name: string };
   protected loadingIndicator: boolean;
   protected columns: any[] = [];
-  protected rows: generated.EventViewModel[] = [];
-  protected editedEvent: generated.EventViewModel;
-  private cachedEvent: generated.EventViewModel;
-  private cachedRows: generated.EventViewModel[] = [];
+  protected rows: generated.Event[] = [];
+  protected editedEvent: generated.Event;
+  private cachedEvent: generated.Event;
+  private cachedRows: generated.Event[] = [];
 
 
   @ViewChild('dataTable', { static: true })
@@ -84,11 +84,11 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
 
-    this.eventService.getEvents(true).subscribe(events => this.onLoadDataSuccessful(events), error => this.onLoadDataFailed(error));
+    this.eventService.getEvents().subscribe(events => this.onLoadDataSuccessful(events), error => this.onLoadDataFailed(error));
 
   }
 
-  private onLoadDataSuccessful(events: generated.EventViewModel[]) {
+  private onLoadDataSuccessful(events: generated.Event[]) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
 
@@ -105,10 +105,10 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   }
 
   protected onSearchChanged(value: string) {
-    this.rows = this.cachedRows.filter(r => Utilities.searchArray(value, false, r.eventId, r.name, r.state, r.actionDevice.name));
+    this.rows = this.cachedRows.filter(r => Utilities.searchArray(value, false, r.id, r.name, r.description));
   }
 
-  private onEditorModalSaved(newEvent: generated.EventViewModel) {
+  private onEditorModalSaved(newEvent: generated.Event) {
 
     if (this.cachedEvent) {
       let sourceIndex = this.cachedRows.indexOf(this.cachedEvent, 0);
@@ -118,7 +118,7 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
         Object.assign(this.rows[sourceIndex], this.cachedEvent);
       }
     } else {
-      const event = new generated.EventViewModel();
+      const event = new generated.Event();
       Object.assign(event, newEvent);
       this.cachedRows.splice(this.cachedRows.length, 0, event);
       this.rows.splice(this.rows.length, 0, event);
@@ -141,23 +141,23 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
     this.editorModal.show();
   }
 
-  protected editEvent(row: generated.EventViewModel) {
+  protected editEvent(row: generated.Event) {
     this.editingEventName = { name: row.name };
     this.cachedEvent = row;
     //this.editedEvent = this.eventEditor.editEvent(row);
     this.editorModal.show();
   }
 
-  protected deleteEvent(row: generated.EventViewModel) {
+  protected deleteEvent(row: generated.Event) {
     this.alertService.showDialog('Are you sure you want to delete \"' + row.name + '\"?', DialogType.confirm, () => this.deleteEventHelper(row));
   }
 
-  private deleteEventHelper(row: generated.EventViewModel) {
+  private deleteEventHelper(row: generated.Event) {
 
     this.alertService.startLoadingMessage('Deleting...');
     this.loadingIndicator = true;
 
-    this.eventService.deleteEvent(row.eventId)
+    this.eventService.deleteEvent(row.id)
       .subscribe(results => {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;

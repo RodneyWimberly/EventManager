@@ -34,7 +34,7 @@ namespace EventManager.Web.Controllers
 
         [HttpGet()]
         [Authorize(Authorization.Policies.ViewLogsPolicy)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Notification>))]
         public async Task<IActionResult> GetAllNotifications()
         {
             return await _notificationController.GetAll();
@@ -42,7 +42,7 @@ namespace EventManager.Web.Controllers
 
         [HttpGet("{pageNumber:int}/{pageSize:int}")]
         [Authorize(Authorization.Policies.ViewLogsPolicy)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Notification>))]
         public async Task<IActionResult> GetAllNotificationsPaged(int pageNumber, int pageSize)
         {
             return await _notificationController.GetAllPaged(pageNumber, pageSize);
@@ -50,9 +50,9 @@ namespace EventManager.Web.Controllers
 
         [HttpGet("{id:int}")]
         [Authorize(Authorization.Policies.ViewLogsPolicy)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Notification))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetEvent(int id)
+        public async Task<IActionResult> GetNotification(int id)
         {
             return await _notificationController.Get(id);
         }
@@ -61,7 +61,7 @@ namespace EventManager.Web.Controllers
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteEvent(int id)
+        public async Task<IActionResult> DeleteNotification(int id)
         {
             return await _notificationController.Delete(id);
         }
@@ -70,7 +70,7 @@ namespace EventManager.Web.Controllers
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Notification))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PostEvent([FromBody]Notification entity)
+        public async Task<IActionResult> PostNotification([FromBody]Notification entity)
         {
             return await _notificationController.Post(entity);
         }
@@ -79,7 +79,7 @@ namespace EventManager.Web.Controllers
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutEvent(int id, [FromBody]Notification entity)
+        public async Task<IActionResult> PutNotification(int id, [FromBody]Notification entity)
         {
             return await _notificationController.Put(id, entity);
         }
@@ -88,7 +88,7 @@ namespace EventManager.Web.Controllers
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Patch(int id, [FromBody]JsonPatchDocument<Notification> patch)
+        public async Task<IActionResult> PatchNotification(int id, [FromBody]JsonPatchDocument<Notification> patch)
         {
             return await _notificationController.Patch(id, patch);
         }

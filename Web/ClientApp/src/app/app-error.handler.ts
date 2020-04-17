@@ -23,7 +23,7 @@ export class AppErrorHandler extends ErrorHandler {
         // this.alertService.showStickyMessage("Fatal Error!", "An unresolved error has occured. Please reload the page to correct this error", MessageSeverity.warn);
         // this.alertService.showStickyMessage("Unhandled Error", error.message || error, MessageSeverity.error, error);
         
-        var extendedLog = new generated.ExtendedLogViewModel();
+        var extendedLog = new generated.ExtendedLog();
         extendedLog.eventId = 0;
         extendedLog.message = error.message + '\r\n\r\nStack:\r\n' + error.stack;
         extendedLog.level = 4;

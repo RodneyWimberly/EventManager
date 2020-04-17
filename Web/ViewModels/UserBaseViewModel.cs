@@ -1,6 +1,6 @@
 ﻿namespace EventManager.Web.ViewModels
 {
-    public abstract class UserBaseViewModel : ApplicationViewModelBase
+    public abstract class UserBaseViewModel
     {
         public string Id { get; set; }
 

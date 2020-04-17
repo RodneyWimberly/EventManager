@@ -21,11 +21,20 @@ namespace EventManager.Web.Controllers
     public class EventController : ControllerBase
     {
         protected readonly EntityController<Event> _eventController;
+        protected readonly EntityController<EventLocation> _eventLocationController;
 
         public EventController(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<ApplicationDbContext> unitOfWork, ILogger<EventController> logger)
         {
             _eventController = new EntityController<Event>(accountManager, httpAccessor, mapper, unitOfWork, logger);
             _eventController.GetIncludeEvent += EventController_GetIncludeEvent;
+
+            _eventLocationController = new EntityController<EventLocation>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+            _eventLocationController.GetIncludeEvent += EventLocationController_GetIncludeEvent;
+        }
+
+        private void EventLocationController_GetIncludeEvent(object sender, GetIncludeEventArgs<EventLocation> e)
+        {
+            e.Include = null;
         }
 
         private void EventController_GetIncludeEvent(object sender, GetIncludeEventArgs<Event> e)
@@ -93,7 +102,7 @@ namespace EventManager.Web.Controllers
         [Authorize(Authorization.Policies.ManageEventsPolicy)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Patch(int id, [FromBody]JsonPatchDocument<Event> patch)
+        public async Task<IActionResult> PatchEvent(int id, [FromBody]JsonPatchDocument<Event> patch)
         {
             return await _eventController.Patch(id, patch);
         }

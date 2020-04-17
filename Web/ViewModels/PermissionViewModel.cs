@@ -2,7 +2,7 @@
 
 namespace EventManager.Web.ViewModels
 {
-    public class PermissionViewModel : ApplicationViewModelBase
+    public class PermissionViewModel
     {
         public string Name { get; set; }
         public string Value { get; set; }
