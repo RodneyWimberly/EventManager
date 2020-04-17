@@ -2,7 +2,7 @@
 using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Models;
 
-namespace EventManager.Web.ViewModels.Mappers
+namespace EventManager.Web.ViewModels
 {
     public class AutoMapperProfile : Profile
     {
@@ -40,26 +40,6 @@ namespace EventManager.Web.ViewModels.Mappers
 
             CreateMap<ApplicationRoleClaim, PermissionViewModel>()
                 .ConvertUsing(s => (PermissionViewModel)ApplicationPermissions.GetPermissionByValue(s.ClaimValue));
-
-            /*
-            CreateMap<ExtendedLog, ExtendedLogViewModel>();
-            CreateMap<ExtendedLogViewModel, ExtendedLog>()
-                .ForMember(e => e.Browser, map => map.Ignore())
-                .ForMember(e => e.Host, map => map.Ignore())
-                .ForMember(e => e.Path, map => map.Ignore())
-                .ForMember(e => e.User, map => map.Ignore());
-
-            CreateMap<Notification, NotificationViewModel>();
-            CreateMap<NotificationViewModel, Notification>()
-                .ConvertUsing<GenericConcurrencyMapper<NotificationViewModel, Notification>>();
-
-            CreateMap<Event, EventViewModel>();
-            CreateMap<EventViewModel, Event>()
-                .ConvertUsing<GenericConcurrencyMapper<EventViewModel, Event>>();
-            CreateMap<ICollection<EventViewModel>, ICollection<Event>>()
-                .ConvertUsing<GenericCollectionConcurrencyMapper<EventViewModel, Event>>();
-*/
-
         }
     }
 }

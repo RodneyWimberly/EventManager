@@ -1,13 +1,13 @@
-﻿/*using Arch.EntityFrameworkCore.UnitOfWork;
-using Arch.EntityFrameworkCore.UnitOfWork.Collections;
+﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using EventManager.DataAccess;
+using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Models;
-using EventManager.Web.ViewModels;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,127 +19,78 @@ namespace EventManager.Web.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IRepository<Notification> _repository;
-        private readonly ILogger _logger;
-        private readonly IAuthorizationService _authorizationService;
+        protected readonly EntityController<Notification> _notificationController;
 
-        public NotificationController(IMapper mapper, IUnitOfWork unitOfWork, ILogger<NotificationController> logger, IAuthorizationService authorizationService)
+        public NotificationController(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<ApplicationDbContext> unitOfWork, ILogger<NotificationController> logger)
         {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
-            _repository = _unitOfWork.GetRepository<Notification>();
-            _logger = logger;
-            _authorizationService = authorizationService;
+            _notificationController = new EntityController<Notification>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+            _notificationController.GetIncludeEvent += NotificationController_GetIncludeEvent;
         }
 
-        [HttpGet]
-        //[Authorize(Authorization.Policies.)]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<NotificationViewModel>))]
-        public async Task<IActionResult> GetAll()
+        private void NotificationController_GetIncludeEvent(object sender, GetIncludeEventArgs<Notification> e)
         {
-            return await GetAllPaged(0, 1000);
+            e.Include = null;
+        }
+
+        [HttpGet()]
+        [Authorize(Authorization.Policies.ViewLogsPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
+        public async Task<IActionResult> GetAllNotifications()
+        {
+            return await _notificationController.GetAll();
         }
 
         [HttpGet("{pageNumber:int}/{pageSize:int}")]
-        //[Authorize(Authorization.Policies.)]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<NotificationViewModel>))]
-        public async Task<IActionResult> GetAllPaged(int pageNumber, int pageSize)
+        [Authorize(Authorization.Policies.ViewLogsPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
+        public async Task<IActionResult> GetAllNotificationsPaged(int pageNumber, int pageSize)
         {
-            IPagedList<Notification> notifications = await _repository.GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize);
-            return Ok(_mapper.Map<IEnumerable<NotificationViewModel>>(notifications.Items));
+            return await _notificationController.GetAllPaged(pageNumber, pageSize);
         }
 
         [HttpGet("{id:int}")]
-        //[Authorize(Authorization.Policies.)]
-        [ProducesResponseType(200, Type = typeof(NotificationViewModel))]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(int id)
+        [Authorize(Authorization.Policies.ViewLogsPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetEvent(int id)
         {
-            Notification notification = await _repository.FindAsync(id);
-            if (notification == null)
-                return NotFound(id);
-            else
-                return Ok(_mapper.Map<NotificationViewModel>(notification));
+            return await _notificationController.Get(id);
         }
-
 
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(200, Type = typeof(NotificationViewModel))]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> Delete(int id)
+        [Authorize(Authorization.Policies.ManageLogsPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteEvent(int id)
         {
-            Notification notification = await _repository.FindAsync(id);
-            if (notification == null)
-                return NotFound(id);
-            NotificationViewModel notificationVM = _mapper.Map<NotificationViewModel>(notification);
-            _repository.Delete(notification);
-            await _unitOfWork.SaveChangesAsync();
-            return Ok(notificationVM);
+            return await _notificationController.Delete(id);
         }
 
-
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(NotificationViewModel))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> Post([FromBody]NotificationViewModel notificationVM)
+        [Authorize(Authorization.Policies.ManageLogsPolicy)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Notification))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PostEvent([FromBody]Notification entity)
         {
-            if (ModelState.IsValid)
-            {
-                if (notificationVM == null)
-                    return BadRequest($"{nameof(notificationVM)} cannot be null");
-                Notification notification = _mapper.Map<Notification>(notificationVM);
-                EntityEntry<Notification> addedNotification = await _repository.InsertAsync(notification);
-                await _unitOfWork.SaveChangesAsync();
-                notificationVM = _mapper.Map<NotificationViewModel>(addedNotification.Entity);
-                return CreatedAtAction("GetByNotificationId", new { notificationId = notificationVM.Id }, notificationVM);
-            }
-            else
-                return BadRequest(ModelState);
+            return await _notificationController.Post(entity);
         }
 
         [HttpPut("{id:int}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> Put(int id, [FromBody]NotificationViewModel notificationVM)
+        [Authorize(Authorization.Policies.ManageLogsPolicy)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutEvent(int id, [FromBody]Notification entity)
         {
-            if (ModelState.IsValid)
-            {
-                if (notificationVM == null)
-                    return BadRequest($"{nameof(notificationVM)} cannot be null");
-
-                if (id != notificationVM.Id)
-                    return BadRequest("Conflicting Notification Id in parameter and model data");
-                _repository.Update(_mapper.Map<Notification>(notificationVM));
-                await _unitOfWork.SaveChangesAsync();
-                return NoContent();
-            }
-            else
-                return BadRequest(ModelState);
+            return await _notificationController.Put(id, entity);
         }
 
         [HttpPatch("{id:int}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> Patch(int id, [FromBody]JsonPatchDocument<NotificationViewModel> patch)
+        [Authorize(Authorization.Policies.ManageLogsPolicy)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Patch(int id, [FromBody]JsonPatchDocument<Notification> patch)
         {
-            if (ModelState.IsValid)
-            {
-                if (patch == null)
-                    return BadRequest($"{nameof(patch)} cannot be null");
-
-                NotificationViewModel notificationVM = _mapper.Map<NotificationViewModel>(await _repository.FindAsync(id));
-                patch.ApplyTo(notificationVM, e => ModelState.AddModelError("", e.ErrorMessage));
-                if (ModelState.IsValid)
-                {
-                    _repository.Update(_mapper.Map<Notification>(notificationVM));
-                    await _unitOfWork.SaveChangesAsync();
-                    return NoContent();
-                }
-            }
-
-            return BadRequest(ModelState);
+            return await _notificationController.Patch(id, patch);
         }
     }
-}*/
+}

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +21,9 @@ namespace EventManager.Core.Logging
 
         public async Task Invoke(HttpContext context)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
             var loggerState = new Dictionary<string, object>
             {
                 { "url", context.Request?.Path.Value },
@@ -33,7 +37,7 @@ namespace EventManager.Core.Logging
             };
             using (_logger.BeginScope(loggerState))
             {
-                await _next(context);
+                await _next(context).ConfigureAwait(true);
             }
         }
 
@@ -58,7 +62,7 @@ namespace EventManager.Core.Logging
 
         private Dictionary<string, string> Cookies(HttpContext context)
         {
-            return context.Request?.Cookies?.Keys.ToDictionary(k => k, k => context.Request.Cookies[k].ToString());
+            return context.Request?.Cookies?.Keys.ToDictionary(k => k, k => context.Request.Cookies[k].ToString(CultureInfo.CurrentCulture));
         }
 
         private Dictionary<string, string> ServerVariables(HttpContext context)

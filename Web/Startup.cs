@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NSwag.AspNetCore;
 using System;
@@ -123,7 +122,7 @@ namespace EventManager.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             StoragePath.Initialize(env.ContentRootPath);
 
@@ -171,13 +170,14 @@ namespace EventManager.Web
                 endpoints.MapHealthChecks("/health");
             });
 
+            bool useProxyToSpaDevelopmentServer = true;
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
                 {
-                    if (false)
+                    if (!useProxyToSpaDevelopmentServer)
                     {
                         spa.UseAngularCliServer(npmScript: "serve");
                         spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); // Increase the timeout if angular app is taking longer to startup

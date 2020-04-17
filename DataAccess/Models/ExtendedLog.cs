@@ -74,7 +74,7 @@ namespace EventManager.DataAccess.Models
             }
         }
 
-        protected ExtendedLog() { }
+        public ExtendedLog() { }
 
         [NotMapped]
         [Display(Name = "Level Description", GroupName = "ExtendedLog")]

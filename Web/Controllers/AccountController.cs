@@ -1,19 +1,20 @@
-﻿using System;
+﻿using AutoMapper;
+using EventManager.DataAccess.Core;
+using EventManager.DataAccess.Core.Interfaces;
+using EventManager.DataAccess.Models;
+using EventManager.Web.Authorization;
+using EventManager.Web.Helpers;
+using EventManager.Web.ViewModels;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
-using EventManager.Web.ViewModels;
-using AutoMapper;
-using EventManager.Web.Authorization;
-using EventManager.Web.Helpers;
-using Microsoft.AspNetCore.JsonPatch;
-using IdentityServer4.AccessTokenValidation;
-using EventManager.DataAccess.Core.Interfaces;
-using EventManager.DataAccess.Core;
-using EventManager.DataAccess.Models;
 
 namespace EventManager.Web.Controllers
 {
@@ -38,19 +39,17 @@ namespace EventManager.Web.Controllers
             _logger = logger;
         }
 
-
         [HttpGet("users/me")]
-        [ProducesResponseType(200, Type = typeof(UserViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserViewModel))]
         public async Task<IActionResult> GetCurrentUser()
         {
             return await GetUserById(Utilities.GetUserId(this.User));
         }
 
-
         [HttpGet("users/{id}", Name = GetUserByIdActionName)]
-        [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserViewModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserById(string id)
         {
             if (!(await _authorizationService.AuthorizeAsync(this.User, id, AccountManagementOperations.Read)).Succeeded)
@@ -65,11 +64,10 @@ namespace EventManager.Web.Controllers
                 return NotFound(id);
         }
 
-
         [HttpGet("users/username/{userName}")]
-        [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserViewModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserByUserName(string userName)
         {
             ApplicationUser appUser = await _accountManager.GetUserByUserNameAsync(userName);
@@ -83,19 +81,17 @@ namespace EventManager.Web.Controllers
             return await GetUserById(appUser.Id);
         }
 
-
         [HttpGet("users")]
-        [Authorize(Authorization.Policies.ViewAllUsersPolicy)]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        [Authorize(Policies.ViewAllUsersPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> GetUsers()
         {
             return await GetUsers(-1, -1);
         }
 
-
         [HttpGet("users/{pageNumber:int}/{pageSize:int}")]
-        [Authorize(Authorization.Policies.ViewAllUsersPolicy)]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        [Authorize(Policies.ViewAllUsersPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> GetUsers(int pageNumber, int pageSize)
         {
             List<(ApplicationUser User, string[] Roles)> usersAndRoles = await _accountManager.GetUsersAndRolesAsync(pageNumber, pageSize);
@@ -113,34 +109,31 @@ namespace EventManager.Web.Controllers
             return Ok(usersVM);
         }
 
-
         [HttpPut("users/me")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(403)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] UserEditViewModel user)
         {
             return await UpdateUser(Utilities.GetUserId(this.User), user);
         }
 
-
         [HttpPut("users/{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserEditViewModel user)
         {
             ApplicationUser appUser = await _accountManager.GetUserByIdAsync(id);
             string[] currentRoles = appUser != null ? (await _accountManager.GetUserRolesAsync(appUser)).ToArray() : null;
 
             Task<AuthorizationResult> manageUsersPolicy = _authorizationService.AuthorizeAsync(this.User, id, AccountManagementOperations.Update);
-            Task<AuthorizationResult> assignRolePolicy = _authorizationService.AuthorizeAsync(this.User, (user.Roles, currentRoles), Authorization.Policies.AssignAllowedRolesPolicy);
+            Task<AuthorizationResult> assignRolePolicy = _authorizationService.AuthorizeAsync(this.User, (user.Roles, currentRoles), Policies.AssignAllowedRolesPolicy);
 
 
             if ((await Task.WhenAll(manageUsersPolicy, assignRolePolicy)).Any(r => !r.Succeeded))
                 return new ChallengeResult();
-
 
             if (ModelState.IsValid)
             {
@@ -199,21 +192,19 @@ namespace EventManager.Web.Controllers
             return BadRequest(ModelState);
         }
 
-
         [HttpPatch("users/me")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] JsonPatchDocument<UserPatchViewModel> patch)
         {
             return await UpdateUser(Utilities.GetUserId(this.User), patch);
         }
 
-
         [HttpPatch("users/{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] JsonPatchDocument<UserPatchViewModel> patch)
         {
             if (!(await _authorizationService.AuthorizeAsync(this.User, id, AccountManagementOperations.Update)).Succeeded)
@@ -251,15 +242,14 @@ namespace EventManager.Web.Controllers
             return BadRequest(ModelState);
         }
 
-
         [HttpPost("users")]
-        [Authorize(Authorization.Policies.ManageAllUsersPolicy)]
-        [ProducesResponseType(201, Type = typeof(UserViewModel))]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(403)]
+        [Authorize(Policies.ManageAllUsersPolicy)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Register([FromBody] UserEditViewModel user)
         {
-            if (!(await _authorizationService.AuthorizeAsync(this.User, (user.Roles, new string[] { }), Authorization.Policies.AssignAllowedRolesPolicy)).Succeeded)
+            if (!(await _authorizationService.AuthorizeAsync(this.User, (user.Roles, new string[] { }), Policies.AssignAllowedRolesPolicy)).Succeeded)
                 return new ChallengeResult();
 
 
@@ -284,12 +274,11 @@ namespace EventManager.Web.Controllers
             return BadRequest(ModelState);
         }
 
-
         [HttpDelete("users/{id}")]
-        [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(string id)
         {
             if (!(await _authorizationService.AuthorizeAsync(this.User, id, AccountManagementOperations.Delete)).Succeeded)
@@ -315,11 +304,10 @@ namespace EventManager.Web.Controllers
             return Ok(userVM);
         }
 
-
         [HttpPut("users/unblock/{id}")]
-        [Authorize(Authorization.Policies.ManageAllUsersPolicy)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [Authorize(Policies.ManageAllUsersPolicy)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UnblockUser(string id)
         {
             ApplicationUser appUser = await _accountManager.GetUserByIdAsync(id);
@@ -336,9 +324,8 @@ namespace EventManager.Web.Controllers
             return NoContent();
         }
 
-
         [HttpGet("users/me/preferences")]
-        [ProducesResponseType(200, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public async Task<IActionResult> UserPreferences()
         {
             string userId = Utilities.GetUserId(this.User);
@@ -347,9 +334,8 @@ namespace EventManager.Web.Controllers
             return Ok(appUser.Configuration);
         }
 
-
         [HttpPut("users/me/preferences")]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UserPreferences([FromBody] string data)
         {
             string userId = Utilities.GetUserId(this.User);
@@ -364,19 +350,15 @@ namespace EventManager.Web.Controllers
             return NoContent();
         }
 
-
-
-
-
         [HttpGet("roles/{id}", Name = GetRoleByIdActionName)]
-        [ProducesResponseType(200, Type = typeof(RoleViewModel))]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleViewModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetRoleById(string id)
         {
             ApplicationRole appRole = await _accountManager.GetRoleByIdAsync(id);
 
-            if (!(await _authorizationService.AuthorizeAsync(this.User, appRole?.Name ?? "", Authorization.Policies.ViewRoleByRoleNamePolicy)).Succeeded)
+            if (!(await _authorizationService.AuthorizeAsync(this.User, appRole?.Name ?? "", Policies.ViewRoleByRoleNamePolicy)).Succeeded)
                 return new ChallengeResult();
 
             if (appRole == null)
@@ -385,14 +367,13 @@ namespace EventManager.Web.Controllers
             return await GetRoleByName(appRole.Name);
         }
 
-
         [HttpGet("roles/name/{name}")]
-        [ProducesResponseType(200, Type = typeof(RoleViewModel))]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleViewModel))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetRoleByName(string name)
         {
-            if (!(await _authorizationService.AuthorizeAsync(this.User, name, Authorization.Policies.ViewRoleByRoleNamePolicy)).Succeeded)
+            if (!(await _authorizationService.AuthorizeAsync(this.User, name, Policies.ViewRoleByRoleNamePolicy)).Succeeded)
                 return new ChallengeResult();
 
 
@@ -404,31 +385,28 @@ namespace EventManager.Web.Controllers
             return Ok(roleVM);
         }
 
-
         [HttpGet("roles")]
-        [Authorize(Authorization.Policies.ViewAllRolesPolicy)]
-        [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
+        [Authorize(Policies.ViewAllRolesPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RoleViewModel>))]
         public async Task<IActionResult> GetRoles()
         {
             return await GetRoles(-1, -1);
         }
 
-
         [HttpGet("roles/{pageNumber:int}/{pageSize:int}")]
-        [Authorize(Authorization.Policies.ViewAllRolesPolicy)]
-        [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
+        [Authorize(Policies.ViewAllRolesPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RoleViewModel>))]
         public async Task<IActionResult> GetRoles(int pageNumber, int pageSize)
         {
             List<ApplicationRole> roles = await _accountManager.GetRolesLoadRelatedAsync(pageNumber, pageSize);
             return Ok(_mapper.Map<List<RoleViewModel>>(roles));
         }
 
-
         [HttpPut("roles/{id}")]
-        [Authorize(Authorization.Policies.ManageAllRolesPolicy)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [Authorize(Policies.ManageAllRolesPolicy)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateRole(string id, [FromBody] RoleViewModel role)
         {
             if (ModelState.IsValid)
@@ -454,17 +432,15 @@ namespace EventManager.Web.Controllers
                     return NoContent();
 
                 AddError(result.Errors);
-
             }
 
             return BadRequest(ModelState);
         }
 
-
         [HttpPost("roles")]
-        [Authorize(Authorization.Policies.ManageAllRolesPolicy)]
-        [ProducesResponseType(201, Type = typeof(RoleViewModel))]
-        [ProducesResponseType(400)]
+        [Authorize(Policies.ManageAllRolesPolicy)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RoleViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateRole([FromBody] RoleViewModel role)
         {
             if (ModelState.IsValid)
@@ -488,12 +464,11 @@ namespace EventManager.Web.Controllers
             return BadRequest(ModelState);
         }
 
-
         [HttpDelete("roles/{id}")]
-        [Authorize(Authorization.Policies.ManageAllRolesPolicy)]
-        [ProducesResponseType(200, Type = typeof(RoleViewModel))]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [Authorize(Policies.ManageAllRolesPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteRole(string id)
         {
             ApplicationRole appRole = await _accountManager.GetRoleByIdAsync(id);
@@ -515,16 +490,13 @@ namespace EventManager.Web.Controllers
             return Ok(roleVM);
         }
 
-
         [HttpGet("permissions")]
-        [Authorize(Authorization.Policies.ViewAllRolesPolicy)]
-        [ProducesResponseType(200, Type = typeof(List<PermissionViewModel>))]
+        [Authorize(Policies.ViewAllRolesPolicy)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PermissionViewModel>))]
         public IActionResult GetAllPermissions()
         {
             return Ok(_mapper.Map<List<PermissionViewModel>>(ApplicationPermissions.AllPermissions));
         }
-
-
 
         private async Task<UserViewModel> GetUserViewModelHelper(string userId)
         {
@@ -538,7 +510,6 @@ namespace EventManager.Web.Controllers
             return userVM;
         }
 
-
         private async Task<RoleViewModel> GetRoleViewModelHelper(string roleName)
         {
             ApplicationRole role = await _accountManager.GetRoleLoadRelatedAsync(roleName);
@@ -548,7 +519,6 @@ namespace EventManager.Web.Controllers
 
             return null;
         }
-
 
         private void AddError(IEnumerable<string> errors, string key = "")
         {
@@ -562,6 +532,5 @@ namespace EventManager.Web.Controllers
         {
             ModelState.AddModelError(key, error);
         }
-
     }
 }

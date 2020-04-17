@@ -3,6 +3,7 @@ using AutoMapper;
 using EventManager.DataAccess;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Models;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace EventManager.Web.Controllers
 {
-    //[Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class EventController : ControllerBase
@@ -24,10 +25,10 @@ namespace EventManager.Web.Controllers
         public EventController(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<ApplicationDbContext> unitOfWork, ILogger<EventController> logger)
         {
             _eventController = new EntityController<Event>(accountManager, httpAccessor, mapper, unitOfWork, logger);
-            _eventController.GetIncludeEvent += eventController_GetIncludeEvent;
+            _eventController.GetIncludeEvent += EventController_GetIncludeEvent;
         }
 
-        private void eventController_GetIncludeEvent(object sender, GetIncludeEventArgs<Event> e)
+        private void EventController_GetIncludeEvent(object sender, GetIncludeEventArgs<Event> e)
         {
             e.Include = e.EntityQuery
                 .Include(e => e.Locations)
@@ -37,7 +38,7 @@ namespace EventManager.Web.Controllers
         }
 
         [HttpGet()]
-        // [Authorize(Authorization.Policies.ViewEventsPolicy)]
+        [Authorize(Authorization.Policies.ViewEventsPolicy)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
         public async Task<IActionResult> GetAllEvents()
         {
@@ -45,7 +46,7 @@ namespace EventManager.Web.Controllers
         }
 
         [HttpGet("{pageNumber:int}/{pageSize:int}")]
-        //[Authorize(Authorization.Policies.ViewEventsPolicy)]
+        [Authorize(Authorization.Policies.ViewEventsPolicy)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
         public async Task<IActionResult> GetAllEventsPaged(int pageNumber, int pageSize)
         {
@@ -53,7 +54,7 @@ namespace EventManager.Web.Controllers
         }
 
         [HttpGet("{id:int}")]
-        //[Authorize(Authorization.Policies.ViewEventsPolicy)]
+        [Authorize(Authorization.Policies.ViewEventsPolicy)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetEvent(int id)
@@ -80,7 +81,7 @@ namespace EventManager.Web.Controllers
         }
 
         [HttpPut("{id:int}")]
-        //[Authorize(Authorization.Policies.ManageEventsPolicy)]
+        [Authorize(Authorization.Policies.ManageEventsPolicy)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutEvent(int id, [FromBody]Event entity)
