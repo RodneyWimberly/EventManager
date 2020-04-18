@@ -1,0 +1,37 @@
+<div>
+  <form *ngIf="formResetToggle" [attr.autocomplete]="'NaN'" name="eventForm" #form="ngForm" novalidate
+        (ngSubmit)="form.form.valid ? save() :
+          (!name.valid && showErrorAlert('Name is required', 'Please enter a name (minimum of 2 and maximum of 100 characters)'));
+          (!description.valid && showErrorAlert('Description is required', 'Please enter a description (minimum of 2 and maximum of 200 characters)'));
+        ">
+
+    <!-- Name -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'events.editor.Name'">
+      <input inputRef type="text" id="name" name="name" placeholder="Enter name" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && name.valid, 'is-invalid': form.submitted && name.invalid}" [(ngModel)]="event.name"
+             #name="ngModel" required minlength="2" maxlength="100" />
+    </validation-control>
+
+    <!-- Description -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'events.editor.Description'">
+      <input inputRef type="text" id="description" name="description" placeholder="Enter description" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && description.valid, 'is-invalid': form.submitted && description.invalid}" [(ngModel)]="event.description"
+             #name="ngModel" required minlength="2" maxlength="200" />
+    </validation-control>
+
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <div ngPreserveWhitespaces class="float-right">
+          <button *ngIf="!isEditMode" type="button" (click)="close()" class="btn btn-outline-secondary"><i class='fa fa-close'></i> {{'events.editor.Close' | translate}}</button>
+          <button *ngIf="isEditMode" type="button" (click)="cancel()" class="btn btn-danger" [disabled]="isSaving"><i class='fa fa-times'></i> {{'events.editor.Cancel' | translate}}</button>
+          <button *ngIf="isEditMode" type="submit" class="btn btn-primary" [disabled]="isSaving">
+            <i *ngIf="!isSaving" class='fa fa-save'></i><i *ngIf="isSaving" class='fa fa-circle-o-notch fa-spin'></i> {{isSaving ? ('events.editor.Saving' | translate) : ('events.editor.Save' | translate)}}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </form>
+</div>

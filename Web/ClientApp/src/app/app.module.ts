@@ -66,8 +66,8 @@ import { ExtendedLogEditorComponent } from './components/extended-logs/extended-
 
 import { EventsComponent } from './components/events/events.component';
 import { EventsManagementComponent } from './components/events/events-management.component';
-/*import { EventEditorComponent } from './components/events/event-editor.component';
-import { EventConditionsManagementComponent } from './components/events/event-conditions-management.component';
+import { EventEditorComponent } from './components/events/event-editor.component';
+/*import { EventConditionsManagementComponent } from './components/events/event-conditions-management.component';
 */
 @NgModule({
     imports: [
@@ -96,7 +96,7 @@ import { EventConditionsManagementComponent } from './components/events/event-co
         AppComponent,
         LoginComponent,
         HomeComponent,
-        EventsComponent, EventsManagementComponent,// EventEditorComponent, EventConditionsManagementComponent,
+        EventsComponent, EventsManagementComponent, EventEditorComponent,// EventConditionsManagementComponent,
         ExtendedLogsComponent, ExtendedLogsManagementComponent, ExtendedLogEditorComponent,
         SettingsComponent,
         UsersManagementComponent, UserEditorComponent, UserPreferencesComponent,
@@ -127,14 +127,14 @@ import { EventConditionsManagementComponent } from './components/events/event-co
         NotificationService,
         AccountService,
         ExtendedLogService,
-        //EventService,
+        EventService,
         //EventConditionService,
         //ActionDeviceService,
         //DataPointService,
         NotificationMockService,
         generated.AccountEndpointService,
         generated.ExtendedLogEndpointService,
-        //generated.EventEndpointService,
+        generated.EventEndpointService,
         //generated.EventConditionEndpointService,
         //generated.ActionDeviceEndpointService,
         //generated.DataPointEndpointService,

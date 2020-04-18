@@ -36,7 +36,7 @@ namespace EventManager.Web.Controllers
             _unitOfWork = unitOfWork;
             _logger = logger;
             _extendedLogController = new EntityController<ExtendedLog>(accountManager, httpAccessor, mapper, unitOfWork, logger);
-            _extendedLogController.GetIncludeEvent += ExtendedLogController_GetIncludeEvent;
+            //_extendedLogController.GetIncludeEvent += ExtendedLogController_GetIncludeEvent;
         }
 
         private void ExtendedLogController_GetIncludeEvent(object sender, GetIncludeEventArgs<ExtendedLog> e)

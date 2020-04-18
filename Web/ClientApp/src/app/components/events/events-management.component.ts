@@ -5,7 +5,7 @@ import { AlertService, DialogType, MessageSeverity } from '../../services/alert.
 import { AppTranslationService } from '../../services/app-translation.service';
 import { EventService } from "../../services/event.service";
 import { Utilities } from '../../helpers/utilities';
-//import { EventEditorComponent } from './event-editor.component';
+import { EventEditorComponent } from './event-editor.component';
 import * as generated from '../../services/endpoint.services';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 
@@ -28,20 +28,14 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   @ViewChild('dataTable', { static: true })
   private ngxDatatable: DatatableComponent;
   
-  @ViewChild('isEnabledTemplate', { static: true })
-  private isEnabled: TemplateRef<any>;
-
-  @ViewChild('eventConditionsTemplate', { static: true })
-  private eventConditionsTemplate: TemplateRef<any>;
-
   @ViewChild('actionsTemplate', { static: true })
   private actionsTemplate: TemplateRef<any>;
 
   @ViewChild('editorModal', { static: true })
   private editorModal: ModalDirective;
 
-  //@ViewChild('eventEditor', { static: true })
-  //private eventEditor: EventEditorComponent;
+  @ViewChild('eventEditor', { static: true })
+  private eventEditor: EventEditorComponent;
 
   constructor(
     private alertService: AlertService,
@@ -54,21 +48,18 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
     const gT = (key: string) => this.translationService.getTranslation(key);
 
     this.columns = [
-      { prop: 'isEnabled', name: gT('events.management.IsEnabled'), width: 70, cellTemplate: this.isEnabled, canAutoResize: false },
-      { prop: 'name', name: gT('events.management.Name'), width: 50 },
-      { prop: 'eventConditions', name: gT('events.management.EventConditions'), width: 350, cellTemplate: this.eventConditionsTemplate },
-      { prop: 'actionDevice.name', name: gT('events.management.ActionDevice'), width: 50 },
-      { prop: 'stateDescription', name: gT('events.management.State'), width: 50 }
+      { prop: 'name', name: gT('events.management.Name'), width: 300 },
+      { prop: 'description', name: gT('events.management.Description'), width: 500 }
     ];
 
     if (this.canManageEvents) {
-      this.columns.push({ name: '', width: 200, cellTemplate: this.actionsTemplate, resizeable: false, canAutoResize: false, sortable: false, draggable: false });
+      this.columns.push({ name: '', width: 400, cellTemplate: this.actionsTemplate, resizeable: false, canAutoResize: false, sortable: false, draggable: false });
     }
     this.loadData();
   }
 
   public ngAfterViewInit() {
-   /* this.eventEditor.changesSavedCallback = (event: generated.EventViewModel) => {
+    this.eventEditor.changesSavedCallback = (event: generated.Event) => {
       this.onEditorModalSaved(event);
       this.editorModal.hide();
     };
@@ -77,7 +68,7 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
       this.editedEvent = null;
       this.cachedEvent = null;
       this.editorModal.hide();
-    };*/
+    };
   }
 
   private loadData() {
@@ -131,20 +122,27 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
 
   protected onEditorModalHidden() {
     this.editingEventName = null;
-    //this.eventEditor.resetForm(true);
+    this.eventEditor.resetForm(true);
+  }
+
+  protected showEventLocations(row: generated.Event) {
+
+  }
+
+  protected showEventSchedules(row: generated.Event) {
   }
 
   protected newEvent() {
     this.editingEventName = null;
     this.cachedEvent = null;
-   // this.editedEvent = this.eventEditor.newEvent();
+    this.editedEvent = this.eventEditor.newEvent();
     this.editorModal.show();
   }
 
   protected editEvent(row: generated.Event) {
     this.editingEventName = { name: row.name };
     this.cachedEvent = row;
-    //this.editedEvent = this.eventEditor.editEvent(row);
+    this.editedEvent = this.eventEditor.editEvent(row);
     this.editorModal.show();
   }
 

@@ -55,14 +55,24 @@ namespace EventManager.Web.Controllers
 
         public async Task<IActionResult> GetAllPaged(int pageNumber, int pageSize)
         {
-            IPagedList<TEntity> pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize, include: e => GetInclude(e));
+            IPagedList<TEntity> pagedList;
+            if (GetIncludeEvent == null)
+                pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize);
+            else
+                pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize, include: e => GetInclude(e));
+
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
         }
 
         public async Task<IActionResult> Get(int id)
         {
-            TEntity entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e));
+            TEntity entity;
+            if (GetIncludeEvent == null)
+                entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id);
+            else
+                entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e));
+
             if (entity == null)
                 return NotFound(id);
             else
@@ -72,7 +82,12 @@ namespace EventManager.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             IRepository<TEntity> repository = _unitOfWork.GetRepository<TEntity>();
-            TEntity entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e), disableTracking: false);
+            TEntity entity;
+            if (GetIncludeEvent == null)
+                entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, disableTracking: false);
+            else
+                entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e), disableTracking: false);
+
             if (entity == null)
                 return NotFound(id);
             else

@@ -31,37 +31,34 @@
       "Edit": "Edit",
       "Details": "Details",
       "Delete": "Delete",
-      "EventDetails": "Event Details for {{eventId}}: {{name}}",
-      "EventId": "Id",
-      "IsEnabled": "Enabled",
+      "EventDetails": "Event Details for {{id}}: {{name}}",
+      "Id": "Id",
       "Name": "Name",
-      "ActionDevice": "Device",
-      "State": "Action",
-      "EventConditions": "Conditions to match"
+      "Description": "Description",
+      "Locations": "Locations",
+      "Schedules": "Schedules",
+      "Occurrences": "Occurrences",
+      "Services": "Services"
     },
     "editor": {
-      "ActionDevice": "Action Device",
-      "ActionDeviceValidations": {
-        "required": "Action Device is required."
-      },
       "Cancel": "Cancel",
       "Close": "Close",
       "Edit": "Edit",
-      "EventConditions": "Conditions",
-      "EventId": "Id",
-      "IsEnabled": "Enabled",
+      "Id": "Id",
       "Name": "Name",
       "NameValidations": {
         "required": "Name is required.",
         "minlength": "Name must be a minimum of 2 characters.",
-        "maxlength": "Name cannot be more than 200 characters."
+        "maxlength": "Name cannot be more than 100 characters."
+      },
+      "Description": "Description",
+      "DescriptionValidations": {
+        "required": "Description is required.",
+        "minlength": "Description must be a minimum of 2 characters.",
+        "maxlength": "Description cannot be more than 200 characters."
       },
       "Save": "Save",
-      "Saving": "Saving...",
-      "State": "State",
-      "StateValidations": {
-        "required": "State is required."
-      }
+      "Saving": "Saving..."
     }
   },
   "eventConditions": {
