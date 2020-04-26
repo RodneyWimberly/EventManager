@@ -26,7 +26,7 @@ namespace EventManager.Web.Controllers
         protected readonly ILogger _logger;
         protected readonly HttpContext _httpContext;
         protected readonly IAccountManager _accountManager;
-        protected readonly EntityController<ExtendedLog> _extendedLogController;
+        protected readonly EntityControllerHelper<ExtendedLog> _extendedLogHelper;
 
         public ExtendedLogController(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<ApplicationDbContext> unitOfWork, ILogger<ExtendedLogController> logger)
         {
@@ -35,7 +35,7 @@ namespace EventManager.Web.Controllers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _extendedLogController = new EntityController<ExtendedLog>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+            _extendedLogHelper = new EntityControllerHelper<ExtendedLog>(accountManager, httpAccessor, mapper, unitOfWork, logger);
             //_extendedLogController.GetIncludeEvent += ExtendedLogController_GetIncludeEvent;
         }
 
@@ -49,7 +49,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ExtendedLog>))]
         public async Task<IActionResult> GetAllExtendedLogs()
         {
-            return await _extendedLogController.GetAll();
+            return await _extendedLogHelper.GetAll();
         }
 
         [HttpGet("{pageNumber:int}/{pageSize:int}")]
@@ -57,7 +57,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ExtendedLog>))]
         public async Task<IActionResult> GetAllExtendedLogsPaged(int pageNumber, int pageSize)
         {
-            return await _extendedLogController.GetAllPaged(pageNumber, pageSize);
+            return await _extendedLogHelper.GetAllPaged(pageNumber, pageSize);
         }
 
         [HttpGet("level/{level}")]
@@ -91,7 +91,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetExtendedLog(int id)
         {
-            return await _extendedLogController.Get(id);
+            return await _extendedLogHelper.Get(id);
         }
 
         [HttpDelete("{id:int}")]
@@ -100,7 +100,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteExtendedLog(int id)
         {
-            return await _extendedLogController.Delete(id);
+            return await _extendedLogHelper.Delete(id);
         }
 
         [HttpDelete]
@@ -119,7 +119,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostExtendedLog([FromBody]ExtendedLog entity)
         {
-            return await _extendedLogController.Post(entity);
+            return await _extendedLogHelper.Add(entity);
         }
 
         [HttpPut("{id:int}")]
@@ -128,7 +128,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutExtendedLog(int id, [FromBody]ExtendedLog entity)
         {
-            return await _extendedLogController.Put(id, entity);
+            return await _extendedLogHelper.Update(id, string.Empty, entity);
         }
 
         [HttpPatch("{id:int}")]
@@ -137,7 +137,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PatchExtendedLog(int id, [FromBody]JsonPatchDocument<ExtendedLog> patch)
         {
-            return await _extendedLogController.Patch(id, patch);
+            return await _extendedLogHelper.Patch(id, string.Empty, patch);
         }
     }
 }

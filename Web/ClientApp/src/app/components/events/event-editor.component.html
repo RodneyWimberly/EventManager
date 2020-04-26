@@ -18,7 +18,7 @@
                         [isEditMode]="isEditMode" [translationKey]="'events.editor.Description'">
       <input inputRef type="text" id="description" name="description" placeholder="Enter description" class="form-control"
              [ngClass]="{'is-valid': form.submitted && description.valid, 'is-invalid': form.submitted && description.invalid}" [(ngModel)]="event.description"
-             #name="ngModel" required minlength="2" maxlength="200" />
+             #description="ngModel" required minlength="2" maxlength="200" />
     </validation-control>
 
     <div class="form-group row">

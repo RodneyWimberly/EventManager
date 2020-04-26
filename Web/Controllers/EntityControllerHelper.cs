@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace EventManager.Web.Controllers
 {
-    public class EntityController<TEntity> : ControllerBase
+    public class EntityControllerHelper<TEntity> : ControllerBase
       where TEntity : class, IPrimaryKeyEntity<int>, IAuditableEntity, IConcurrencyTrackingEntity, new()
     {
         protected readonly IMapper _mapper;
@@ -29,7 +29,7 @@ namespace EventManager.Web.Controllers
         protected readonly HttpContext _httpContext;
         protected readonly IAccountManager _accountManager;
 
-        public EntityController(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<ApplicationDbContext> unitOfWork, ILogger logger)
+        public EntityControllerHelper(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<ApplicationDbContext> unitOfWork, ILogger logger)
         {
             _accountManager = accountManager;
             _httpContext = httpAccessor.HttpContext;
@@ -40,38 +40,38 @@ namespace EventManager.Web.Controllers
 
         public event EventHandler<GetIncludeEventArgs<TEntity>> GetIncludeEvent;
 
-        protected virtual IIncludableQueryable<TEntity, object> GetInclude(IQueryable<TEntity> entityQuery)
+        public virtual IIncludableQueryable<TEntity, object> GetInclude(IQueryable<TEntity> entityQuery, string includePropertyPaths)
         {
             EventHandler<GetIncludeEventArgs<TEntity>> eventHandler = GetIncludeEvent;
-            GetIncludeEventArgs<TEntity> args = new GetIncludeEventArgs<TEntity>(entityQuery);
+            GetIncludeEventArgs<TEntity> args = new GetIncludeEventArgs<TEntity>(entityQuery, includePropertyPaths);
             eventHandler?.Invoke(this, args);
             return args.Include;
         }
 
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(string includePropertyPaths = "")
         {
-            return await GetAllPaged(0, int.MaxValue); ;
+            return await GetAllPaged(0, int.MaxValue, includePropertyPaths); ;
         }
 
-        public async Task<IActionResult> GetAllPaged(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllPaged(int pageNumber, int pageSize, string includePropertyPaths = "")
         {
             IPagedList<TEntity> pagedList;
-            if (GetIncludeEvent == null)
+            if (string.IsNullOrEmpty(includePropertyPaths))
                 pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize);
             else
-                pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize, include: e => GetInclude(e));
+                pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize, include: e => GetInclude(e, includePropertyPaths));
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
         }
 
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id, string includePropertyPaths = "")
         {
             TEntity entity;
-            if (GetIncludeEvent == null)
+            if (string.IsNullOrEmpty(includePropertyPaths))
                 entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id);
             else
-                entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e));
+                entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e, includePropertyPaths));
 
             if (entity == null)
                 return NotFound(id);
@@ -82,11 +82,7 @@ namespace EventManager.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             IRepository<TEntity> repository = _unitOfWork.GetRepository<TEntity>();
-            TEntity entity;
-            if (GetIncludeEvent == null)
-                entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, disableTracking: false);
-            else
-                entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e), disableTracking: false);
+            TEntity entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, disableTracking: false);
 
             if (entity == null)
                 return NotFound(id);
@@ -98,7 +94,7 @@ namespace EventManager.Web.Controllers
             }
         }
 
-        public async Task<IActionResult> Post([FromBody]TEntity entity)
+        public async Task<IActionResult> Add(TEntity entity)
         {
             if (ModelState.IsValid)
             {
@@ -106,13 +102,13 @@ namespace EventManager.Web.Controllers
                     return BadRequest($"{nameof(entity)} cannot be null");
                 EntityEntry<TEntity> addedEntity = await _unitOfWork.GetRepository<TEntity>().InsertAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
-                return CreatedAtAction("GetEvent", new { id = addedEntity.Entity.Id });
+                return CreatedAtAction($"Get{typeof(TEntity).Name}", new { id = addedEntity.Entity.Id }, addedEntity.Entity);
             }
             else
                 return BadRequest(ModelState);
         }
 
-        public async Task<IActionResult> Put(int id, [FromBody]TEntity entity)
+        public async Task<IActionResult> Update(int id, string includePropertyPaths = "", TEntity entity = null)
         {
             if (ModelState.IsValid)
             {
@@ -124,9 +120,15 @@ namespace EventManager.Web.Controllers
 
                 try
                 {
-                    _unitOfWork.GetRepository<TEntity>().Update(entity);
+                    IRepository<TEntity> repository = _unitOfWork.GetRepository<TEntity>();
+                    repository.Update(entity);
                     await _unitOfWork.SaveChangesAsync();
-                    return NoContent();
+                    if (string.IsNullOrEmpty(includePropertyPaths))
+                        entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id);
+                    else
+                        entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e, includePropertyPaths));
+
+                    return Ok(entity);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -137,7 +139,7 @@ namespace EventManager.Web.Controllers
                 return BadRequest(ModelState);
         }
 
-        public async Task<IActionResult> Patch(int id, [FromBody]JsonPatchDocument<TEntity> patch)
+        public async Task<IActionResult> Patch(int id, string includePropertyPaths = "", JsonPatchDocument<TEntity> patch = null)
         {
             if (ModelState.IsValid)
             {
@@ -153,7 +155,12 @@ namespace EventManager.Web.Controllers
                     try
                     {
                         await _unitOfWork.SaveChangesAsync();
-                        return NoContent();
+                        if (string.IsNullOrEmpty(includePropertyPaths))
+                            entityToUpdate = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id);
+                        else
+                            entityToUpdate = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e, includePropertyPaths));
+
+                        return Ok(entityToUpdate);
                     }
                     catch (DbUpdateConcurrencyException ex)
                     {
@@ -168,13 +175,14 @@ namespace EventManager.Web.Controllers
         protected async Task<IActionResult> HandleDbUpdateConcurrencyException(DbUpdateConcurrencyException ex)
         {
             EntityEntry exceptionEntry = ex.Entries.Single();
-            TEntity clientValues = (TEntity)exceptionEntry.Entity;
+            object clientValues = exceptionEntry.Entity;
             PropertyValues databaseEntry = exceptionEntry.GetDatabaseValues();
             if (databaseEntry == null)
-                ModelState.AddModelError(string.Empty, "Unable to save changes. The event was deleted by another user.");
+                ModelState.AddModelError(string.Empty, $"Unable to update the table with the requested changes. The {typeof(TEntity).Name} was deleted by another user.");
             else
             {
-                TEntity databaseValues = (TEntity)databaseEntry.ToObject();
+                object databaseValues = databaseEntry.ToObject();
+                string entityName = databaseValues.GetType().Name;
                 PropertyInfo[] databaseProperties = databaseValues.GetType().GetProperties(),
                     clientProperties = clientValues.GetType().GetProperties();
                 foreach (PropertyInfo databaseProperty in databaseProperties)
@@ -196,29 +204,38 @@ namespace EventManager.Web.Controllers
                         if (databaseValue != null &&
                             clientValue != null &&
                             !databaseValue.Equals(clientValue))
-                            ModelState.AddModelError(databaseProperty.Name, $"Database value: {databaseValue} / New value: {clientValue}");
+                            ModelState.AddModelError($"{entityName}.{databaseProperty.Name}", $"New table value: {databaseValue} / Your conflicting value: {clientValue}");
                     }
                 }
-                string userName;
+                string userName, updatedBy, updatedDate;
                 try
                 {
-                    if (databaseValues.UpdatedBy == Ids.SystemUserId)
+                    updatedBy = databaseProperties.First(p => p.Name == "UpdatedBy").GetValue(databaseValues).ToString();
+                    updatedDate = databaseProperties.First(p => p.Name == "UpdatedDate").GetValue(databaseValues).ToString();
+                    if (updatedBy == Ids.SystemUserId)
                         userName = "System User";
                     else
                     {
-                        ApplicationUser user = await _accountManager.GetUserByIdAsync(databaseValues.UpdatedBy);
+                        ApplicationUser user = await _accountManager.GetUserByIdAsync(updatedBy);
                         userName = user.FullName;
                     }
                 }
                 catch
                 {
                     userName = "Unknown";
+                    updatedDate = "01/01/1900 00:00:00";
                 }
 
-                ModelState.AddModelError(string.Empty, "The record you attempted to edit was modified " +
-                $"by another user ({userName}) after you got the original value. The edit operation was canceled " +
-                "and the current values in the database and the requested new values have been provided.");
+                ModelState.AddModelError(string.Empty, "The record you attempted to update was modified " +
+                $"by {userName} at {updatedDate} after you queried the " +
+                "original values. The update operation was canceled and both the new values in the database " +
+                "and the conflicting values you supplied have been provided.");
             }
+            string message = $"A DbUpdateConcurrencyException occurred when attempting to update {typeof(TEntity).Name}\r\nThe following message was returned:\r\n" + string.Join(" | ", ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+            _logger.LogDebug(message);
+
             return BadRequest(ModelState);
         }
     }

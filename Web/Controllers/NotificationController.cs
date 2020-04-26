@@ -19,12 +19,12 @@ namespace EventManager.Web.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        protected readonly EntityController<Notification> _notificationController;
+        protected readonly EntityControllerHelper<Notification> _notificationHelper;
 
         public NotificationController(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<ApplicationDbContext> unitOfWork, ILogger<NotificationController> logger)
         {
-            _notificationController = new EntityController<Notification>(accountManager, httpAccessor, mapper, unitOfWork, logger);
-            _notificationController.GetIncludeEvent += NotificationController_GetIncludeEvent;
+            _notificationHelper = new EntityControllerHelper<Notification>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+            _notificationHelper.GetIncludeEvent += NotificationController_GetIncludeEvent;
         }
 
         private void NotificationController_GetIncludeEvent(object sender, GetIncludeEventArgs<Notification> e)
@@ -37,7 +37,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Notification>))]
         public async Task<IActionResult> GetAllNotifications()
         {
-            return await _notificationController.GetAll();
+            return await _notificationHelper.GetAll();
         }
 
         [HttpGet("{pageNumber:int}/{pageSize:int}")]
@@ -45,7 +45,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Notification>))]
         public async Task<IActionResult> GetAllNotificationsPaged(int pageNumber, int pageSize)
         {
-            return await _notificationController.GetAllPaged(pageNumber, pageSize);
+            return await _notificationHelper.GetAllPaged(pageNumber, pageSize);
         }
 
         [HttpGet("{id:int}")]
@@ -54,7 +54,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetNotification(int id)
         {
-            return await _notificationController.Get(id);
+            return await _notificationHelper.Get(id);
         }
 
         [HttpDelete("{id:int}")]
@@ -63,7 +63,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteNotification(int id)
         {
-            return await _notificationController.Delete(id);
+            return await _notificationHelper.Delete(id);
         }
 
         [HttpPost]
@@ -72,7 +72,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostNotification([FromBody]Notification entity)
         {
-            return await _notificationController.Post(entity);
+            return await _notificationHelper.Add(entity);
         }
 
         [HttpPut("{id:int}")]
@@ -81,7 +81,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PutNotification(int id, [FromBody]Notification entity)
         {
-            return await _notificationController.Put(id, entity);
+            return await _notificationHelper.Update(id, string.Empty, entity);
         }
 
         [HttpPatch("{id:int}")]
@@ -90,7 +90,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PatchNotification(int id, [FromBody]JsonPatchDocument<Notification> patch)
         {
-            return await _notificationController.Patch(id, patch);
+            return await _notificationHelper.Patch(id, string.Empty, patch);
         }
     }
 }

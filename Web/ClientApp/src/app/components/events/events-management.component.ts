@@ -20,9 +20,9 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   protected loadingIndicator: boolean;
   protected columns: any[] = [];
   protected rows: generated.Event[] = [];
-  protected editedEvent: generated.Event;
-  private cachedEvent: generated.Event;
   private cachedRows: generated.Event[] = [];
+  private editedRowIndex: number;
+  private searchValue: string;
 
 
   @ViewChild('dataTable', { static: true })
@@ -65,8 +65,6 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
     };
 
     this.eventEditor.changesCancelledCallback = () => {
-      this.editedEvent = null;
-      this.cachedEvent = null;
       this.editorModal.hide();
     };
   }
@@ -74,17 +72,15 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   private loadData() {
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-
-    this.eventService.getEvents().subscribe(events => this.onLoadDataSuccessful(events), error => this.onLoadDataFailed(error));
-
+    this.eventService.getEvents(null, null, "locations; schedules").subscribe(events => this.onLoadDataSuccessful(events), error => this.onLoadDataFailed(error));
   }
 
   private onLoadDataSuccessful(events: generated.Event[]) {
+    this.cachedRows = events;
+    this.onSearchChanged("");
+    //this.rows = [...events];
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
-
-    this.cachedRows = [...events];
-    this.rows = events;
   }
 
   private onLoadDataFailed(error: any) {
@@ -96,28 +92,24 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   }
 
   protected onSearchChanged(value: string) {
+    this.searchValue = value
     this.rows = this.cachedRows.filter(r => Utilities.searchArray(value, false, r.id, r.name, r.description));
   }
 
-  private onEditorModalSaved(newEvent: generated.Event) {
+  private onEditorModalSaved(updatedEvent: generated.Event) {
 
-    if (this.cachedEvent) {
-      let sourceIndex = this.cachedRows.indexOf(this.cachedEvent, 0);
-      if (sourceIndex > -1) {
-        Object.assign(this.cachedEvent, newEvent);
-        Object.assign(this.cachedRows[sourceIndex], this.cachedEvent);
-        Object.assign(this.rows[sourceIndex], this.cachedEvent);
-      }
+    if (this.editedRowIndex > -1) {
+      let cachedEvent: generated.Event = this.cachedRows[this.editedRowIndex];
+      updatedEvent.locations = cachedEvent.locations;
+      updatedEvent.schedules = cachedEvent.schedules;
+      this.cachedRows[this.editedRowIndex] = updatedEvent.clone();
+
+      this.onSearchChanged(this.searchValue);
     } else {
-      const event = new generated.Event();
-      Object.assign(event, newEvent);
-      this.cachedRows.splice(this.cachedRows.length, 0, event);
-      this.rows.splice(this.rows.length, 0, event);
-      this.rows = [...this.rows];
+      this.cachedRows.splice(this.cachedRows.length, 0, updatedEvent.clone());
+      this.rows = [...this.cachedRows];
       this.ngxDatatable.offset = Math.round(this.rows.length / this.ngxDatatable.pageSize);
     }
-    this.editedEvent = null;
-    this.cachedEvent = null;
   }
 
   protected onEditorModalHidden() {
@@ -134,15 +126,20 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
 
   protected newEvent() {
     this.editingEventName = null;
-    this.cachedEvent = null;
-    this.editedEvent = this.eventEditor.newEvent();
+    this.editedRowIndex = -1;
+    this.eventEditor.newEvent();
     this.editorModal.show();
   }
 
   protected editEvent(row: generated.Event) {
     this.editingEventName = { name: row.name };
-    this.cachedEvent = row;
-    this.editedEvent = this.eventEditor.editEvent(row);
+    this.editedRowIndex = -1;
+    this.cachedRows.forEach((value: generated.Event, index: number, array: generated.Event[]) => {
+      if (value.id == row.id) {
+        this.editedRowIndex = index;
+      }
+    });
+    this.eventEditor.editEvent(row);
     this.editorModal.show();
   }
 

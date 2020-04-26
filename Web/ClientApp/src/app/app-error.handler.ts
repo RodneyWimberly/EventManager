@@ -31,7 +31,7 @@ export class AppErrorHandler extends ErrorHandler {
         extendedLog.timeStamp = new Date(Date.now());
         this.extendedLogService.addExtendedLog(extendedLog);
 
-        if (confirm('Fatal Error!\nAn unresolved error has occured. Do you want to reload the page to correct this?\n\nError: ' + error.message)) {
+      if (confirm('Fatal Error!\nAn unresolved error has occured. Do you want to reload the page to correct this?\n\nError: ' + extendedLog.message)) {
             window.location.reload(true);
         }
         

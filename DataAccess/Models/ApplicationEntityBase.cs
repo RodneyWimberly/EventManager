@@ -13,13 +13,13 @@ namespace EventManager.DataAccess.Models
         [Display(Name = "Id", GroupName = "ApplicationEntityBase")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "{0} is required")]
-        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        //[Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, ErrorMessage = "{0} length must be less than {1}.")]
         [Display(Name = "Created By", GroupName = "ApplicationEntityBase")]
         public string CreatedBy { get; set; }
 
-        [Required(ErrorMessage = "{0} is required")]
-        [StringLength(36, MinimumLength = 1, ErrorMessage = "{0} length must be between {2} and {1}.")]
+        //[Required(ErrorMessage = "{0} is required")]
+        [StringLength(36, ErrorMessage = "{0} length must be less than {1}.")]
         [Display(Name = "Updated By", GroupName = "ApplicationEntityBase")]
         public string UpdatedBy { get; set; }
 

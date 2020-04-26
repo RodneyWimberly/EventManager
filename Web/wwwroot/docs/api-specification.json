@@ -1,5 +1,5 @@
 ﻿{
-  "x-generator": "NSwag v13.4.1.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))",
+  "x-generator": "NSwag v13.4.2.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "EventManager WebAPI",
@@ -939,12 +939,25 @@
         }
       }
     },
-    "/api/Event": {
+    "/api/Event/{includePropertyPaths}": {
       "get": {
         "tags": [
           "Event"
         ],
         "operationId": "Event_GetAllEvents",
+        "parameters": [
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -960,7 +973,282 @@
             }
           }
         }
+      }
+    },
+    "/api/Event/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventsPaged",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{id}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
       },
+      "put": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PutEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PatchEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "patch",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{id}": {
+      "delete": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_DeleteEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event": {
       "post": {
         "tags": [
           "Event"
@@ -1002,12 +1290,48 @@
         }
       }
     },
-    "/api/Event/{pageNumber}/{pageSize}": {
+    "/api/Event/Location/{includePropertyPaths}": {
       "get": {
         "tags": [
           "Event"
         ],
-        "operationId": "Event_GetAllEventsPaged",
+        "operationId": "Event_GetAllEventLocations",
+        "parameters": [
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventLocation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Location/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventLocationsPaged",
         "parameters": [
           {
             "name": "pageNumber",
@@ -1028,6 +1352,17 @@
               "format": "int32"
             },
             "x-position": 2
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -1038,7 +1373,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Event"
+                    "$ref": "#/components/schemas/EventLocation"
                   }
                 }
               }
@@ -1047,15 +1382,15 @@
         }
       }
     },
-    "/api/Event/{id}": {
+    "/api/Event/{eventId}/Location/{includePropertyPaths}": {
       "get": {
         "tags": [
           "Event"
         ],
-        "operationId": "Event_GetEvent",
+        "operationId": "Event_GetAllEventLocationsByEvent",
         "parameters": [
           {
-            "name": "id",
+            "name": "eventId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1063,6 +1398,17 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -1071,28 +1417,201 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventLocation"
+                  }
                 }
               }
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/Event/{eventId}/Location/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
         "tags": [
           "Event"
         ],
-        "operationId": "Event_DeleteEvent",
+        "operationId": "Event_GetAllEventLocationsByEventPaged",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventLocation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Location/Schedule/{eventScheduleId}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventLocationsByEventSchedule",
+        "parameters": [
+          {
+            "name": "eventScheduleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventLocation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Location/Schedule/{eventScheduleId}/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventLocationsByEventSchedulePaged",
+        "parameters": [
+          {
+            "name": "eventScheduleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventLocation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Location/{id}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetEventLocation",
         "parameters": [
           {
             "name": "id",
@@ -1103,11 +1622,29 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventLocation"
+                }
+              }
+            }
           },
           "404": {
             "description": "",
@@ -1125,7 +1662,7 @@
         "tags": [
           "Event"
         ],
-        "operationId": "Event_PutEvent",
+        "operationId": "Event_PutEventLocation",
         "parameters": [
           {
             "name": "id",
@@ -1136,6 +1673,17 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "requestBody": {
@@ -1143,16 +1691,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Event"
+                "$ref": "#/components/schemas/EventLocation"
               }
             }
           },
           "required": true,
-          "x-position": 2
+          "x-position": 3
         },
         "responses": {
-          "204": {
-            "description": ""
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventLocation"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -1170,7 +1725,7 @@
         "tags": [
           "Event"
         ],
-        "operationId": "Event_PatchEvent",
+        "operationId": "Event_PatchEventLocation",
         "parameters": [
           {
             "name": "id",
@@ -1181,6 +1736,17 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "requestBody": {
@@ -1196,11 +1762,1932 @@
             }
           },
           "required": true,
-          "x-position": 2
+          "x-position": 3
         },
         "responses": {
-          "204": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventLocation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Location/{id}": {
+      "delete": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_DeleteEventLocation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
             "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Location": {
+      "post": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PostEventLocation",
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventLocation"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventLocation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Schedule/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventSchedules",
+        "parameters": [
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Schedule/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventSchedulesPaged",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{eventId}/Schedule/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventSchedulesByEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{eventId}/Schedule/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventSchedulesByEventPaged",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Schedule/Location/{eventLocationId}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventSchedulesByEventLocation",
+        "parameters": [
+          {
+            "name": "eventLocationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Schedule/Location/{eventLocationId}/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventSchedulesByEventLocationPaged",
+        "parameters": [
+          {
+            "name": "eventLocationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Schedule/{id}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetEventSchedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventSchedule"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PutEventSchedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventSchedule"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventSchedule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PatchEventSchedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "patch",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventSchedule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Schedule/{id}": {
+      "delete": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_DeleteEventSchedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Schedule": {
+      "post": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PostEventSchedule",
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventSchedule"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventSchedule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrences",
+        "parameters": [
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrencesPaged",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{eventId}/Occurrence/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrencesByEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{eventId}/Occurrence/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrencesByEventPaged",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/Location/{eventLocationid}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrencesByEventLocation",
+        "parameters": [
+          {
+            "name": "eventLocationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/Location/{eventLocationid}/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrencesByEventLocationPaged",
+        "parameters": [
+          {
+            "name": "eventLocationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/Schedule/{eventScheduleid}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrencesByEventSchedule",
+        "parameters": [
+          {
+            "name": "eventScheduleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventOccurrence"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/Schedule/{eventScheduleid}/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventOccurrencesByEventSchedulePaged",
+        "parameters": [
+          {
+            "name": "eventScheduleid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/{id}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetEventOccurrence",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventOccurrence"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PutEventOccurrence",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventOccurrence"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventOccurrence"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PatchEventOccurrence",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "patch",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventOccurrence"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence/{id}": {
+      "delete": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_DeleteEventOccurrence",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Occurrence": {
+      "post": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PostEventOccurrence",
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventOccurrence"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventOccurrence"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Service/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventServices",
+        "parameters": [
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Service/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventServicesPaged",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{eventId}/Service/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventServicesByEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/{eventId}/Service/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventServicesByEventPaged",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Service/Service/{serviceId}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventServicesByService",
+        "parameters": [
+          {
+            "name": "serviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Service/Service/{serviceId}/{pageNumber}/{pageSize}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetAllEventServicesByServicePaged",
+        "parameters": [
+          {
+            "name": "serviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Service/{id}/{includePropertyPaths}": {
+      "get": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_GetEventService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventService"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PutEventService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventService"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventService"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PatchEventService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "includePropertyPaths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "patch",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventService"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Service/{id}": {
+      "delete": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_DeleteEventService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Event/Service": {
+      "post": {
+        "tags": [
+          "Event"
+        ],
+        "operationId": "Event_PostEventService",
+        "requestBody": {
+          "x-name": "entity",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventService"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventService"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -2716,8 +5203,6 @@
         "additionalProperties": false,
         "required": [
           "id",
-          "createdBy",
-          "updatedBy",
           "updatedDate",
           "createdDate"
         ],
@@ -2731,13 +5216,15 @@
             "title": "Created By",
             "type": "string",
             "maxLength": 36,
-            "minLength": 1
+            "minLength": 0,
+            "nullable": true
           },
           "updatedBy": {
             "title": "Updated By",
             "type": "string",
             "maxLength": 36,
-            "minLength": 1
+            "minLength": 0,
+            "nullable": true
           },
           "updatedDate": {
             "title": "Updated Date",

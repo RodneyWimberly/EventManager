@@ -24,13 +24,16 @@ export class EventEditorComponent implements OnInit {
   protected formResetToggle = true;
   protected viewModelState: ViewModelStates = ViewModelStates.Edit;
   protected stateKeys: number[];
-
+  protected event: generated.Event = new generated.Event();
  
   @ViewChild('form', { static: false })
   public form;
 
   @ViewChild('name', { static: false })
   public name;
+
+  @ViewChild('description', { static: false })
+  public description;
 
   constructor(private alertService: AlertService,
     private translationService: AppTranslationService,
@@ -56,31 +59,21 @@ export class EventEditorComponent implements OnInit {
     }
   }
 
-  public newEvent(): generated.Event {
+  public newEvent(): void {
     this.viewModelState = ViewModelStates.New;
     this.showValidationErrors = true;
-    return this.event = undefined;
+    this.event = new generated.Event();
   }
 
-  public editEvent(event: generated.Event): generated.Event {
+  public editEvent(event: generated.Event): void {
     this.viewModelState = ViewModelStates.Edit;
     this.showValidationErrors = true;
-    return this.event = event;
+    this.event = event.clone();
   }
 
   public viewEvent(event: generated.Event): generated.Event {
     this.viewModelState = ViewModelStates.View;
     return this.event = event;
-  }
-
-  public get event(): generated.Event {
-      return new generated.Event();
-  }
-
-  public set event(event: generated.Event) {
-    if (!event) {
-      event = new generated.Event();
-    }
   }
 
   protected get canManageEvents(): boolean {
@@ -111,10 +104,15 @@ export class EventEditorComponent implements OnInit {
   protected save(): void {
     this.isSaving = true;
     this.alertService.startLoadingMessage('Saving changes...');
+    this.event.locations = null;
+    this.event.schedules = null;
+    this.event.occurrences = null;
+    this.event.services = null;
+
     if (this.viewModelState == ViewModelStates.New) {
       this.eventService.addEvent(this.event).subscribe(event => this.saveSuccessHelper(event), error => this.saveFailedHelper(error));
     } else if (this.viewModelState == ViewModelStates.Edit) {
-      this.eventService.updateEvent(this.event).subscribe(event => this.saveSuccessHelper(this.event), error => this.saveFailedHelper(error));
+      this.eventService.updateEvent(this.event).subscribe(event => this.saveSuccessHelper(event), error => this.saveFailedHelper(error));
     }
   }
 
@@ -122,25 +120,23 @@ export class EventEditorComponent implements OnInit {
     this.alertService.showMessage(caption, message, MessageSeverity.error);
   }
 
-  private saveSuccessHelper(event?: generated.Event): void {
+  private saveSuccessHelper(event: generated.Event): void {
+    this.event = event;
     this.showValidationErrors = false;
-   Object.assign(this.event, event);
 
     this.isSaving = false;
     this.alertService.stopLoadingMessage();
-    var eventName: string = this.event.name;
+    var eventName: string = event.name;
 
     if (this.viewModelState == ViewModelStates.New) {
       this.alertService.showMessage('Success', `Event \"${eventName}\" was created successfully`, MessageSeverity.success);
     } else if (this.viewModelState == ViewModelStates.Edit) {
       this.alertService.showMessage('Success', `Changes to event \"${eventName}\" was saved successfully`, MessageSeverity.success);
     }
-
-    this.viewModelState = ViewModelStates.Edit;
-
     if (this.changesSavedCallback) {
-      this.changesSavedCallback(this.event);
+      this.changesSavedCallback(event);
     }
+    this.viewModelState = ViewModelStates.Edit;
     this.resetForm();
   }
 
