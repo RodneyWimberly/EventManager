@@ -133,5 +133,8 @@
       }
     }
   },
-  "defaultProject": "EventManager"
+  "defaultProject": "EventManager",
+  "cli": {
+    "analytics": false
+  }
 }

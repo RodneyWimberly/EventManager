@@ -1,6 +1,6 @@
-import { Component, Input, ContentChild, OnInit } from '@angular/core';
-import { InputRefDirective } from '../../directives/input-ref.directive';
+import { Component, ContentChild, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { InputRefDirective } from '../../directives/input-ref.directive';
 import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class ValidationControlComponent implements OnInit {
     return this.translationService.getTranslation(this.translationKey);
   }
 
-  public get controlName(): string {
+  public get controlName(): string | number {
     return this.input.controlName;
   }
 

@@ -23,7 +23,7 @@ export class InputRefDirective {
     return this.formControl.value;
   }
 
-  public get controlName(): string {
+  public get controlName(): string | number {
     return this.formControl.name;
   }
 }
