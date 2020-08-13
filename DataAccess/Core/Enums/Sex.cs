@@ -1,6 +1,6 @@
 ﻿namespace EventManager.DataAccess.Core.Enums
 {
-    public enum Sexes
+    public enum Sex
     {
         Male,
         Female

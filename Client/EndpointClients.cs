@@ -8307,7 +8307,7 @@ namespace EventManager.Client
         public System.Collections.Generic.ICollection<EventOccurrence> Occurrences { get; set; }
     
         [Newtonsoft.Json.JsonProperty("daysOfTheWeek", Required = Newtonsoft.Json.Required.Always)]
-        public Days DaysOfTheWeek { get; set; }
+        public DaysOfTheWeek DaysOfTheWeek { get; set; }
     
         [Newtonsoft.Json.JsonProperty("startDate", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
@@ -8439,7 +8439,7 @@ namespace EventManager.Client
         public string Suffix { get; set; }
     
         [Newtonsoft.Json.JsonProperty("sex", Required = Newtonsoft.Json.Required.Always)]
-        public Sexes Sex { get; set; }
+        public Sex Sex { get; set; }
     
         [Newtonsoft.Json.JsonProperty("birthDate", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
@@ -8538,7 +8538,7 @@ namespace EventManager.Client
     /// 1 = Female</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
     [System.Flags]
-    public enum Sexes
+    public enum Sex
     {
         Male = 1,
     
@@ -8546,30 +8546,33 @@ namespace EventManager.Client
     
     }
     
-    /// <summary>0 = Sunday
-    /// 1 = Monday
-    /// 2 = Tuesday
-    /// 3 = Wednesday
-    /// 4 = Thursday
-    /// 5 = Friday
-    /// 6 = Saturaday</summary>
+    /// <summary>1 = Sunday
+    /// 2 = Monday
+    /// 4 = Tuesday
+    /// 8 = Wednesday
+    /// 16 = Thursday
+    /// 32 = Friday
+    /// 64 = Saturday
+    /// 127 = AllDays</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
     [System.Flags]
-    public enum Days
+    public enum DaysOfTheWeek
     {
-        Sunday = 0,
+        Sunday = 1,
     
-        Monday = 1,
+        Monday = 2,
     
-        Tuesday = 2,
+        Tuesday = 4,
     
-        Wednesday = 3,
+        Wednesday = 8,
     
-        Thursday = 4,
+        Thursday = 16,
     
-        Friday = 5,
+        Friday = 32,
     
-        Saturaday = 6,
+        Saturday = 64,
+    
+        AllDays = 127,
     
     }
     

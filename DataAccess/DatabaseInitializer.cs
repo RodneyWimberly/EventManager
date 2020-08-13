@@ -12,10 +12,12 @@ using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace EventManager.DataAccess
 {
@@ -173,7 +175,7 @@ namespace EventManager.DataAccess
                         MiddleName = "Rodney",
                         LastName = "Wimberly",
                         Suffix = "Jr.",
-                        Sex = Sexes.Male,
+                        Sex = Sex.Male,
                         BirthDate = DateTime.Parse("11/01/1972").Date,
                         PhoneNumber = "971.335.6827",
                         EmailAddress = "williamwimberly@hotmail.com",
@@ -193,7 +195,7 @@ namespace EventManager.DataAccess
                         FirstName = "Michelle",
                         MiddleName = "Renee",
                         LastName = "Wimberly",
-                        Sex = Sexes.Female,
+                        Sex = Sex.Female,
                         BirthDate = DateTime.Parse("01/10/1975").Date,
                         PhoneNumber = "971.294.6340",
                         EmailAddress = "michellewimberly@hotmail.com",
@@ -214,7 +216,7 @@ namespace EventManager.DataAccess
                         MiddleName = "Paul",
                         LastName = "McAvery",
                         Suffix = "Sr.",
-                        Sex = Sexes.Male,
+                        Sex = Sex.Male,
                         BirthDate = DateTime.Parse("12/25/1962").Date,
                         PhoneNumber = "971.123.4567",
                         EmailAddress = "sean_mcavery123@hotmail.com",
@@ -233,7 +235,7 @@ namespace EventManager.DataAccess
                         Prefix = "Ms.",
                         FirstName = "Santa",
                         LastName = "Clause",
-                        Sex = Sexes.Female,
+                        Sex = Sex.Female,
                         BirthDate = DateTime.Parse("07/05/1982").Date,
                         PhoneNumber = "503.555.1212",
                         EmailAddress = "santaclause@hotmail.com",
@@ -459,16 +461,16 @@ namespace EventManager.DataAccess
                         Id = 1,
                         EventId = 1,
                         EventLocationId = 1,
-                        DaysOfTheWeek = Days.Monday &
-                                        Days.Tuesday &
-                                        Days.Wednesday &
-                                        Days.Thursday,
+                        DaysOfTheWeek = DaysOfTheWeek.Monday |
+                                        DaysOfTheWeek.Tuesday |
+                                        DaysOfTheWeek.Wednesday |
+                                        DaysOfTheWeek.Thursday,
                         StartDate = DateTime.Parse("12/01/2020").Date,
                         EndDate = DateTime.Parse("02/28/2021").Date,
-                        StartTime = TimeOfDay.Parse("17:30"),
-                        EndTime = TimeOfDay.Parse("8:30"),
-                        CheckInStartTime = TimeOfDay.Parse("17:30"),
-                        CheckInEndTime = TimeOfDay.Parse("18:30")
+                        StartTime = new TimeOfDay(17, 30),
+                        EndTime = new TimeOfDay(8, 30),
+                        CheckInStartTime = new TimeOfDay(17, 30),
+                        CheckInEndTime = new TimeOfDay(18, 30)
                     });
 
                     await _applicationContext.EventSchedules.AddAsync(new EventSchedule
@@ -476,15 +478,15 @@ namespace EventManager.DataAccess
                         Id = 2,
                         EventId = 1,
                         EventLocationId = 1,
-                        DaysOfTheWeek = Days.Friday &
-                                        Days.Saturaday &
-                                        Days.Sunday,
+                        DaysOfTheWeek = DaysOfTheWeek.Friday |
+                                        DaysOfTheWeek.Saturday |
+                                        DaysOfTheWeek.Sunday,
                         StartDate = DateTime.Parse("12/01/2020").Date,
                         EndDate = DateTime.Parse("02/28/2021").Date,
-                        StartTime = TimeOfDay.Parse("17:30"),
-                        EndTime = TimeOfDay.Parse("7:30"),
-                        CheckInStartTime = TimeOfDay.Parse("17:30"),
-                        CheckInEndTime = TimeOfDay.Parse("18:30")
+                        StartTime = new TimeOfDay(17, 30),
+                        EndTime = new TimeOfDay(7, 30),
+                        CheckInStartTime = new TimeOfDay(17, 30),
+                        CheckInEndTime = new TimeOfDay(18, 30)
                     });
 
                     await _applicationContext.EventSchedules.AddAsync(new EventSchedule
@@ -492,16 +494,16 @@ namespace EventManager.DataAccess
                         Id = 3,
                         EventId = 2,
                         EventLocationId = 2,
-                        DaysOfTheWeek = Days.Monday &
-                                        Days.Tuesday &
-                                        Days.Wednesday &
-                                        Days.Thursday,
+                        DaysOfTheWeek = DaysOfTheWeek.Monday |
+                                        DaysOfTheWeek.Tuesday |
+                                        DaysOfTheWeek.Wednesday |
+                                        DaysOfTheWeek.Thursday,
                         StartDate = DateTime.Parse("01/01/2020").Date,
                         EndDate = DateTime.Parse("12/31/2020").Date,
-                        StartTime = TimeOfDay.Parse("9:00"),
-                        EndTime = TimeOfDay.Parse("15:00"),
-                        CheckInStartTime = TimeOfDay.Parse("9:00"),
-                        CheckInEndTime = TimeOfDay.Parse("15:00")
+                        StartTime = new TimeOfDay(9, 0),
+                        EndTime = new TimeOfDay(15, 0),
+                        CheckInStartTime = new TimeOfDay(9, 0),
+                        CheckInEndTime = new TimeOfDay(15, 0)
                     });
 
                     await _applicationContext.SaveChangesAsync();

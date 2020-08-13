@@ -1,7 +1,7 @@
-﻿using EventManager.DataAccess.Core.Enums;
-using EventManager.DataAccess.Core.Interfaces;
+﻿using EventManager.DataAccess.Core.Interfaces;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

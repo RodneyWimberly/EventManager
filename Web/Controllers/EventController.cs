@@ -65,26 +65,22 @@ namespace EventManager.Web.Controllers
         private void EventController_GetIncludeEvent(object sender, GetIncludeEventArgs<Event> e)
         {
             List<string> propertyPaths = e.PropertyPaths.ToLower().Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            propertyPaths.ForEach(p => p = p.Trim());
             IQueryable<Event> root = e.EntityQuery;
-            if (propertyPaths.Contains("locations"))
+            if (propertyPaths.Contains("locations.schedules"))
+                root = e.Include = root.Include(e => e.Locations).ThenInclude(l => l.Schedules);
+            else if (propertyPaths.Contains("locations"))
                 root = e.Include = root.Include(e => e.Locations);
-            if (propertyPaths.Contains("schedules"))
+
+            if (propertyPaths.Contains("schedules.location"))
+                root = e.Include = root.Include(e => e.Schedules).ThenInclude(s => s.Location);
+            else if (propertyPaths.Contains("schedules"))
                 root = e.Include = root.Include(e => e.Schedules);
+
             if (propertyPaths.Contains("occurrences"))
                 root = e.Include = root.Include(e => e.Occurrences);
             if (propertyPaths.Contains("services"))
                 root = e.Include = root.Include(e => e.Services);
-
-            /* IQueryable<Event> root = e.EntityQuery;
-             if (propertyPaths.Contains("locations"))
-                 root = e.Include = root.Include(e => e.Locations);
-             if (propertyPaths.Contains("schedules"))
-                 root = e.Include = root.Include(e => e.Schedules);
-             if (propertyPaths.Contains("occurrences"))
-                 root = e.Include = root.Include(e => e.Occurrences);
-             if (propertyPaths.Contains("services"))
-                 root = e.Include = root.Include(e => e.Services);
-                 */
         }
 
         [HttpGet("{includePropertyPaths?}")]
@@ -152,7 +148,14 @@ namespace EventManager.Web.Controllers
         #region EventLocation
         private void LocationHelper_GetIncludeEvent(object sender, GetIncludeEventArgs<EventLocation> e)
         {
-            e.Include = null;
+            List<string> propertyPaths = e.PropertyPaths.ToLower().Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            propertyPaths.ForEach(p => p = p.Trim());
+            IQueryable<EventLocation> root = e.EntityQuery;
+            if (propertyPaths.Contains("schedules"))
+                root = e.Include = root.Include(e => e.Schedules);
+
+            if (propertyPaths.Contains("event"))
+                root = e.Include = root.Include(e => e.Event);
         }
 
         [HttpGet("Location/{includePropertyPaths?}")]
@@ -265,7 +268,11 @@ namespace EventManager.Web.Controllers
         #region EventSchedule
         private void ScheduleHelper_GetIncludeEvent(object sender, GetIncludeEventArgs<EventSchedule> e)
         {
-            e.Include = null; ;
+            List<string> propertyPaths = e.PropertyPaths.ToLower().Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            propertyPaths.ForEach(p => p = p.Trim());
+            IQueryable<EventSchedule> root = e.EntityQuery;
+            if (propertyPaths.Contains("location"))
+                root = e.Include = root.Include(e => e.Location);
         }
 
 
@@ -382,7 +389,9 @@ namespace EventManager.Web.Controllers
         #region EventOccurrence
         private void OccurrenceHelper_GetIncludeEvent(object sender, GetIncludeEventArgs<EventOccurrence> e)
         {
-            e.Include = null; ;
+            List<string> propertyPaths = e.PropertyPaths.ToLower().Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            propertyPaths.ForEach(p => p = p.Trim());
+            IQueryable<EventOccurrence> root = e.EntityQuery;
         }
 
         [HttpGet("Occurrence/{includePropertyPaths?}")]
@@ -524,7 +533,9 @@ namespace EventManager.Web.Controllers
         #region EventService
         private void ServiceHelper_GetIncludeEvent(object sender, GetIncludeEventArgs<EventService> e)
         {
-            e.Include = null;
+            List<string> propertyPaths = e.PropertyPaths.ToLower().Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+            propertyPaths.ForEach(p => p = p.Trim());
+            IQueryable<EventService> root = e.EntityQuery;
         }
 
         [HttpGet("Service/{includePropertyPaths?}")]

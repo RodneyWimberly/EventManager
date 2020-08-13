@@ -2,45 +2,81 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { EventService } from "../../services/event.service";
+import { EventLocationService } from "../../services/eventlocation.service";
 import { Utilities } from '../../helpers/utilities';
 import * as generated from '../../services/endpoint.services';
 import { ViewModelStates } from '../../models/enum.models';
 import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
-  selector: 'event-editor',
-  templateUrl: './event-editor.component.html',
-  styleUrls: ['./event-editor.component.scss']
+    selector: 'eventlocation-editor',
+    templateUrl: './eventlocation-editor.component.html',
+    styleUrls: ['./eventlocation-editor.component.scss']
 })
-
-export class EventEditorComponent implements OnInit {
-  public changesSavedCallback: (event: generated.Event) => void;
+export class EventLocationEditorComponent implements OnInit {
+  public changesSavedCallback: (eventLocation: generated.EventLocation) => void;
   public changesFailedCallback: () => void;
   public changesCancelledCallback: () => void;
 
   protected showValidationErrors = false;
   protected isSaving = false;
-  protected uniqueId: string = Utilities.uniqueId();
   protected formResetToggle = true;
   protected viewModelState: ViewModelStates = ViewModelStates.Edit;
-  protected stateKeys: number[];
-  protected event: generated.Event = new generated.Event();
- 
+  protected eventLocation: generated.EventLocation = new generated.EventLocation();
+  protected events: generated.Event[];
+
   @ViewChild('form', { static: false })
   public form;
+
+  @ViewChild('eventSelector', { static: false })
+  public eventSelector;
 
   @ViewChild('name', { static: false })
   public name;
 
-  @ViewChild('description', { static: false })
-  public description;
+  @ViewChild('address1', { static: false })
+  public address1;
+
+  @ViewChild('address2', { static: false })
+  public address2;
+
+  @ViewChild('city', { static: false })
+  public city;
+
+  @ViewChild('state', { static: false })
+  public state;
+
+  @ViewChild('zipCode', { static: false })
+  public zipCode;
 
   constructor(private alertService: AlertService,
     private translationService: AppTranslationService,
-    private eventService: EventService) {
+    private eventService: EventService,
+    private eventLocationService: EventLocationService) {
   }
 
   public ngOnInit(): void {
+    this.loadData();
+  }
+
+  private loadData(): void {
+    this.eventService.getEvents().subscribe(events => this.onLoadDataSuccessful(events), error => this.onLoadDataFailed(error));
+  }
+
+  private onLoadDataSuccessful(events: generated.Event[]): void {
+    this.events = events;
+    this.alertService.stopLoadingMessage();
+    setTimeout(() => {
+      if (this.eventSelector) {
+        this.eventSelector.refresh();
+      }
+      
+    });
+  }
+
+  private onLoadDataFailed(error: any): void {
+    this.alertService.stopLoadingMessage();
+    this.alertService.showStickyMessage('Load Error', `Unable to retrieve user data from the server.\r\nErrors: "${Utilities.getHttpResponseMessages(error)}"`, MessageSeverity.error, error);
   }
 
   public translate(key: string): string {
@@ -58,25 +94,25 @@ export class EventEditorComponent implements OnInit {
     }
   }
 
-  public newEvent(): void {
+  public newEventLocation(): void {
     this.viewModelState = ViewModelStates.New;
     this.showValidationErrors = true;
-    this.event = new generated.Event();
+    this.eventLocation = new generated.EventLocation();
   }
 
-  public editEvent(event: generated.Event): void {
+  public editEventLocation(eventLocation: generated.EventLocation): void {
     this.viewModelState = ViewModelStates.Edit;
     this.showValidationErrors = true;
-    this.event = event.clone();
+    this.eventLocation = eventLocation.clone();
   }
 
-  public viewEvent(event: generated.Event): generated.Event {
+  public viewEventLocation(eventLocation: generated.EventLocation): generated.EventLocation {
     this.viewModelState = ViewModelStates.View;
-    return this.event = event;
+    return this.eventLocation = eventLocation;
   }
 
   protected get canManageEvents(): boolean {
-    return this.eventService.canManageEvents;
+    return this.eventLocationService.canManageEvents;
   }
 
   protected get isEditMode(): boolean {
@@ -103,15 +139,13 @@ export class EventEditorComponent implements OnInit {
   protected save(): void {
     this.isSaving = true;
     this.alertService.startLoadingMessage('Saving changes...');
-    this.event.locations = null;
-    this.event.schedules = null;
-    this.event.occurrences = null;
-    this.event.services = null;
+    this.eventLocation.schedules = null;
 
     if (this.viewModelState == ViewModelStates.New) {
-      this.eventService.addEvent(this.event).subscribe(event => this.saveSuccessHelper(event), error => this.saveFailedHelper(error));
+      this.eventLocation.event = null;
+      this.eventLocationService.addEventLocation(this.eventLocation).subscribe(eventLocation => this.saveSuccessHelper(eventLocation), error => this.saveFailedHelper(error));
     } else if (this.viewModelState == ViewModelStates.Edit) {
-      this.eventService.updateEvent(this.event).subscribe(event => this.saveSuccessHelper(event), error => this.saveFailedHelper(error));
+      this.eventLocationService.updateEventLocation(this.eventLocation).subscribe(eventLocation => this.saveSuccessHelper(eventLocation), error => this.saveFailedHelper(error));
     }
   }
 
@@ -119,21 +153,21 @@ export class EventEditorComponent implements OnInit {
     this.alertService.showMessage(caption, message, MessageSeverity.error);
   }
 
-  private saveSuccessHelper(event: generated.Event): void {
-    this.event = event;
+  private saveSuccessHelper(eventLocation: generated.EventLocation): void {
+    this.eventLocation = eventLocation;
     this.showValidationErrors = false;
 
     this.isSaving = false;
     this.alertService.stopLoadingMessage();
-    var eventName: string = event.name;
+    var eventLocationName: string = eventLocation.name;
 
     if (this.viewModelState == ViewModelStates.New) {
-      this.alertService.showMessage('Success', `Event \"${eventName}\" was created successfully`, MessageSeverity.success);
+      this.alertService.showMessage('Success', `Event Location \"${eventLocationName}\" was created successfully`, MessageSeverity.success);
     } else if (this.viewModelState == ViewModelStates.Edit) {
-      this.alertService.showMessage('Success', `Changes to event \"${eventName}\" was saved successfully`, MessageSeverity.success);
+      this.alertService.showMessage('Success', `Changes to event location \"${eventLocationName}\" was saved successfully`, MessageSeverity.success);
     }
     if (this.changesSavedCallback) {
-      this.changesSavedCallback(event);
+      this.changesSavedCallback(eventLocation);
     }
     this.viewModelState = ViewModelStates.Edit;
     this.resetForm();
@@ -151,5 +185,4 @@ export class EventEditorComponent implements OnInit {
     }
   }
 }
-  
 

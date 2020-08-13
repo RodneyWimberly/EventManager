@@ -38,7 +38,7 @@ namespace EventManager.DataAccess
         /// <returns></returns>
         public static PropertyBuilder<TimeOfDay> SetupTimeOfDayEntityProperty(this PropertyBuilder<TimeOfDay> propertyBuilder)
         {
-            return propertyBuilder.HasConversion(v => v.ToString(), v => TimeOfDay.Parse(v));
+            return propertyBuilder.HasConversion(v => v.HHMMSS, v => new TimeOfDay(v));
         }
 
         public static EntityTypeBuilder<TEntity> SetupPrimaryKeyEntityProperty<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder) where TEntity : class, IPrimaryKeyEntity<int>

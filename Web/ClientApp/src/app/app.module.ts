@@ -28,6 +28,7 @@ import { NotificationService } from './services/notification.service';
 import { NotificationMockService } from './services/notification-mock.service';
 import { AccountService } from "./services/account.service";
 import { EventService } from "./services/event.service";
+import { EventLocationService } from "./services/eventlocation.service";
 import { ExtendedLogService } from "./services/extended-log.service";
 import * as generated from './services/endpoint.services';
 
@@ -67,8 +68,10 @@ import { ExtendedLogEditorComponent } from './components/extended-logs/extended-
 import { EventsComponent } from './components/events/events.component';
 import { EventsManagementComponent } from './components/events/events-management.component';
 import { EventEditorComponent } from './components/events/event-editor.component';
-/*import { EventConditionsManagementComponent } from './components/events/event-conditions-management.component';
-*/
+
+import { EventLocationsComponent } from './components/events/eventlocations.component';
+import { EventLocationsManagementComponent } from './components/events/eventlocations-management.component';
+import { EventLocationEditorComponent } from './components/events/eventlocation-editor.component';
 @NgModule({
     imports: [
         BrowserModule,
@@ -96,7 +99,8 @@ import { EventEditorComponent } from './components/events/event-editor.component
         AppComponent,
         LoginComponent,
         HomeComponent,
-        EventsComponent, EventsManagementComponent, EventEditorComponent,// EventConditionsManagementComponent,
+        EventsComponent, EventsManagementComponent, EventEditorComponent,
+        EventLocationsComponent, EventLocationsManagementComponent, EventLocationEditorComponent,
         ExtendedLogsComponent, ExtendedLogsManagementComponent, ExtendedLogEditorComponent,
         SettingsComponent,
         UsersManagementComponent, UserEditorComponent, UserPreferencesComponent,
@@ -128,14 +132,13 @@ import { EventEditorComponent } from './components/events/event-editor.component
         AccountService,
         ExtendedLogService,
         EventService,
-        //EventConditionService,
+        EventLocationService,
         //ActionDeviceService,
         //DataPointService,
         NotificationMockService,
         generated.AccountEndpointService,
         generated.ExtendedLogEndpointService,
         generated.EventEndpointService,
-        //generated.EventConditionEndpointService,
         //generated.ActionDeviceEndpointService,
         //generated.DataPointEndpointService,
         LocalStorageService

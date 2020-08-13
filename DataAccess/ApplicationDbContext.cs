@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -187,7 +189,7 @@ namespace EventManager.DataAccess
             builder.Entity<EventSchedule>().SetupEntityTable("EventSchedules");
             builder.Entity<EventSchedule>().HasIndex(s => s.EventId);
             builder.Entity<EventSchedule>().HasIndex(s => s.EventLocationId);
-            builder.Entity<EventSchedule>().Property(s => s.DaysOfTheWeek).HasConversion(d => (int)d, e => (Days)e);
+            builder.Entity<EventSchedule>().Property(s => s.DaysOfTheWeek).HasConversion(new EnumToNumberConverter<DaysOfTheWeek, int>());
             builder.Entity<EventSchedule>().Property(s => s.StartDate).SetupDateTimeEntityProperty();
             builder.Entity<EventSchedule>().Property(s => s.EndDate).SetupDateTimeEntityProperty();
             builder.Entity<EventSchedule>().Property(s => s.StartTime).SetupTimeOfDayEntityProperty();
@@ -263,7 +265,7 @@ namespace EventManager.DataAccess
 
             // Services
             builder.Entity<Service>().SetupEntityTable("Services");
-            builder.Entity<Service>().Property(s => s.ServiceType).HasConversion(s => (int)s, e => (ServiceTypes)e);
+            builder.Entity<Service>().Property(s => s.ServiceType).HasConversion(new EnumToNumberConverter<ServiceTypes, int>());
             builder.Entity<Service>().HasMany(s => s.EventServices)
               .WithOne(e => e.Service)
               .HasPrincipalKey(s => s.Id)
@@ -274,7 +276,7 @@ namespace EventManager.DataAccess
             // Guests
             builder.Entity<Guest>().SetupEntityTable("Guests");
             builder.Entity<Guest>().Property(g => g.BirthDate).SetupDateTimeEntityProperty();
-            builder.Entity<Guest>().Property(g => g.Sex).HasConversion(s => (int)s, e => (Sexes)e);
+            builder.Entity<Guest>().Property(g => g.Sex).HasConversion(new EnumToNumberConverter<Sex, int>());
             builder.Entity<Guest>().HasMany(g => g.Demerits)
               .WithOne(d => d.Guest)
               .HasPrincipalKey(g => g.Id)

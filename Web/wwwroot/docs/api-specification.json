@@ -4797,7 +4797,7 @@
                 "title": "DaysOfTheWeek",
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/Days"
+                    "$ref": "#/components/schemas/DaysOfTheWeek"
                   }
                 ]
               },
@@ -5071,7 +5071,7 @@
                 "title": "Sex",
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/Sexes"
+                    "$ref": "#/components/schemas/Sex"
                   }
                 ]
               },
@@ -5246,7 +5246,7 @@
           }
         }
       },
-      "Sexes": {
+      "Sex": {
         "type": "integer",
         "description": "0 = Male\n1 = Female",
         "x-enumNames": [
@@ -5258,9 +5258,9 @@
           1
         ]
       },
-      "Days": {
+      "DaysOfTheWeek": {
         "type": "integer",
-        "description": "0 = Sunday\n1 = Monday\n2 = Tuesday\n3 = Wednesday\n4 = Thursday\n5 = Friday\n6 = Saturaday",
+        "description": "1 = Sunday\n2 = Monday\n4 = Tuesday\n8 = Wednesday\n16 = Thursday\n32 = Friday\n64 = Saturday\n127 = AllDays",
         "x-enumFlags": true,
         "x-enumNames": [
           "Sunday",
@@ -5269,16 +5269,18 @@
           "Wednesday",
           "Thursday",
           "Friday",
-          "Saturaday"
+          "Saturday",
+          "AllDays"
         ],
         "enum": [
-          0,
           1,
           2,
-          3,
           4,
-          5,
-          6
+          8,
+          16,
+          32,
+          64,
+          127
         ]
       },
       "TimeOfDay": {

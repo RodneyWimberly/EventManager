@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace EventManager.Core
@@ -13,10 +14,8 @@ namespace EventManager.Core
 
     public class TimeOfDay
     {
-        private const int MINUTES_PER_DAY = 60 * 24;
-        private const int SECONDS_PER_DAY = SECONDS_PER_HOUR * 24;
         private const int SECONDS_PER_HOUR = 3600;
-        private static Regex _TodRegex = new Regex(@"\d?\d:\d\d:\d\d|\d?\d:\d\d");
+        private static readonly Regex _TodRegex = new Regex(@"\d?\d:\d\d:\d\d|\d?\d:\d\d");
 
         public TimeOfDay()
         {
@@ -36,6 +35,8 @@ namespace EventManager.Core
         }
         public TimeOfDay(TimeOfDay td)
         {
+            if (td == null)
+                throw new ArgumentNullException(nameof(td));
             Init(td.Hour, td.Minute, td.Second);
         }
 
@@ -105,7 +106,7 @@ namespace EventManager.Core
         {
             DateTime now = DateTime.Now;
             DateTime dt = new DateTime(now.Year, now.Month, now.Day, Hour, Minute, Second);
-            return dt.ToString(format);
+            return dt.ToString(format, CultureInfo.CurrentCulture);
         }
         public TimeSpan ToTimeSpan()
         {
@@ -122,6 +123,10 @@ namespace EventManager.Core
         public static TimeOfDay Noon { get { return new TimeOfDay(12, 0, 0); } }
         public static TimeOfDay operator -(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null)
+                throw new ArgumentNullException(nameof(t1));
+            if (t2 == null)
+                throw new ArgumentNullException(nameof(t2));
             DateTime now = DateTime.Now;
             DateTime dt1 = new DateTime(now.Year, now.Month, now.Day, t1.Hour, t1.Minute, t1.Second);
             TimeSpan ts = new TimeSpan(t2.Hour, t2.Minute, t2.Second);
@@ -130,8 +135,10 @@ namespace EventManager.Core
         }
         public static bool operator !=(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null || t2 == null)
+                return false;
             if (ReferenceEquals(t1, t2)) { return true; }
-            else if (ReferenceEquals(t1, null)) { return true; }
+            else if (t1 is null) { return true; }
             else
             {
                 return t1.TotalSeconds != t2.TotalSeconds;
@@ -139,18 +146,22 @@ namespace EventManager.Core
         }
         public static bool operator !=(TimeOfDay t1, DateTime dt2)
         {
-            if (ReferenceEquals(t1, null)) { return false; }
+            if (t1 is null) { return false; }
             DateTime dt1 = new DateTime(dt2.Year, dt2.Month, dt2.Day, t1.Hour, t1.Minute, t1.Second);
             return dt1 != dt2;
         }
         public static bool operator !=(DateTime dt1, TimeOfDay t2)
         {
-            if (ReferenceEquals(t2, null)) { return false; }
+            if (t2 is null) { return false; }
             DateTime dt2 = new DateTime(dt1.Year, dt1.Month, dt1.Day, t2.Hour, t2.Minute, t2.Second);
             return dt1 != dt2;
         }
         public static TimeOfDay operator +(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null)
+                throw new ArgumentNullException(nameof(t1));
+            if (t2 == null)
+                throw new ArgumentNullException(nameof(t2));
             DateTime now = DateTime.Now;
             DateTime dt1 = new DateTime(now.Year, now.Month, now.Day, t1.Hour, t1.Minute, t1.Second);
             TimeSpan ts = new TimeSpan(t2.Hour, t2.Minute, t2.Second);
@@ -159,8 +170,10 @@ namespace EventManager.Core
         }
         public static bool operator <(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null || t2 == null)
+                return false;
             if (ReferenceEquals(t1, t2)) { return true; }
-            else if (ReferenceEquals(t1, null)) { return true; }
+            else if (t1 is null) { return true; }
             else
             {
                 return t1.TotalSeconds < t2.TotalSeconds;
@@ -168,20 +181,22 @@ namespace EventManager.Core
         }
         public static bool operator <(TimeOfDay t1, DateTime dt2)
         {
-            if (ReferenceEquals(t1, null)) { return false; }
+            if (t1 is null) { return false; }
             DateTime dt1 = new DateTime(dt2.Year, dt2.Month, dt2.Day, t1.Hour, t1.Minute, t1.Second);
             return dt1 < dt2;
         }
         public static bool operator <(DateTime dt1, TimeOfDay t2)
         {
-            if (ReferenceEquals(t2, null)) { return false; }
+            if (t2 is null) { return false; }
             DateTime dt2 = new DateTime(dt1.Year, dt1.Month, dt1.Day, t2.Hour, t2.Minute, t2.Second);
             return dt1 < dt2;
         }
         public static bool operator <=(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null || t2 == null)
+                return false; 
             if (ReferenceEquals(t1, t2)) { return true; }
-            else if (ReferenceEquals(t1, null)) { return true; }
+            else if (t1 is null) { return true; }
             else
             {
                 if (t1 == t2) { return true; }
@@ -190,38 +205,40 @@ namespace EventManager.Core
         }
         public static bool operator <=(TimeOfDay t1, DateTime dt2)
         {
-            if (ReferenceEquals(t1, null)) { return false; }
+            if (t1 is null) { return false; }
             DateTime dt1 = new DateTime(dt2.Year, dt2.Month, dt2.Day, t1.Hour, t1.Minute, t1.Second);
             return dt1 <= dt2;
         }
         public static bool operator <=(DateTime dt1, TimeOfDay t2)
         {
-            if (ReferenceEquals(t2, null)) { return false; }
+            if (t2 is null) { return false; }
             DateTime dt2 = new DateTime(dt1.Year, dt1.Month, dt1.Day, t2.Hour, t2.Minute, t2.Second);
             return dt1 <= dt2;
         }
         public static bool operator ==(TimeOfDay t1, TimeOfDay t2)
         {
             if (ReferenceEquals(t1, t2)) { return true; }
-            else if (ReferenceEquals(t1, null)) { return true; }
+            else if (t1 is null) { return true; }
             else { return t1.Equals(t2); }
         }
         public static bool operator ==(TimeOfDay t1, DateTime dt2)
         {
-            if (ReferenceEquals(t1, null)) { return false; }
+            if (t1 is null) { return false; }
             DateTime dt1 = new DateTime(dt2.Year, dt2.Month, dt2.Day, t1.Hour, t1.Minute, t1.Second);
             return dt1 == dt2;
         }
         public static bool operator ==(DateTime dt1, TimeOfDay t2)
         {
-            if (ReferenceEquals(t2, null)) { return false; }
+            if (t2 is null) { return false; }
             DateTime dt2 = new DateTime(dt1.Year, dt1.Month, dt1.Day, t2.Hour, t2.Minute, t2.Second);
             return dt1 == dt2;
         }
         public static bool operator >(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null || t2 == null)
+                return false;
             if (ReferenceEquals(t1, t2)) { return true; }
-            else if (ReferenceEquals(t1, null)) { return true; }
+            else if (t1 is null) { return true; }
             else
             {
                 return t1.TotalSeconds > t2.TotalSeconds;
@@ -229,20 +246,22 @@ namespace EventManager.Core
         }
         public static bool operator >(TimeOfDay t1, DateTime dt2)
         {
-            if (ReferenceEquals(t1, null)) { return false; }
+            if (t1 is null) { return false; }
             DateTime dt1 = new DateTime(dt2.Year, dt2.Month, dt2.Day, t1.Hour, t1.Minute, t1.Second);
             return dt1 > dt2;
         }
         public static bool operator >(DateTime dt1, TimeOfDay t2)
         {
-            if (ReferenceEquals(t2, null)) { return false; }
+            if (t2 is null) { return false; }
             DateTime dt2 = new DateTime(dt1.Year, dt1.Month, dt1.Day, t2.Hour, t2.Minute, t2.Second);
             return dt1 > dt2;
         }
         public static bool operator >=(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null || t2 == null)
+                return false;
             if (ReferenceEquals(t1, t2)) { return true; }
-            else if (ReferenceEquals(t1, null)) { return true; }
+            else if (t1 is null) { return true; }
             else
             {
                 return t1.TotalSeconds >= t2.TotalSeconds;
@@ -250,13 +269,13 @@ namespace EventManager.Core
         }
         public static bool operator >=(TimeOfDay t1, DateTime dt2)
         {
-            if (ReferenceEquals(t1, null)) { return false; }
+            if (t1 is null) { return false; }
             DateTime dt1 = new DateTime(dt2.Year, dt2.Month, dt2.Day, t1.Hour, t1.Minute, t1.Second);
             return dt1 >= dt2;
         }
         public static bool operator >=(DateTime dt1, TimeOfDay t2)
         {
-            if (ReferenceEquals(t2, null)) { return false; }
+            if (t2 is null) { return false; }
             DateTime dt2 = new DateTime(dt1.Year, dt1.Month, dt1.Day, t2.Hour, t2.Minute, t2.Second);
             return dt1 >= dt2;
         }
@@ -279,9 +298,9 @@ namespace EventManager.Core
             string text = m.Value;
             string[] fields = text.Split(':');
             if (fields.Length < 2) { throw new ArgumentException("No valid time of day pattern found in input text"); }
-            int hour = Convert.ToInt32(fields[0]);
-            int min = Convert.ToInt32(fields[1]);
-            int sec = fields.Length > 2 ? Convert.ToInt32(fields[2]) : 0;
+            int hour = Convert.ToInt32(fields[0], CultureInfo.CurrentCulture);
+            int min = Convert.ToInt32(fields[1], CultureInfo.CurrentCulture);
+            int sec = fields.Length > 2 ? Convert.ToInt32(fields[2], CultureInfo.CurrentCulture) : 0;
 
             return new TimeOfDay(hour, min, sec);
         }
@@ -306,6 +325,25 @@ namespace EventManager.Core
         private void Init(DateTime dt)
         {
             Init(dt.Hour, dt.Minute, dt.Second);
+        }
+
+        public static TimeOfDay Subtract(TimeOfDay left, TimeOfDay right)
+        {
+            return left - right;
+        }
+
+        public static TimeOfDay Add(TimeOfDay left, TimeOfDay right)
+        {
+            return left + right;
+        }
+
+        public int CompareTo(TimeOfDay other)
+        {
+            if (ReferenceEquals(other, this))
+            {
+                return 1;
+            }
+            return 0;
         }
     }
 }

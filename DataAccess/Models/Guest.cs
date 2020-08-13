@@ -45,7 +45,7 @@ namespace EventManager.DataAccess.Models
         [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "INTEGER")]
         [Display(Name = "Sex", GroupName = "Guest")]
-        public Sexes Sex { get; set; }
+        public Sex Sex { get; set; }
 
         [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "TEXT")]

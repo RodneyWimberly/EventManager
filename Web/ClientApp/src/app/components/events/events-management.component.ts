@@ -8,6 +8,7 @@ import { Utilities } from '../../helpers/utilities';
 import { EventEditorComponent } from './event-editor.component';
 import * as generated from '../../services/endpoint.services';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'events-management',
@@ -27,6 +28,9 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
 
   @ViewChild('dataTable', { static: true })
   private ngxDatatable: DatatableComponent;
+
+  @ViewChild('eventLocationsTemplate', { static: true })
+  private eventLocationsTemplate: TemplateRef<any>;
   
   @ViewChild('actionsTemplate', { static: true })
   private actionsTemplate: TemplateRef<any>;
@@ -40,6 +44,7 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   constructor(
     private alertService: AlertService,
     private translationService: AppTranslationService,
+    private router: Router,
     protected eventService: EventService) {
   }
 
@@ -48,9 +53,10 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
     const gT = (key: string) => this.translationService.getTranslation(key);
 
     this.columns = [
-      { prop: 'name', name: gT('events.management.Name'), width: 300 },
-      { prop: 'description', name: gT('events.management.Description'), width: 500 }
-    ];
+      { prop: 'name', name: gT('events.management.Name'), width: 200 },
+      { prop: 'description', name: gT('events.management.Description'), width: 275 },
+      { prop: 'locations', name: gT('events.management.Locations'), width: 350, cellTemplate: this.eventLocationsTemplate },
+  ];
 
     if (this.canManageEvents) {
       this.columns.push({ name: '', width: 400, cellTemplate: this.actionsTemplate, resizeable: false, canAutoResize: false, sortable: false, draggable: false });
@@ -72,7 +78,7 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   private loadData() {
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    this.eventService.getEvents(null, null, "locations; schedules").subscribe(events => this.onLoadDataSuccessful(events), error => this.onLoadDataFailed(error));
+    this.eventService.getEvents(null, null, "locations.schedules").subscribe(events => this.onLoadDataSuccessful(events), error => this.onLoadDataFailed(error));
   }
 
   private onLoadDataSuccessful(events: generated.Event[]) {
@@ -118,10 +124,11 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
   }
 
   protected showEventLocations(row: generated.Event) {
-
+    this.router.navigateByUrl('/locations', { state: { id: row.id }});
   }
 
   protected showEventSchedules(row: generated.Event) {
+    this.router.navigateByUrl('/schedules', { state: { id: row.id } });
   }
 
   protected newEvent() {
@@ -167,6 +174,29 @@ export class EventsManagementComponent implements OnInit, AfterViewInit {
           this.alertService.showStickyMessage('Delete Error', `An error occurred whilst deleting the event.\r\nError: "${Utilities.getHttpResponseMessages(error)}"`,
             MessageSeverity.error, error);
         });
+  }
+
+  protected getDisplayDaysOfTheWeek(daysOfTheWeek: generated.DaysOfTheWeek): string {
+    if (daysOfTheWeek == undefined)
+      return "";
+    let displayDays: string = "";
+    if (daysOfTheWeek & generated.DaysOfTheWeek.Sunday)
+      displayDays += "Sun, ";
+    if (daysOfTheWeek & generated.DaysOfTheWeek.Monday)
+      displayDays += "Mon, ";
+    if (daysOfTheWeek & generated.DaysOfTheWeek.Tuesday)
+      displayDays += "Tue, ";
+    if (daysOfTheWeek & generated.DaysOfTheWeek.Wednesday)
+      displayDays += "Wed, ";
+    if (daysOfTheWeek & generated.DaysOfTheWeek.Thursday)
+      displayDays += "Thu, ";
+    if (daysOfTheWeek & generated.DaysOfTheWeek.Friday)
+      displayDays += "Fri, ";
+    if (daysOfTheWeek & generated.DaysOfTheWeek.Saturday)
+      displayDays += "Sat, ";
+
+    displayDays = displayDays.substr(0, displayDays.length - 2);
+    return displayDays.substr(0, displayDays.length - 3) + " & " + displayDays.substr(displayDays.length - 3, 3);
   }
 
   protected get canManageEvents() {

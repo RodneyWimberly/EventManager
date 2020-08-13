@@ -1,0 +1,102 @@
+<div>
+  <form *ngIf="formResetToggle" [attr.autocomplete]="'NaN'" name="eventLocationForm" #form="ngForm" novalidate
+        (ngSubmit)="form.form.valid ? save() :
+          (!event.valid && showErrorAlert('Event is required', 'Please select an event'));
+          (!name.valid && showErrorAlert('Name is required', 'Please enter a name (minimum of 2 and maximum of 100 characters)'));
+          (!address1.valid && showErrorAlert('Address 1 is required', 'Please enter address 1 (minimum of 2 and maximum of 200 characters)'));
+          (!city.valid && showErrorAlert('City is required', 'Please enter city (minimum of 2 and maximum of 100 characters)'));
+          (!state.valid && showErrorAlert('State is required', 'Please enter state (minimum of 2 and maximum of 2 characters)'));
+          (!zipCode.valid && showErrorAlert('ZipCode is required', 'Please enter zip code (minimum of 2 and maximum of 10 characters)'));
+        ">
+
+    <!-- Event -->
+    <div class="form-group row has-feedback-icon">
+      <label [class.col-lg-3]="!isEditMode" [class.col-lg-2]="isEditMode" class="col-form-label" for="event">{{'eventlocations.editor.Event' | translate}}</label>
+      <div *ngIf="!isEditMode" class="col-lg-9">
+        <p class="form-control-plaintext">{{eventLocation.eventId}}</p>
+      </div>
+      <div *ngIf="isEditMode" [ngClass]="{'is-valid': form.submitted && event.valid, 'is-invalid' : form.submitted && !event.valid}" class="col-lg-10">
+        <select attr.id="event" name="event" [(ngModel)]="eventLocation.eventId" #event="ngModel" #eventSelector="bootstrap-select"
+                class="selectpicker form-control left-status" bootstrapSelect required data-live-search="true" data-actions-box="false" data-live-search-placeholder="Search..." title="Select Event">
+          <option *ngFor="let option of events" attr.data-content="{{option.name}}" attr.value="{{option.id}}">
+            {{option.name}}
+          </option>
+        </select>
+        <i *ngIf="showValidationErrors && form.submitted" class="fa form-control-feedback" [ngClass]="{'fa-check': event.valid, 'fa-times' : !event.valid}" aria-hidden="true"></i>
+        <span *ngIf="showValidationErrors && form.submitted && !event.valid" class="invalid-feedback">
+          {{'eventlocations.editor.EventRequired' | translate}}
+        </span>
+      </div>
+    </div>
+
+    <div *ngIf="isEditMode" class="row">
+      <div class="col-lg-12">
+        <hr [class.separator-hr]="!isEditMode" [class.edit-separator-hr]="isEditMode" />
+      </div>
+    </div>
+
+    <!-- Name -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'eventlocations.editor.Name'">
+      <input inputRef type="text" id="name" name="name" placeholder="Enter name" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && name.valid, 'is-invalid': form.submitted && name.invalid}" [(ngModel)]="eventLocation.name"
+             #name="ngModel" required minlength="2" maxlength="100" />
+    </validation-control>
+
+    <!-- Address1 -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'eventlocations.editor.Address1'">
+      <input inputRef type="text" id="address1" name="address1" placeholder="Enter address 1" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && address1.valid, 'is-invalid': form.submitted && address1.invalid}" [(ngModel)]="eventLocation.address1"
+             #address1="ngModel" required minlength="2" maxlength="200" />
+    </validation-control>
+
+    <!-- Address2 -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'eventlocations.editor.Address2'">
+      <input inputRef type="text" id="address2" name="address2" placeholder="Enter address 2" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && address2.valid, 'is-invalid': form.submitted && address2.invalid}" [(ngModel)]="eventLocation.address2"
+             #address2="ngModel" required minlength="2" maxlength="200" />
+    </validation-control>
+
+
+    <!-- City -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'eventlocations.editor.City'">
+      <input inputRef type="text" id="city" name="city" placeholder="Enter city" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && city.valid, 'is-invalid': form.submitted && city.invalid}" [(ngModel)]="eventLocation.city"
+             #city="ngModel" required minlength="2" maxlength="100" />
+    </validation-control>
+
+
+    <!-- State -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'eventlocations.editor.State'">
+      <input inputRef type="text" id="state" name="state" placeholder="Enter state" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && state.valid, 'is-invalid': form.submitted && state.invalid}" [(ngModel)]="eventLocation.state"
+             #state="ngModel" required minlength="2" maxlength="2" />
+    </validation-control>
+
+
+    <!-- ZipCode -->
+    <validation-control [form]="form" [showValidationErrors]="showValidationErrors"
+                        [isEditMode]="isEditMode" [translationKey]="'eventlocations.editor.ZipCode'">
+      <input inputRef type="text" id="zipCode" name="zipCode" placeholder="Enter zip code" class="form-control"
+             [ngClass]="{'is-valid': form.submitted && zipCode.valid, 'is-invalid': form.submitted && zipCode.invalid}" [(ngModel)]="eventLocation.zipCode"
+             #zipCode="ngModel" required minlength="2" maxlength="10" />
+    </validation-control>
+
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <div ngPreserveWhitespaces class="float-right">
+          <button *ngIf="!isEditMode" type="button" (click)="close()" class="btn btn-outline-secondary"><i class='fa fa-close'></i> {{'eventlocations.editor.Close' | translate}}</button>
+          <button *ngIf="isEditMode" type="button" (click)="cancel()" class="btn btn-danger" [disabled]="isSaving"><i class='fa fa-times'></i> {{'eventlocations.editor.Cancel' | translate}}</button>
+          <button *ngIf="isEditMode" type="submit" class="btn btn-primary" [disabled]="isSaving">
+            <i *ngIf="!isSaving" class='fa fa-save'></i><i *ngIf="isSaving" class='fa fa-circle-o-notch fa-spin'></i> {{isSaving ? ('eventlocations.editor.Saving' | translate) : ('eventlocations.editor.Save' | translate)}}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </form>
+</div>

@@ -28,6 +28,19 @@
                  [limit]="8">
   </ngx-datatable>
 
+  <ng-template #eventLocationsTemplate let-row="row" let-value="value" let-i="id">
+    <div *ngIf="value && value.length > 0">
+      <div class="eventlocations badge badge-pill badge-secondary" *ngFor="let location of value">
+        <br />
+        <h6><u>{{location?.name}}-{{location.city}}</u></h6>
+        <div *ngFor="let schedule of location.schedules">
+          &nbsp;{{getDisplayDaysOfTheWeek(schedule.daysOfTheWeek)}}: {{schedule.startTime.hour < 13 ? schedule.startTime.hour : schedule.startTime.hour - 12}}:{{schedule.startTime.minute.toString().padEnd(2, "0")}} {{schedule.startTime.hour < 13 ? "a.m." : "p.m."}} - {{schedule.endTime.hour < 13 ? schedule.endTime.hour : schedule.endTime.hour - 12}}:{{schedule.endTime.minute.toString().padEnd(2, "0")}}  {{schedule.endTime.hour < 13 ? "a.m." : "p.m."}}	&nbsp;
+        </div>
+        <br />
+      </div>
+    </div>
+  </ng-template>
+
   <ng-template #actionsTemplate let-row="row" let-value="value" let-i="id">
     <div *ngIf="canManageEvents">
       <a class="btn btn-link btn-sm" href="javascript:;" (click)="showEventLocations(row)"><i class="fas fa-map-marked-alt" aria-hidden="true"></i> {{'events.management.Locations' | translate}}</a>|
@@ -36,7 +49,7 @@
       <a class="btn btn-link btn-sm" href="javascript:;" (click)="deleteEvent(row)"><i class="fa fa-trash-o" aria-hidden="true"></i> {{'events.management.Delete' | translate}}</a>
     </div>
   </ng-template>
-  
+
   <div class="modal fade" bsModal #editorModal="bs-modal" (onHidden)="onEditorModalHidden()" [config]="{backdrop: 'static'}" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">

@@ -22,11 +22,16 @@ export class EventService {
   }
 
   public getEvents(pageNumber?: number, pageSize?: number, includedPropertyPaths?: string): Observable<generated.Event[]> {
+    if (!includedPropertyPaths)
+      includedPropertyPaths = "";
     return pageNumber && pageSize ? this.eventEndpointService.getAllEventsPaged(pageNumber, pageSize, includedPropertyPaths) :
       this.eventEndpointService.getAllEvents(includedPropertyPaths);
   }
 
   public getEvent(id: number, includedPropertyPaths?: string): Observable<generated.Event> {
+    if (!includedPropertyPaths)
+      includedPropertyPaths = "";
+
     return this.eventEndpointService.getEvent(id, includedPropertyPaths);
   }
 

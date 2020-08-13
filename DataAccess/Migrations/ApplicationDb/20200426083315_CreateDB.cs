@@ -13,10 +13,10 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true)
@@ -32,10 +32,10 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     UniqueId = table.Column<string>(maxLength: 25, nullable: false),
                     Prefix = table.Column<string>(maxLength: 10, nullable: true),
@@ -43,8 +43,8 @@ namespace EventManager.DataAccess.Migrations
                     MiddleName = table.Column<string>(maxLength: 100, nullable: true),
                     LastName = table.Column<string>(maxLength: 100, nullable: false),
                     Suffix = table.Column<string>(maxLength: 10, nullable: true),
-                    Sex = table.Column<long>(type: "INTEGER", nullable: false),
-                    BirthDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    Sex = table.Column<int>(type: "INTEGER", nullable: false),
+                    BirthDate = table.Column<string>(type: "TEXT", nullable: false),
                     PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
                     EmailAddress = table.Column<string>(maxLength: 250, nullable: true),
                     Password = table.Column<string>(maxLength: 100, nullable: false),
@@ -84,8 +84,8 @@ namespace EventManager.DataAccess.Migrations
                     QueryString = table.Column<string>(maxLength: 250, nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -99,16 +99,16 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     Header = table.Column<string>(maxLength: 100, nullable: false),
                     Body = table.Column<string>(maxLength: 250, nullable: false),
                     IsRead = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsPinned = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Date = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false)
+                    Date = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -126,8 +126,8 @@ namespace EventManager.DataAccess.Migrations
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -141,14 +141,14 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: false),
-                    ServiceType = table.Column<long>(type: "INTEGER", nullable: false)
+                    ServiceType = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -180,8 +180,8 @@ namespace EventManager.DataAccess.Migrations
                     IsEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -195,10 +195,10 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     EventId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
@@ -229,8 +229,8 @@ namespace EventManager.DataAccess.Migrations
                     ClaimValue = table.Column<string>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -250,10 +250,10 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     EventId = table.Column<int>(nullable: false),
                     ServiceId = table.Column<int>(nullable: false)
@@ -285,8 +285,8 @@ namespace EventManager.DataAccess.Migrations
                     ClaimValue = table.Column<string>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -310,8 +310,8 @@ namespace EventManager.DataAccess.Migrations
                     UserId = table.Column<string>(nullable: false),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -333,8 +333,8 @@ namespace EventManager.DataAccess.Migrations
                     RoleId = table.Column<string>(nullable: false),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -364,8 +364,8 @@ namespace EventManager.DataAccess.Migrations
                     Value = table.Column<string>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
                     UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -385,20 +385,20 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     EventId = table.Column<int>(nullable: false),
                     EventLocationId = table.Column<int>(nullable: false),
-                    DaysOfTheWeek = table.Column<long>(type: "INTEGER", nullable: false),
-                    StartDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    EndDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    StartTime = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
-                    EndTime = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
-                    CheckInStartTime = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
-                    CheckInEndTime = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false)
+                    DaysOfTheWeek = table.Column<int>(type: "INTEGER", nullable: false),
+                    StartDate = table.Column<string>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<string>(type: "TEXT", nullable: false),
+                    StartTime = table.Column<int>(type: "INTEGER", nullable: false),
+                    EndTime = table.Column<int>(type: "INTEGER", nullable: false),
+                    CheckInStartTime = table.Column<int>(type: "INTEGER", nullable: false),
+                    CheckInEndTime = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -421,15 +421,15 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     EventId = table.Column<int>(nullable: false),
                     EventLocationId = table.Column<int>(nullable: false),
                     EventScheduleId = table.Column<int>(nullable: false),
-                    Date = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    Date = table.Column<string>(type: "TEXT", nullable: false),
                     Lead = table.Column<string>(maxLength: 200, nullable: false)
                 },
                 constraints: table =>
@@ -458,14 +458,14 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     GuestId = table.Column<int>(nullable: false),
                     EventOccurrenceId = table.Column<int>(nullable: false),
-                    DateTime = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    DateTime = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: false)
                 },
                 constraints: table =>
@@ -490,10 +490,10 @@ namespace EventManager.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: false),
-                    UpdatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
-                    CreatedDate = table.Column<string>(type: "TEXT", maxLength: 28, nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedBy = table.Column<string>(maxLength: 36, nullable: true),
+                    UpdatedDate = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<string>(type: "TEXT", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true),
                     GuestId = table.Column<int>(nullable: false),
                     EventOccurrenceId = table.Column<int>(nullable: false)
@@ -692,7 +692,6 @@ namespace EventManager.DataAccess.Migrations
                 table: "Users",
                 column: "NormalizedUserName",
                 unique: true);
-
             migrationBuilder.AddRowVersionTriggers();
         }
 
