@@ -39,32 +39,32 @@ export class UserEditorComponent implements OnInit {
 
 
 
-    @ViewChild('f', { static: false })
+    @ViewChild('f')
     public form;
 
     // ViewChilds Required because ngIf hides template variables from global scope
-    @ViewChild('userName', { static: false })
+    @ViewChild('userName')
     public userName;
 
-    @ViewChild('userPassword', { static: false })
+    @ViewChild('userPassword')
     public userPassword;
 
-    @ViewChild('email', { static: false })
+    @ViewChild('email')
     public email;
 
-    @ViewChild('currentPassword', { static: false })
+    @ViewChild('currentPassword')
     public currentPassword;
 
-    @ViewChild('newPassword', { static: false })
+    @ViewChild('newPassword')
     public newPassword;
 
-    @ViewChild('confirmPassword', { static: false })
+    @ViewChild('confirmPassword')
     public confirmPassword;
 
-    @ViewChild('roles', { static: false })
+    @ViewChild('roles')
     public roles;
 
-    @ViewChild('rolesSelector', { static: false })
+    @ViewChild('rolesSelector')
     public rolesSelector;
 
 

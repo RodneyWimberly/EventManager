@@ -25,28 +25,28 @@ export class EventLocationEditorComponent implements OnInit {
   protected eventLocation: generated.EventLocation = new generated.EventLocation();
   protected events: generated.Event[];
 
-  @ViewChild('form', { static: false })
+  @ViewChild('form')
   public form;
 
-  @ViewChild('eventSelector', { static: false })
+  @ViewChild('eventSelector')
   public eventSelector;
 
-  @ViewChild('name', { static: false })
+  @ViewChild('name')
   public name;
 
-  @ViewChild('address1', { static: false })
+  @ViewChild('address1')
   public address1;
 
-  @ViewChild('address2', { static: false })
+  @ViewChild('address2')
   public address2;
 
-  @ViewChild('city', { static: false })
+  @ViewChild('city')
   public city;
 
-  @ViewChild('state', { static: false })
+  @ViewChild('state')
   public state;
 
-  @ViewChild('zipCode', { static: false })
+  @ViewChild('zipCode')
   public zipCode;
 
   constructor(private alertService: AlertService,

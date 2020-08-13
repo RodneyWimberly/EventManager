@@ -26,13 +26,13 @@ export class EventEditorComponent implements OnInit {
   protected stateKeys: number[];
   protected event: generated.Event = new generated.Event();
  
-  @ViewChild('form', { static: false })
+  @ViewChild('form')
   public form;
 
-  @ViewChild('name', { static: false })
+  @ViewChild('name')
   public name;
 
-  @ViewChild('description', { static: false })
+  @ViewChild('description')
   public description;
 
   constructor(private alertService: AlertService,
