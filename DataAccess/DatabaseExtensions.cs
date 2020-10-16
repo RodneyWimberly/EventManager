@@ -442,7 +442,7 @@ namespace EventManager.DataAccess
             return services;
         }
 
-        public static IServiceCollection AddApplicationDbContext(this IServiceCollection services, IConfigurationSection identityOptionsConfig,
+        public static IServiceCollection AddApplicationDbContext(this IServiceCollection services, IConfiguration identityOptionsConfig,
             string connectString, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
 
         {
@@ -463,7 +463,7 @@ namespace EventManager.DataAccess
 
             // Configure IdentityOptions
             IdentityModelEventSource.ShowPII = enableSensitiveDataLogging;
-            services.Configure<IdentityOptions>(identityOptionsConfig);
+            services.Configure<IdentityOptions>(identityOptionsConfig.GetSection("IdentityOptions"));
 
             // Adds IdentityServer.
             services.AddIdentityServer()

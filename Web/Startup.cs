@@ -43,7 +43,7 @@ namespace EventManager.Web
 
             // Setup use of ApplicationContextDb
             services.AddApplicationDbContext(
-                Configuration.GetSection("IdentityOptions"),
+                Configuration,
                 Configuration["ConnectionStrings:DefaultConnection"],
                 WebHostEnvironment.IsDevelopment());
 
