@@ -463,7 +463,7 @@ namespace EventManager.DataAccess
 
             // Configure IdentityOptions
             IdentityModelEventSource.ShowPII = enableSensitiveDataLogging;
-            services.Configure<IdentityOptions>(identityOptionsConfig.GetSection("IdentityOptions"));
+            services.Configure<IdentityOptions>(io => io = identityOptionsConfig.GetSection("IdentityOptions").Get<IdentityOptions>());
 
             // Adds IdentityServer.
             services.AddIdentityServer()
