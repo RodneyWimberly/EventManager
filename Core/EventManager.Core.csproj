@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CircuitBreaker\**" />
+    <Content Remove="CircuitBreaker\**" />
+    <EmbeddedResource Remove="CircuitBreaker\**" />
+    <None Remove="CircuitBreaker\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="2.9.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
       <PrivateAssets>all</PrivateAssets>
