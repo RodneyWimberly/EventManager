@@ -9,6 +9,7 @@ namespace EventManager.Core.CircuitBreaker
     {
         public override Task<HttpResponseMessage> InvokeActionAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
+
             Task<HttpResponseMessage> objResult = CircuitBreakerPanel.GetCircuit(actionContext).EnergizeAsync(cancellationToken);
             actionContext.Request.Properties["RuntimeReturnType"] = objResult.GetType();
 
