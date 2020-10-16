@@ -1,0 +1,1 @@
+{"version":3,"file":"bs-timepicker-view.component.d.ts","sources":["bs-timepicker-view.component.d.ts"],"names":[],"mappings":";AAAA;;;;;;AAIA","sourcesContent":["export declare class BsTimepickerViewComponent {\n    ampm: string;\n    hours: number;\n    minutes: number;\n}\n"]}

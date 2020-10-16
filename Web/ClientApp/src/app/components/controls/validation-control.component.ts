@@ -1,5 +1,5 @@
 import { Component, ContentChild, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, Form, FormGroupDirective } from '@angular/forms';
 import { InputRefDirective } from '../../directives/input-ref.directive';
 import { AppTranslationService } from '../../services/app-translation.service';
 
@@ -19,7 +19,7 @@ export class ValidationControlComponent implements OnInit {
   public showSeperator: boolean = true;
 
   @Input()
-  public form: FormGroup;
+  public form: FormGroupDirective;
 
   @Input()
   public translationKey: string;
