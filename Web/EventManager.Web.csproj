@@ -12,6 +12,7 @@
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <Configurations>Debug;Release;RebuildClientDebug;RebuildClientRelease</Configurations>
+    <UserSecretsId>3e9aed84-7761-41b6-b3a4-910bdb4aca1e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -108,10 +109,8 @@
   
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
-
+    <Exec WorkingDirectory="$(SolutionDir)Scripts" Command="PowerShell.exe $(SolutionDir)Scripts\PackageUI.ps1" />
+  
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
