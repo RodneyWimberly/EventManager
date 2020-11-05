@@ -2,7 +2,7 @@ name: Build and Deploy EventManager
 on:
   push:
     branches: 
-      - master 
+      - DBChangeOver 
   pull_request:
     branches: 
       - '*'
