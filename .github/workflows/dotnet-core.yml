@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: 
       - '*'
+pool:
+    vmImage: 'windows-latest'
 env:
   AZURE_WEBAPP_NAME: EM-WebApp
   AZURE_WEBAPP_PACKAGE_PATH: '.'
