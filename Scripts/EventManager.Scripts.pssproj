@@ -23,6 +23,8 @@
     <Guid>b3d091a8-10cd-4ff2-b156-41145f60b417</Guid>
     <ProcessorArchitecture />
     <StartupFile>(Currently Open Script)</StartupFile>
+    <PackageAsExecutable>True</PackageAsExecutable>
+    <Bundle>True</Bundle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
