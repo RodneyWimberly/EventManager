@@ -30,7 +30,7 @@ namespace EventManager.DataAccess.Models
 
         }
 
-        public Notification(int id, string header, string body, bool isRead, bool isPinned, DateTime date)
+        public Notification(string id, string header, string body, bool isRead, bool isPinned, DateTime date)
         {
             Id = id;
             Header = header;

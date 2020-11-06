@@ -7,11 +7,11 @@ namespace EventManager.DataAccess.Models
     public class Demerit : ApplicationEntityBase
     {
         [Required]
-        public int GuestId { get; set; }
+        public string GuestId { get; set; }
         public virtual Guest Guest { get; set; }
 
         [Required]
-        public int EventOccuranceId { get; set; }
+        public string EventOccuranceId { get; set; }
         public virtual EventOccurance EventOccurance { get; set; }
 
         [Required]

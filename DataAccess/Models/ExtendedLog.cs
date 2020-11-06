@@ -10,7 +10,7 @@ using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
 namespace EventManager.DataAccess.Models
 {
-    public class ExtendedLog : Log, IPrimaryKeyEntity<int>, IAuditableEntity, IConcurrencyTrackingEntity
+    public class ExtendedLog : Log<string>, IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity
     {
         public ExtendedLog(IHttpContextAccessor accessor, IAccountManager accountManager)
         {

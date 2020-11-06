@@ -6,7 +6,7 @@ namespace EventManager.DataAccess.Models
     public class EventLocation : ApplicationEntityBase
     {
         [Required]
-        public int EventId { get; set; }
+        public string EventId { get; set; }
         public virtual Event Event { get; set; }
 
         public virtual ICollection<EventSchedule> Schedules { get; set; }

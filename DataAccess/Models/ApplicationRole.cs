@@ -75,7 +75,7 @@ namespace EventManager.DataAccess.Models
         #region IConcurrencyTrackingEntity
         [Timestamp]
         //[Required]
-        [Column(TypeName = "BLOB")]
+        //[Column(TypeName = "BLOB")]
         public byte[] RowVersion { get; set; }
         #endregion
 

@@ -5,12 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventManager.DataAccess.Models
 {
-    public abstract class ApplicationEntityBase : IPrimaryKeyEntity<int>, IAuditableEntity, IConcurrencyTrackingEntity
+    public abstract class ApplicationEntityBase : IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [MaxLength(36)]
@@ -32,7 +32,7 @@ namespace EventManager.DataAccess.Models
 
         [Timestamp]
         //[Required]
-        [Column(TypeName = "BLOB")]
+        //[Column(TypeName = "timestamp")]
         public byte[] RowVersion { get; set; }
     }
 }

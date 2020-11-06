@@ -45,11 +45,16 @@ namespace EventManager.Web
             // Logging
             services.AddLogging();
 
-            // Setup use of ApplicationContextDb
+            // Setup use of EF DbContexts
             services.AddApplicationDbContext(
-                Configuration.GetSection("IdentityOptions"),
-                Configuration["ConnectionStrings:DefaultConnection"],
+                Configuration["ConnectionStrings:CosmosEndPoint"],
+                 Configuration["ConnectionStrings:CosmosKey"],
                 WebHostEnvironment.IsDevelopment());
+
+            services.AddAccountManagerDbContext(
+               Configuration.GetSection("IdentityOptions"),
+               Configuration["ConnectionStrings:SqlConnectString"],
+               WebHostEnvironment.IsDevelopment());
 
             // Configure JSON serializer to not complain when returning entities plus reference and navigational properties
             services.AddMvc()

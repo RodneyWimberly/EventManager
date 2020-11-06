@@ -1,5 +1,4 @@
-﻿using EventManager.DataAccess.Core.Enums;
-using System;
+﻿using System;
 
 namespace EventManager.Web.ViewModels
 {
@@ -10,7 +9,7 @@ namespace EventManager.Web.ViewModels
         public string Path { get; set; }
         public string User { get; set; }
         public int EventId { get; set; }
-        public int Id { get; set; }
+        public string Id { get; set; }
         public int Level { get; set; }
         public string LevelDescription { get; set; }
         public string Message { get; set; }

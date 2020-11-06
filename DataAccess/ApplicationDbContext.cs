@@ -1,11 +1,8 @@
 ﻿using EventManager.DataAccess.Core.Enums;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +12,7 @@ using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
 namespace EventManager.DataAccess
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser,
-                                                          ApplicationRole,
-                                                          string,
-                                                          ApplicationUserClaim,
-                                                          ApplicationUserRole,
-                                                          ApplicationUserLogin,
-                                                          ApplicationRoleClaim,
-                                                          ApplicationUserToken>
+    public class ApplicationDbContext : DbContext
     {
         private const string systemUserId = "11111111-1111-1111-1111-111111111111";
         private string _currentUserId;
@@ -46,78 +36,20 @@ namespace EventManager.DataAccess
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-          => options.UseSqlite("Data Source=./EventManager.db")
-            .ConfigureWarnings(b => b.Ignore(new EventId[] { RelationalEventId.AmbientTransactionWarning }));
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // RoleClaims
-            builder.Entity<ApplicationRoleClaim>().SetupAuditableEntityProperties();
-            builder.Entity<ApplicationRoleClaim>().ToTable("RoleClaims");
-
-            // UserClaims 
-            builder.Entity<ApplicationUserClaim>().SetupAuditableEntityProperties();
-            builder.Entity<ApplicationUserClaim>().ToTable("UserClaims");
-
-            // UserLogins
-            builder.Entity<ApplicationUserLogin>().SetupAuditableEntityProperties();
-            builder.Entity<ApplicationUserLogin>().ToTable("UserLogins");
-
-            // UserRoles
-            builder.Entity<ApplicationUserRole>().SetupAuditableEntityProperties();
-            builder.Entity<ApplicationUserRole>().ToTable("UserRoles");
-
-            // UserTokens
-            builder.Entity<ApplicationUserToken>().SetupAuditableEntityProperties();
-            builder.Entity<ApplicationUserToken>().ToTable("UserTokens");
-
-            // Users
-            builder.Entity<ApplicationUser>().HasKey(u => u.Id);
-            builder.Entity<ApplicationUser>().HasIndex(u => u.NormalizedEmail);
-            builder.Entity<ApplicationUser>().HasIndex(u => u.NormalizedUserName).IsUnique();
-            builder.Entity<ApplicationUser>().SetupAuditableEntityProperties();
-            builder.Entity<ApplicationUser>().ToTable("Users");
-            builder.Entity<ApplicationUser>().HasMany(u => u.Claims)
-                .WithOne()
-                .HasForeignKey(c => c.UserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<ApplicationUser>().HasMany(u => u.Roles)
-                .WithOne()
-                .HasForeignKey(r => r.UserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Roles
-            builder.Entity<ApplicationRole>().HasKey(r => r.Id);
-            builder.Entity<ApplicationRole>().HasIndex(r => r.NormalizedName).IsUnique();
-            builder.Entity<ApplicationRole>().SetupAuditableEntityProperties();
-            builder.Entity<ApplicationRole>().ToTable("Roles");
-            builder.Entity<ApplicationRole>()
-                .HasMany(r => r.Claims)
-                .WithOne()
-                .HasForeignKey(c => c.RoleId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<ApplicationRole>()
-                .HasMany(r => r.Users)
-                .WithOne()
-                .HasForeignKey(r => r.RoleId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-
             // Logs
-            LogModelBuilderHelper.Build(builder.Entity<ExtendedLog>());
-            builder.Entity<ExtendedLog>().SetupEntityTable("Logs");
+            LogModelBuilderHelper.Build<ExtendedLog, string>(builder.Entity<ExtendedLog>());
+            builder.Entity<ExtendedLog>().SetupEntityContainer("Logs");
             builder.Entity<ExtendedLog>().HasIndex(r => r.TimeStamp);
             builder.Entity<ExtendedLog>().HasIndex(r => r.EventId);
             builder.Entity<ExtendedLog>().HasIndex(r => r.Level);
+            builder.Entity<ExtendedLog>().Property(r => r.Id).ValueGeneratedOnAdd();
 
             // Demerits
-            builder.Entity<Demerit>().SetupEntityTable("Demerits");
+            builder.Entity<Demerit>().SetupEntityContainer("Demerits");
             builder.Entity<Demerit>().HasIndex(d => d.GuestId);
             builder.Entity<Demerit>().HasIndex(d => d.EventOccuranceId);
             builder.Entity<Demerit>().Property(d => d.DateTime).SetupDateTimeEntityProperty();
@@ -135,7 +67,7 @@ namespace EventManager.DataAccess
                .OnDelete(DeleteBehavior.NoAction);
 
             // Events
-            builder.Entity<Event>().SetupEntityTable("Events");
+            builder.Entity<Event>().SetupEntityContainer("Events");
             builder.Entity<Event>().HasMany(e => e.Locations)
                .WithOne(l => l.Event)
                .HasPrincipalKey(e => e.Id)
@@ -162,7 +94,7 @@ namespace EventManager.DataAccess
                .OnDelete(DeleteBehavior.Cascade);
 
             // EventLocations
-            builder.Entity<EventLocation>().SetupEntityTable("EventLocations");
+            builder.Entity<EventLocation>().SetupEntityContainer("EventLocations");
             builder.Entity<EventLocation>().HasIndex(l => l.EventId);
             builder.Entity<EventLocation>().HasMany(l => l.Schedules)
               .WithOne(s => s.Location)
@@ -184,7 +116,7 @@ namespace EventManager.DataAccess
              .OnDelete(DeleteBehavior.NoAction);
 
             // EventSchedules
-            builder.Entity<EventSchedule>().SetupEntityTable("EventSchedules");
+            builder.Entity<EventSchedule>().SetupEntityContainer("EventSchedules");
             builder.Entity<EventSchedule>().HasIndex(s => s.EventId);
             builder.Entity<EventSchedule>().HasIndex(s => s.EventLocationId);
             builder.Entity<EventSchedule>().Property(s => s.DaysOfTheWeek).HasConversion(d => (int)d, e => (Days)e);
@@ -214,7 +146,7 @@ namespace EventManager.DataAccess
               .OnDelete(DeleteBehavior.NoAction);
 
             // EventOccurances
-            builder.Entity<EventOccurance>().SetupEntityTable("EventOccurances");
+            builder.Entity<EventOccurance>().SetupEntityContainer("EventOccurances");
             builder.Entity<EventOccurance>().HasIndex(o => o.EventId);
             builder.Entity<EventOccurance>().HasIndex(o => o.EventScheduleId);
             builder.Entity<EventOccurance>().HasIndex(o => o.EventLocationId);
@@ -245,7 +177,7 @@ namespace EventManager.DataAccess
                .OnDelete(DeleteBehavior.NoAction);
 
             // EventServices
-            builder.Entity<EventService>().SetupEntityTable("EventServices");
+            builder.Entity<EventService>().SetupEntityContainer("EventServices");
             builder.Entity<EventService>().HasIndex(es => es.EventId);
             builder.Entity<EventService>().HasIndex(es => es.ServiceId);
             builder.Entity<EventService>().HasOne(es => es.Service)
@@ -262,7 +194,7 @@ namespace EventManager.DataAccess
               .OnDelete(DeleteBehavior.NoAction);
 
             // Services
-            builder.Entity<Service>().SetupEntityTable("Services");
+            builder.Entity<Service>().SetupEntityContainer("Services");
             builder.Entity<Service>().Property(s => s.ServiceType).HasConversion(s => (int)s, e => (ServiceTypes)e);
             builder.Entity<Service>().HasMany(s => s.EventServices)
               .WithOne(e => e.Service)
@@ -272,7 +204,7 @@ namespace EventManager.DataAccess
               .OnDelete(DeleteBehavior.Cascade);
 
             // Guests
-            builder.Entity<Guest>().SetupEntityTable("Guests");
+            builder.Entity<Guest>().SetupEntityContainer("Guests");
             builder.Entity<Guest>().Property(g => g.BirthDate).SetupDateTimeEntityProperty();
             builder.Entity<Guest>().Property(g => g.Sex).HasConversion(s => (int)s, e => (Sexes)e);
             builder.Entity<Guest>().HasMany(g => g.Demerits)
@@ -289,7 +221,7 @@ namespace EventManager.DataAccess
              .OnDelete(DeleteBehavior.Cascade);
 
             // GuestEventOccurances
-            builder.Entity<GuestEventOccurance>().SetupEntityTable("GuestEventOccurances");
+            builder.Entity<GuestEventOccurance>().SetupEntityContainer("GuestEventOccurances");
             builder.Entity<GuestEventOccurance>().HasIndex(geo => geo.EventOccuranceId);
             builder.Entity<GuestEventOccurance>().HasIndex(geo => geo.GuestId);
             builder.Entity<GuestEventOccurance>().HasOne(geo => geo.Guest)
@@ -300,7 +232,7 @@ namespace EventManager.DataAccess
               .OnDelete(DeleteBehavior.SetNull);
 
             // Notifications
-            builder.Entity<Notification>().SetupEntityTable("Notifications");
+            builder.Entity<Notification>().SetupEntityContainer("Notifications");
             builder.Entity<Notification>().Property(n => n.Date).SetupDateTimeEntityProperty();
         }
 

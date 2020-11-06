@@ -14,12 +14,12 @@ namespace EventManager.DataAccess.Core
 {
     public class AccountManager : IAccountManager
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AccountManagerDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
 
         public AccountManager(
-            ApplicationDbContext context,
+            AccountManagerDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             IHttpContextAccessor httpAccessor)

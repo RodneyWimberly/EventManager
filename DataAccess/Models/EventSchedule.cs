@@ -10,11 +10,11 @@ namespace EventManager.DataAccess.Models
     public class EventSchedule : ApplicationEntityBase
     {
         [Required]
-        public int EventId { get; set; }
+        public string EventId { get; set; }
         public virtual Event Event { get; set; }
 
         [Required]
-        public int EventLocationId { get; set; }
+        public string EventLocationId { get; set; }
         public virtual EventLocation Location { get; set; }
 
         public virtual ICollection<EventOccurance> Occurances { get; set; }

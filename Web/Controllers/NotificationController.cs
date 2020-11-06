@@ -102,7 +102,7 @@ namespace EventManager.Web.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Put(int id, [FromBody]NotificationViewModel notificationVM)
+        public async Task<IActionResult> Put(string id, [FromBody]NotificationViewModel notificationVM)
         {
             if (ModelState.IsValid)
             {

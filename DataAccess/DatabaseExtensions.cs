@@ -3,9 +3,12 @@ using EventManager.Core;
 using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Models;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -41,18 +44,27 @@ namespace EventManager.DataAccess
             return propertyBuilder.HasConversion(v => v.ToString(), v => TimeOfDay.Parse(v));
         }
 
-        public static EntityTypeBuilder<TEntity> SetupPrimaryKeyEntityProperty<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder) where TEntity : class, IPrimaryKeyEntity<int>
+        public static EntityTypeBuilder<TEntity> SetupPrimaryKeyEntityProperty<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder) where TEntity : class, IPrimaryKeyEntity<string>
         {
             entityTypeBuilder.HasIndex(e => e.Id).IsUnique();
             return entityTypeBuilder;
         }
 
-        public static EntityTypeBuilder<TEntity> SetupEntityTable<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, string tableName) where TEntity : class, IPrimaryKeyEntity<int>, IAuditableEntity, IConcurrencyTrackingEntity
+        public static EntityTypeBuilder<TEntity> SetupEntityTable<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, string tableName) where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity
         {
             entityTypeBuilder.SetupPrimaryKeyEntityProperty();
             entityTypeBuilder.SetupAuditableEntityProperties();
             //entityTypeBuilder.SetupConcurrencyTrackingEntityProperties();
             entityTypeBuilder.ToTable(tableName);
+            return entityTypeBuilder;
+        }
+
+        public static EntityTypeBuilder<TEntity> SetupEntityContainer<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, string containerName) where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity
+        {
+            entityTypeBuilder.SetupPrimaryKeyEntityProperty();
+            entityTypeBuilder.SetupAuditableEntityProperties();
+            //entityTypeBuilder.SetupConcurrencyTrackingEntityProperties();
+            entityTypeBuilder.ToContainer(containerName);
             return entityTypeBuilder;
         }
 
@@ -442,50 +454,101 @@ namespace EventManager.DataAccess
             return services;
         }
 
-        public static IServiceCollection AddApplicationDbContext(this IServiceCollection services, IConfigurationSection identityOptionsConfig,
-            string connectString, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
+        public static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
+            string cosmosEndpoint, string cosmosKey, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
 
         {
             string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName;
 
-            // EF
-            services.AddDbContext<ApplicationDbContext>(dbOptions =>
+            // EF Application DB
+            services.AddDbContext<ApplicationDbContext>(c =>
             {
-                dbOptions.UseSqlite(connectString, sqliteOptions => sqliteOptions.MigrationsAssembly(migrationsAssembly));
-                dbOptions.EnableSensitiveDataLogging(enableSensitiveDataLogging);
-                dbOptions.UseLazyLoadingProxies(useLazyLoadingProxies);
+                c.UseCosmos(cosmosEndpoint,
+                                    cosmosKey,
+                                    databaseName: "GrowRoomEnvironmentDB",
+                                    options =>
+                                    {
+                                        options.ConnectionMode(ConnectionMode.Gateway);
+                                        options.Region(Regions.WestUS2);
+                                        //options.ExecutionStrategy(ExecutionStrategy.CallOnWrappedException()
+                                    });
+                c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+                c.UseLazyLoadingProxies(useLazyLoadingProxies);
             });
 
-            // add identity system for users and roles
+            services.AddScoped<DatabaseInitializer>();
+            return services;
+        }
+
+        public static IServiceCollection AddAccountManagerDbContext(this IServiceCollection services, IConfigurationSection identityOptionsConfig,
+          string sqlConnectString, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
+
+        {
+            string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName;
+
+            // EF AccountManager DB for users and roles
+            services.AddDbContext<AccountManagerDbContext>(c =>
+            {
+                c.UseSqlServer(sqlConnectString, providerOptions =>
+                {
+                    providerOptions.CommandTimeout(60);
+                    providerOptions.MigrationsAssembly(migrationsAssembly);
+                });
+                c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+                c.UseLazyLoadingProxies(useLazyLoadingProxies);
+            });
+
+            // EF IdentityServer ConfigurationStore DB
+            services.AddConfigurationDbContext<ConfigurationDbContext>(cso =>
+            {
+                cso.ConfigureDbContext = c =>
+                {
+                    c.UseSqlServer(sqlConnectString, providerOptions =>
+                    {
+                        providerOptions.CommandTimeout(60);
+                        providerOptions.MigrationsAssembly(migrationsAssembly);
+                    });
+                    c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+                    c.UseLazyLoadingProxies(useLazyLoadingProxies);
+                };
+            });
+
+            // EF IdentityServer PersistedGrant DB
+            services.AddOperationalDbContext<PersistedGrantDbContext>(oso =>
+            {
+                oso.EnableTokenCleanup = true;
+                oso.TokenCleanupInterval = 300;
+                oso.ConfigureDbContext = c =>
+                {
+                    c.UseSqlServer(sqlConnectString, providerOptions =>
+                    {
+                        providerOptions.CommandTimeout(60);
+                        providerOptions.MigrationsAssembly(migrationsAssembly);
+                    });
+                    c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+                    c.UseLazyLoadingProxies(useLazyLoadingProxies);
+                };
+            });
+
+            // Add identity system for users and roles
             services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<AccountManagerDbContext>()
                 .AddDefaultTokenProviders();
 
             // Configure IdentityOptions
             IdentityModelEventSource.ShowPII = enableSensitiveDataLogging;
-            services.Configure<IdentityOptions>(io => io = identityOptionsConfig.Get<IdentityOptions>());
+            services.Configure<IdentityOptions>(identityOptionsConfig);
 
-            // Adds IdentityServer.
+            // Adds IdentityServer
             services.AddIdentityServer()
+                .AddConfigurationStore<ConfigurationDbContext>()
+                .AddOperationalStore<PersistedGrantDbContext>()
                 .AddDeveloperSigningCredential()
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                    builder.UseSqlite(connectString, sql => sql.MigrationsAssembly(migrationsAssembly));
-
-                })
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                    builder.UseSqlite(connectString, sql => sql.MigrationsAssembly(migrationsAssembly));
-                    options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 300;
-                })
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<ProfileService>();
 
             services.AddScoped<IAccountManager, AccountManager>();
-            services.AddScoped<DatabaseInitializer>();
+
             return services;
         }
 
@@ -501,7 +564,7 @@ namespace EventManager.DataAccess
                 DatabaseInitializer databaseInitializer = serviceScope.ServiceProvider.GetService<DatabaseInitializer>();
 
                 await databaseInitializer.InitializeApplicationDatabaseAsync();
-                await databaseInitializer.InitializeIdentityServerDatabaseAsync();
+                await databaseInitializer.InitializeAccountManagerDatabaseAsync();
             }
             return app;
         }

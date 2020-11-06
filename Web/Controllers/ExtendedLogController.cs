@@ -136,7 +136,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
-        public async Task<IActionResult> Put(int id, [FromBody]ExtendedLogViewModel extendedLogVM)
+        public async Task<IActionResult> Put(string id, [FromBody]ExtendedLogViewModel extendedLogVM)
         {
             if (ModelState.IsValid)
             {

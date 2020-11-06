@@ -1,5 +1,6 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
+using Castle.Core.Internal;
 using EventManager.DataAccess.Models;
 
 namespace EventManager.Web.ViewModels.Mappers
@@ -19,8 +20,7 @@ namespace EventManager.Web.ViewModels.Mappers
 
             if (destination == null)
             {
-                destination = source.Id > 0 ?
-                    _unitOfWork.GetRepository<Notification>().GetFirstOrDefault(predicate: n => n.Id == source.Id) :
+                destination = source.Id.IsNullOrEmpty() ?
                     new Notification(source.Id, source.Header, source.Body, source.IsRead, source.IsPinned, source.Date)
                     {
                         CreatedBy = source.CreatedBy,
@@ -28,7 +28,8 @@ namespace EventManager.Web.ViewModels.Mappers
                         UpdatedBy = source.UpdatedBy,
                         UpdatedDate = source.UpdatedDate,
                         RowVersion = source.RowVersion
-                    };
+                    } :
+                    _unitOfWork.GetRepository<Notification>().GetFirstOrDefault(predicate: n => n.Id == source.Id);
             }
             if (destination.Id == source.Id &&
                 (destination.RowVersion == null || destination.RowVersion.IsEqualTo(source.RowVersion)))
