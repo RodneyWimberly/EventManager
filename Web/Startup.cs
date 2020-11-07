@@ -143,6 +143,7 @@ namespace EventManager.Web
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
+                app.InitializeDatabase();
             }
 
             app.UseEntityFrameworkLoggingScopeStateProvider();
