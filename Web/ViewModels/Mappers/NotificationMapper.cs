@@ -1,7 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
 using Castle.Core.Internal;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events.Models;
 
 namespace EventManager.Web.ViewModels.Mappers
 {

@@ -1,5 +1,5 @@
-using EventManager.DataAccess;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events;
+using EventManager.DataAccess.Events.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -22,9 +22,9 @@ namespace EventManager.Web
                 webBuilder.ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddEntityFramework<ApplicationDbContext,
+                    logging.AddEntityFramework<EventsDbContext,
                         ExtendedLog,
-                        EntityFrameworkLogger<ApplicationDbContext, ExtendedLog, string>,
+                        EntityFrameworkLogger<EventsDbContext, ExtendedLog, string>,
                         string>();
                     logging.AddEventLog(configure =>
                     {

@@ -1,8 +1,10 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using EventManager.Core;
+using EventManager.DataAccess.Accounts;
+using EventManager.DataAccess.Accounts.Models;
 using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Interfaces;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -10,13 +12,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Logging;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EventManager.DataAccess
@@ -447,9 +452,10 @@ namespace EventManager.DataAccess
 
         public static IServiceCollection AddHttpUnitOfWork(this IServiceCollection services)
         {
-            services.AddScoped<IRepositoryFactory, HttpUnitOfWork>();
-            services.AddScoped<IUnitOfWork, HttpUnitOfWork>();
-            services.AddScoped<IUnitOfWork<ApplicationDbContext>, HttpUnitOfWork>();
+            services.AddScoped<IRepositoryFactory, HttpUnitOfWork<EventsDbContext>>();
+            services.AddScoped<IUnitOfWork, HttpUnitOfWork<EventsDbContext>>();
+            services.AddScoped<IUnitOfWork<EventsDbContext>, HttpUnitOfWork<EventsDbContext>>();
+            services.AddScoped<IUnitOfWork<AccountsDbContext>, HttpUnitOfWork<AccountsDbContext>>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             return services;
         }
@@ -458,14 +464,12 @@ namespace EventManager.DataAccess
             string cosmosEndpoint, string cosmosKey, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
 
         {
-            string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName;
-
             // EF Application DB
-            services.AddDbContext<ApplicationDbContext>(c =>
+            services.AddDbContext<EventsDbContext>(c =>
             {
                 c.UseCosmos(cosmosEndpoint,
                                     cosmosKey,
-                                    databaseName: "GrowRoomEnvironmentDB",
+                                    databaseName: "EventsDB",
                                     options =>
                                     {
                                         options.ConnectionMode(ConnectionMode.Gateway);
@@ -487,7 +491,7 @@ namespace EventManager.DataAccess
             string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName;
 
             // EF AccountManager DB for users and roles
-            services.AddDbContext<AccountManagerDbContext>(c =>
+            services.AddDbContext<AccountsDbContext>(c =>
             {
                 c.UseSqlServer(sqlConnectString, providerOptions =>
                 {
@@ -531,8 +535,8 @@ namespace EventManager.DataAccess
             });
 
             // Add identity system for users and roles
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddEntityFrameworkStores<AccountManagerDbContext>()
+            services.AddIdentity<Accounts.Models.User, Role>()
+                .AddEntityFrameworkStores<AccountsDbContext>()
                 .AddDefaultTokenProviders();
 
             // Configure IdentityOptions
@@ -544,7 +548,7 @@ namespace EventManager.DataAccess
                 .AddConfigurationStore<ConfigurationDbContext>()
                 .AddOperationalStore<PersistedGrantDbContext>()
                 .AddDeveloperSigningCredential()
-                .AddAspNetIdentity<ApplicationUser>()
+                .AddAspNetIdentity<Accounts.Models.User>()
                 .AddProfileService<ProfileService>();
 
             services.AddScoped<IAccountManager, AccountManager>();
@@ -576,6 +580,34 @@ namespace EventManager.DataAccess
                 .AddInMemoryApiResources(DatabaseInitializer.GetApiResources())
                 .AddInMemoryClients(DatabaseInitializer.GetClients());
             return builder;
+        }
+
+        public static void UpdateAuditableEntities<T>(this T dbContext) where T : DbContext, IHttpDbContext
+        {
+            IEnumerable<EntityEntry> modifiedEntries = dbContext.ChangeTracker.Entries()
+                .Where(x => x.Entity is IAuditableEntity &&
+                       (x.State == EntityState.Added ||
+                       x.State == EntityState.Modified));
+
+            DateTime now = DateTime.UtcNow;
+            foreach (EntityEntry entry in modifiedEntries)
+            {
+                IAuditableEntity entity = (IAuditableEntity)entry.Entity;
+
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedDate = now;
+                    entity.CreatedBy = dbContext.CurrentUserId;
+                }
+                else
+                {
+                    dbContext.Entry(entity).Property(x => x.CreatedBy).IsModified = false;
+                    dbContext.Entry(entity).Property(x => x.CreatedDate).IsModified = false;
+                }
+
+                entity.UpdatedDate = now;
+                entity.UpdatedBy = dbContext.CurrentUserId;
+            }
         }
     }
 }

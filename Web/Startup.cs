@@ -5,7 +5,7 @@ using EventManager.Core.Logging;
 using EventManager.DataAccess;
 using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Constants;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events.Models;
 using EventManager.Web.Authorization;
 using EventManager.Web.ViewModels;
 using EventManager.Web.ViewModels.Mappers;

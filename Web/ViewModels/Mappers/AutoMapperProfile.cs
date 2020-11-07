@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using EventManager.DataAccess.Accounts.Models;
 using EventManager.DataAccess.Core;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 
 namespace EventManager.Web.ViewModels.Mappers
 {
@@ -10,26 +10,26 @@ namespace EventManager.Web.ViewModels.Mappers
     {
         public AutoMapperProfile()
         {
-            CreateMap<ApplicationUser, UserViewModel>()
+            CreateMap<User, UserViewModel>()
                    .ForMember(d => d.Roles, map => map.Ignore());
-            CreateMap<UserViewModel, ApplicationUser>()
+            CreateMap<UserViewModel, User>()
                 .ForMember(d => d.Roles, map => map.Ignore())
                 .ForMember(d => d.Id, map => map.Condition(src => src.Id != null));
 
-            CreateMap<ApplicationUser, UserEditViewModel>()
+            CreateMap<User, UserEditViewModel>()
                 .ForMember(d => d.Roles, map => map.Ignore());
-            CreateMap<UserEditViewModel, ApplicationUser>()
+            CreateMap<UserEditViewModel, User>()
                 .ForMember(d => d.Roles, map => map.Ignore())
                 .ForMember(d => d.Id, map => map.Condition(src => src.Id != null));
 
-            CreateMap<ApplicationUser, UserPatchViewModel>()
+            CreateMap<User, UserPatchViewModel>()
                 .ReverseMap();
 
-            CreateMap<ApplicationRole, RoleViewModel>()
+            CreateMap<Role, RoleViewModel>()
                 .ForMember(d => d.Permissions, map => map.MapFrom(s => s.Claims))
                 .ForMember(d => d.UsersCount, map => map.MapFrom(s => s.Users != null ? s.Users.Count : 0))
                 .ReverseMap();
-            CreateMap<RoleViewModel, ApplicationRole>()
+            CreateMap<RoleViewModel, Role>()
                 .ForMember(d => d.Id, map => map.Condition(src => src.Id != null));
 
             CreateMap<IdentityRoleClaim<string>, ClaimViewModel>()

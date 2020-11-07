@@ -1,7 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events.Models;
 using EventManager.Web.ViewModels;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -83,7 +83,7 @@ namespace EventManager.Web.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(NotificationViewModel))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post([FromBody]NotificationViewModel notificationVM)
+        public async Task<IActionResult> Post([FromBody] NotificationViewModel notificationVM)
         {
             if (ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace EventManager.Web.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Put(string id, [FromBody]NotificationViewModel notificationVM)
+        public async Task<IActionResult> Put(string id, [FromBody] NotificationViewModel notificationVM)
         {
             if (ModelState.IsValid)
             {
@@ -122,7 +122,7 @@ namespace EventManager.Web.Controllers
         [HttpPatch("{id:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Patch(int id, [FromBody]JsonPatchDocument<NotificationViewModel> patch)
+        public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<NotificationViewModel> patch)
         {
             if (ModelState.IsValid)
             {

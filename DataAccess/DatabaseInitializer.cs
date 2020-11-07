@@ -1,10 +1,12 @@
 ﻿using EventManager.Core;
 using EventManager.Core.Logging;
+using EventManager.DataAccess.Accounts;
+using EventManager.DataAccess.Accounts.Models;
 using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Enums;
-using EventManager.DataAccess.Core.Interfaces;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events;
+using EventManager.DataAccess.Events.Models;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -24,17 +26,17 @@ namespace EventManager.DataAccess
         private readonly ILogger _logger;
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
-        private readonly ApplicationDbContext _applicationContext;
-        private readonly AccountManagerDbContext _accountManagerContext;
+        private readonly EventsDbContext _eventsContext;
+        private readonly AccountsDbContext _accountsContext;
         private readonly IAccountManager _accountManager;
 
-        public DatabaseInitializer(ILogger<DatabaseInitializer> logger, PersistedGrantDbContext persistedGrantContext, ConfigurationDbContext configurationContext, ApplicationDbContext applicationContext, AccountManagerDbContext accountManagerContext, IAccountManager accountManager)
+        public DatabaseInitializer(ILogger<DatabaseInitializer> logger, PersistedGrantDbContext persistedGrantContext, ConfigurationDbContext configurationContext, EventsDbContext eventsContext, AccountsDbContext accountsContext, IAccountManager accountManager)
         {
             _logger = logger;
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;
-            _applicationContext = applicationContext;
-            _accountManagerContext = accountManagerContext;
+            _eventsContext = eventsContext;
+            _accountsContext = accountsContext;
             _accountManager = accountManager;
         }
 
@@ -47,9 +49,11 @@ namespace EventManager.DataAccess
         {
             try
             {
+                // PersistedGrant
                 _logger.LogInformation("Running PersistedGrantDbContext Migration");
                 await _persistedGrantContext.Database.MigrateAsync();
 
+                // Configuration
                 _logger.LogInformation("Running ConfigurationDbContext Migration");
                 await _configurationContext.Database.MigrateAsync();
 
@@ -77,11 +81,12 @@ namespace EventManager.DataAccess
                     _logger.LogInformation("Generating Identity Server ApiResources Completed");
                 }
 
+                // AccountManager
                 _logger.LogInformation("Running AccountManagerDbContext Migration");
-                _accountManagerContext.ChangeTracker.LazyLoadingEnabled = false;
-                await _accountManagerContext.Database.MigrateAsync();
+                _accountsContext.ChangeTracker.LazyLoadingEnabled = false;
+                await _accountsContext.Database.MigrateAsync();
 
-                if (!await _accountManagerContext.Users.AnyAsync())
+                if (!await _accountsContext.Users.AnyAsync())
                 {
                     _logger.LogInformation("Generating Account Manager sample accounts");
 
@@ -94,7 +99,7 @@ namespace EventManager.DataAccess
                     await CreateUserAsync(_accountManager, "Manager", "admin", "P@55w0rd", "Sample Administrator User", "admin@wimberlytech.com", "+1 (123) 555-1212", new string[] { adminRoleName });
                     await CreateUserAsync(_accountManager, "Worker", "user", "P@55w0rd", "Sample Standard User", "user@wimberlytech.com", "+1 (123) 555-1212", new string[] { userRoleName });
 
-                    await _accountManagerContext.SaveChangesAsync();
+                    await _accountsContext.SaveChangesAsync();
                     _logger.LogInformation("Sample account generation completed");
                 }
                 _logger.LogInformation("AccountManagerDbContext Migration completed");
@@ -115,43 +120,18 @@ namespace EventManager.DataAccess
         {
             try
             {
-                _applicationContext.ChangeTracker.LazyLoadingEnabled = false;
+                _eventsContext.ChangeTracker.LazyLoadingEnabled = false;
 
                 // Migration
                 _logger.LogInformation("Running AccountManagerDbContext Migration");
-                await _applicationContext.Database.MigrateAsync();
-
-                // Users and Roles
-                if (!await _accountManagerContext.Users.AnyAsync())
-                {
-                    _logger.LogInformation("Generating sample accounts");
-
-                    const string adminRoleName = "administrator";
-                    const string supervisorRoleName = "supervisor";
-                    const string leadRoleName = "lead";
-                    const string receptionistRoleName = "receptionist";
-                    const string volunteerRoleName = "volunteer";
-                    const string userRoleName = "user";
-
-                    await EnsureRoleAsync(_accountManager, adminRoleName, "Administrator Role", ApplicationPermissions.GetAllPermissionValues());
-                    await EnsureRoleAsync(_accountManager, supervisorRoleName, "Supervisor Role", new string[] { });
-                    await EnsureRoleAsync(_accountManager, leadRoleName, "Lead Role", new string[] { });
-                    await EnsureRoleAsync(_accountManager, receptionistRoleName, "Receptionist Role", new string[] { });
-                    await EnsureRoleAsync(_accountManager, volunteerRoleName, "Volunteer Role", new string[] { });
-                    await EnsureRoleAsync(_accountManager, userRoleName, "User Role", new string[] { });
-
-                    await CreateUserAsync(_accountManager, "Administrator", "admin", "P@55w0rd", "Sample Administrator User", "admin@wimberlytech.com", "+1 (123) 555-1212", new string[] { adminRoleName });
-                    await CreateUserAsync(_accountManager, "User", "user", "P@55w0rd", "Sample Standard User", "user@wimberlytech.com", "+1 (123) 555-1212", new string[] { userRoleName });
-
-                    _logger.LogInformation("Sample account generation completed");
-                }
+                await _eventsContext.Database.EnsureCreatedAsync();
 
                 // Notifications
-                if (!await _applicationContext.Notifications.AnyAsync())
+                if (!_eventsContext.Notifications.ToList().Any())
                 {
                     _logger.LogInformation("Generating Notifications");
 
-                    await _applicationContext.Notifications.AddAsync(new Notification
+                    await _eventsContext.Notifications.AddAsync(new Notification
                     {
                         Header = "Action Failure",
                         Body = "The light failed to turn on at the scheduled time",
@@ -160,7 +140,7 @@ namespace EventManager.DataAccess
                         Date = DateTime.UtcNow
                     });
 
-                    await _applicationContext.Notifications.AddAsync(new Notification
+                    await _eventsContext.Notifications.AddAsync(new Notification
                     {
                         Header = "Sensor Read Failure",
                         Body = "Failed to read the air temperature sensor",
@@ -169,7 +149,7 @@ namespace EventManager.DataAccess
                         Date = DateTime.UtcNow
                     });
 
-                    await _applicationContext.Notifications.AddAsync(new Notification
+                    await _eventsContext.Notifications.AddAsync(new Notification
                     {
                         Header = "Sensor Read Failure",
                         Body = "Failed to read the CO2 PPM sensor",
@@ -178,16 +158,16 @@ namespace EventManager.DataAccess
                         Date = DateTime.UtcNow
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("Seeding Notifications completed");
                 }
 
                 // Guests
-                if (!await _applicationContext.Guests.AnyAsync())
+                if (!_eventsContext.Guests.ToList().Any())
                 {
                     _logger.LogInformation("Generating Guests");
 
-                    await _applicationContext.Guests.AddAsync(new Guest
+                    await _eventsContext.Guests.AddAsync(new Guest
                     {
                         Id = "1",
                         UniqueId = "C9D42756-3550-48F0-8726-748A0F99D824",
@@ -208,7 +188,7 @@ namespace EventManager.DataAccess
                         EstablishedGuest = true
                     });
 
-                    await _applicationContext.Guests.AddAsync(new Guest
+                    await _eventsContext.Guests.AddAsync(new Guest
                     {
                         Id = "2",
                         UniqueId = "F8464D52-688D-4350-BE0F-0613A3B88DD0",
@@ -228,7 +208,7 @@ namespace EventManager.DataAccess
                         EstablishedGuest = true
                     });
 
-                    await _applicationContext.Guests.AddAsync(new Guest
+                    await _eventsContext.Guests.AddAsync(new Guest
                     {
                         Id = "3",
                         UniqueId = "3C77A8CB-A4AF-467E-9655-B0B8289DB5B6",
@@ -249,7 +229,7 @@ namespace EventManager.DataAccess
                         EstablishedGuest = true
                     });
 
-                    await _applicationContext.Guests.AddAsync(new Guest
+                    await _eventsContext.Guests.AddAsync(new Guest
                     {
                         Id = "4",
                         UniqueId = "B2C9567F-6BF7-42E9-8B5E-90E7C3D04BA8",
@@ -268,16 +248,16 @@ namespace EventManager.DataAccess
                         EstablishedGuest = true
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("Guests generation completed");
                 }
 
                 // Services
-                if (!await _applicationContext.Services.AnyAsync())
+                if (!_eventsContext.Services.ToList().Any())
                 {
                     _logger.LogInformation("Generating services");
 
-                    await _applicationContext.Services.AddAsync(new Service
+                    await _eventsContext.Services.AddAsync(new Service
                     {
                         Id = "1",
                         Name = "Shower",
@@ -285,7 +265,7 @@ namespace EventManager.DataAccess
                         ServiceType = ServiceTypes.Queue
                     });
 
-                    await _applicationContext.Services.AddAsync(new Service
+                    await _eventsContext.Services.AddAsync(new Service
                     {
                         Id = "2",
                         Name = "Breakfast",
@@ -293,7 +273,7 @@ namespace EventManager.DataAccess
                         ServiceType = ServiceTypes.Normal
                     });
 
-                    await _applicationContext.Services.AddAsync(new Service
+                    await _eventsContext.Services.AddAsync(new Service
                     {
                         Id = "3",
                         Name = "Lunch",
@@ -301,7 +281,7 @@ namespace EventManager.DataAccess
                         ServiceType = ServiceTypes.Normal
                     });
 
-                    await _applicationContext.Services.AddAsync(new Service
+                    await _eventsContext.Services.AddAsync(new Service
                     {
                         Id = "4",
                         Name = "Dinner",
@@ -309,7 +289,7 @@ namespace EventManager.DataAccess
                         ServiceType = ServiceTypes.Normal
                     });
 
-                    await _applicationContext.Services.AddAsync(new Service
+                    await _eventsContext.Services.AddAsync(new Service
                     {
                         Id = "5",
                         Name = "Sleep",
@@ -317,7 +297,7 @@ namespace EventManager.DataAccess
                         ServiceType = ServiceTypes.Normal
                     });
 
-                    await _applicationContext.Services.AddAsync(new Service
+                    await _eventsContext.Services.AddAsync(new Service
                     {
                         Id = "6",
                         Name = "Counseling",
@@ -325,7 +305,7 @@ namespace EventManager.DataAccess
                         ServiceType = ServiceTypes.Queue
                     });
 
-                    await _applicationContext.Services.AddAsync(new Service
+                    await _eventsContext.Services.AddAsync(new Service
                     {
                         Id = "7",
                         Name = "Bath and Toiletry",
@@ -333,118 +313,118 @@ namespace EventManager.DataAccess
                         ServiceType = ServiceTypes.Normal
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("Service generation completed");
                 }
 
                 // Events
-                if (!await _applicationContext.Events.AnyAsync())
+                if (!_eventsContext.Events.ToList().Any())
                 {
                     _logger.LogInformation("Generating Events");
 
-                    await _applicationContext.Events.AddAsync(new Event
+                    await _eventsContext.Events.AddAsync(new Event
                     {
                         Id = "1",
                         Name = "Shelter @ Orenco Station",
                         Description = "Overnight homeless shelter"
                     });
 
-                    await _applicationContext.Events.AddAsync(new Event
+                    await _eventsContext.Events.AddAsync(new Event
                     {
                         Id = "2",
                         Name = "Sonrise Day Center",
                         Description = "Daytime homeless shelter"
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("Events generation completed");
                 }
 
                 // EventServices
-                if (!await _applicationContext.EventServices.AnyAsync())
+                if (!_eventsContext.EventServices.ToList().Any())
                 {
                     _logger.LogInformation("Generating EventServices");
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "1",
                         EventId = "1",
                         ServiceId = "1"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "2",
                         EventId = "1",
                         ServiceId = "2"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "3",
                         EventId = "1",
                         ServiceId = "4"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "4",
                         EventId = "1",
                         ServiceId = "5"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "5",
                         EventId = "1",
                         ServiceId = "7"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "6",
                         EventId = "2",
                         ServiceId = "1"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "7",
                         EventId = "2",
                         ServiceId = "3"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "8",
                         EventId = "2",
                         ServiceId = "5"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "9",
                         EventId = "2",
                         ServiceId = "6"
                     });
 
-                    await _applicationContext.EventServices.AddAsync(new EventService
+                    await _eventsContext.EventServices.AddAsync(new EventService
                     {
                         Id = "10",
                         EventId = "2",
                         ServiceId = "7"
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("EventServices generation completed");
                 }
 
                 // EventLocations
-                if (!await _applicationContext.EventLocations.AnyAsync())
+                if (!_eventsContext.EventLocations.ToList().Any())
                 {
                     _logger.LogInformation("Generating EventLocations");
 
-                    await _applicationContext.EventLocations.AddAsync(new EventLocation
+                    await _eventsContext.EventLocations.AddAsync(new EventLocation
                     {
                         Id = "1",
                         EventId = "1",
@@ -456,7 +436,7 @@ namespace EventManager.DataAccess
                         ZipCode = "97124"
                     });
 
-                    await _applicationContext.EventLocations.AddAsync(new EventLocation
+                    await _eventsContext.EventLocations.AddAsync(new EventLocation
                     {
                         Id = "2",
                         EventId = "2",
@@ -468,16 +448,16 @@ namespace EventManager.DataAccess
                         ZipCode = "97124"
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("EventLocations generation completed");
                 }
 
                 // EventSchedules
-                if (!await _applicationContext.EventSchedules.AnyAsync())
+                if (!_eventsContext.EventSchedules.ToList().Any())
                 {
                     _logger.LogInformation("Generating EventSchedules");
 
-                    await _applicationContext.EventSchedules.AddAsync(new EventSchedule
+                    await _eventsContext.EventSchedules.AddAsync(new EventSchedule
                     {
                         Id = "1",
                         EventId = "1",
@@ -494,7 +474,7 @@ namespace EventManager.DataAccess
                         CheckInEndTime = TimeOfDay.Parse("18:30")
                     });
 
-                    await _applicationContext.EventSchedules.AddAsync(new EventSchedule
+                    await _eventsContext.EventSchedules.AddAsync(new EventSchedule
                     {
                         Id = "2",
                         EventId = "1",
@@ -510,7 +490,7 @@ namespace EventManager.DataAccess
                         CheckInEndTime = TimeOfDay.Parse("18:30")
                     });
 
-                    await _applicationContext.EventSchedules.AddAsync(new EventSchedule
+                    await _eventsContext.EventSchedules.AddAsync(new EventSchedule
                     {
                         Id = "3",
                         EventId = "2",
@@ -527,16 +507,16 @@ namespace EventManager.DataAccess
                         CheckInEndTime = TimeOfDay.Parse("15:00")
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("EventSchedules generation completed");
                 }
 
                 // EventOccurances
-                if (!await _applicationContext.EventOccurances.AnyAsync())
+                if (!_eventsContext.EventOccurances.ToList().Any())
                 {
                     _logger.LogInformation("Generating EventOccurances");
 
-                    await _applicationContext.EventOccurances.AddAsync(new EventOccurance
+                    await _eventsContext.EventOccurances.AddAsync(new EventOccurance
                     {
                         Id = "1",
                         EventId = "1",
@@ -546,7 +526,7 @@ namespace EventManager.DataAccess
                         Lead = "Jeff"
                     });
 
-                    await _applicationContext.EventOccurances.AddAsync(new EventOccurance
+                    await _eventsContext.EventOccurances.AddAsync(new EventOccurance
                     {
                         Id = "2",
                         EventId = "2",
@@ -556,7 +536,7 @@ namespace EventManager.DataAccess
                         Lead = "Tori"
                     });
 
-                    await _applicationContext.EventOccurances.AddAsync(new EventOccurance
+                    await _eventsContext.EventOccurances.AddAsync(new EventOccurance
                     {
                         Id = "3",
                         EventId = "1",
@@ -566,53 +546,53 @@ namespace EventManager.DataAccess
                         Lead = "Roxanne"
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("EventOccurances generation completed");
                 }
 
                 // GuestEventOccurances
-                if (!await _applicationContext.GuestEventOccurances.AnyAsync())
+                if (!_eventsContext.GuestEventOccurances.ToList().Any())
                 {
                     _logger.LogInformation("Generating GuestEventOccurances");
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _eventsContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
                     {
                         Id = "1",
                         GuestId = "1",
                         EventOccuranceId = "1"
                     });
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _eventsContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
                     {
                         Id = "2",
                         GuestId = "2",
                         EventOccuranceId = "1"
                     });
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _eventsContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
                     {
                         Id = "3",
                         GuestId = "3",
                         EventOccuranceId = "1"
                     });
 
-                    await _applicationContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
+                    await _eventsContext.GuestEventOccurances.AddAsync(new GuestEventOccurance
                     {
                         Id = "4",
                         GuestId = "4",
                         EventOccuranceId = "1"
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("GuestEventOccurance generation completed");
                 }
 
                 // Demerits
-                if (!await _applicationContext.Demerits.AnyAsync())
+                if (!_eventsContext.Demerits.ToList().Any())
                 {
                     _logger.LogInformation("Generating demerits");
 
-                    await _applicationContext.Demerits.AddAsync(new Demerit
+                    await _eventsContext.Demerits.AddAsync(new Demerit
                     {
                         Id = "1",
                         GuestId = "1",
@@ -620,7 +600,7 @@ namespace EventManager.DataAccess
                         Description = "Caught smoking pot on premises after verbal warning."
                     });
 
-                    await _applicationContext.SaveChangesAsync();
+                    await _eventsContext.SaveChangesAsync();
                     _logger.LogInformation("Demerit generation completed");
                 }
 
@@ -709,7 +689,7 @@ namespace EventManager.DataAccess
         {
             if ((await accountManager.GetRoleByNameAsync(roleName)) == null)
             {
-                ApplicationRole applicationRole = new ApplicationRole(roleName, description);
+                Role applicationRole = new Role(roleName, description);
 
                 (bool Succeeded, string[] Errors) = await accountManager.CreateRoleAsync(applicationRole, claims);
 
@@ -718,9 +698,9 @@ namespace EventManager.DataAccess
             }
         }
 
-        private async Task<ApplicationUser> CreateUserAsync(IAccountManager accountManager, string jobTitle, string userName, string password, string fullName, string email, string phoneNumber, string[] roles)
+        private async Task<User> CreateUserAsync(IAccountManager accountManager, string jobTitle, string userName, string password, string fullName, string email, string phoneNumber, string[] roles)
         {
-            ApplicationUser applicationUser = new ApplicationUser
+            User User = new User
             {
                 JobTitle = jobTitle,
                 UserName = userName,
@@ -731,13 +711,13 @@ namespace EventManager.DataAccess
                 IsEnabled = true
             };
 
-            (bool Succeeded, string[] Errors) = await accountManager.CreateUserAsync(applicationUser, roles, password);
+            (bool Succeeded, string[] Errors) = await accountManager.CreateUserAsync(User, roles, password);
 
             if (!Succeeded)
                 throw new Exception($"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, Errors)}");
 
 
-            return applicationUser;
+            return User;
         }
 
     }

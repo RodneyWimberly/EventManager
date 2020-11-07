@@ -1,7 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
-using EventManager.DataAccess.Models;
+using EventManager.DataAccess.Events.Models;
 using EventManager.Web.ViewModels;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -116,7 +116,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(201, Type = typeof(ExtendedLogViewModel))]
         [ProducesResponseType(400)]
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
-        public async Task<IActionResult> Post([FromBody]ExtendedLogViewModel extendedLogVM)
+        public async Task<IActionResult> Post([FromBody] ExtendedLogViewModel extendedLogVM)
         {
             if (ModelState.IsValid)
             {
@@ -136,7 +136,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
-        public async Task<IActionResult> Put(string id, [FromBody]ExtendedLogViewModel extendedLogVM)
+        public async Task<IActionResult> Put(string id, [FromBody] ExtendedLogViewModel extendedLogVM)
         {
             if (ModelState.IsValid)
             {
@@ -157,7 +157,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
-        public async Task<IActionResult> Patch(int id, [FromBody]JsonPatchDocument<ExtendedLogViewModel> patch)
+        public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<ExtendedLogViewModel> patch)
         {
             if (ModelState.IsValid)
             {
