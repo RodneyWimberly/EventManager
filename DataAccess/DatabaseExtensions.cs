@@ -2,7 +2,6 @@
 using EventManager.Core;
 using EventManager.DataAccess.Accounts;
 using EventManager.DataAccess.Accounts.Models;
-using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Events;
@@ -555,10 +554,10 @@ namespace EventManager.DataAccess
                 .AddAspNetIdentity<Accounts.Models.User>()
                 .AddProfileService<ProfileService>();
 
-            if(developmentEnvironment)
-                identityServerBuilder.AddDeveloperSigningCredential();
-            else
-                identityServerBuilder.AddSigningCredential(GetIdentityServerCertificate(services));
+            //if(developmentEnvironment)
+            identityServerBuilder.AddDeveloperSigningCredential();
+            //else
+            //    identityServerBuilder.AddSigningCredential(GetIdentityServerCertificate(services));
 
             services.AddScoped<IAccountManager, AccountManager>();
 
