@@ -30,7 +30,7 @@ export class NotificationService {
   }
 
 
-  getNotification(notificationId?: number) {
+  getNotification(notificationId?: string) {
 
       return this.notificationMockService.getNotificationEndpoint(notificationId).pipe(
           map(response => generated.NotificationViewModel.fromJS(response)));
@@ -71,17 +71,17 @@ export class NotificationService {
 
 
 
-    pinUnpinNotification(notificationOrNotificationId: number | generated.NotificationViewModel, isPinned?: boolean): Observable<any> {
+  pinUnpinNotification(notificationOrNotificationId: string | generated.NotificationViewModel, isPinned?: boolean): Observable<any> {
 
-    if (typeof notificationOrNotificationId === 'number' || notificationOrNotificationId instanceof Number) {
-      return this.notificationMockService.getPinUnpinNotificationEndpoint(notificationOrNotificationId as number, isPinned);
+    if (typeof notificationOrNotificationId === 'string' || notificationOrNotificationId instanceof String) {
+      return this.notificationMockService.getPinUnpinNotificationEndpoint(notificationOrNotificationId as string, isPinned);
     } else {
-      return this.pinUnpinNotification(notificationOrNotificationId.notificationId);
+      return this.pinUnpinNotification(notificationOrNotificationId.id);
     }
   }
 
 
-  readUnreadNotification(notificationIds: number[], isRead: boolean): Observable<any> {
+  readUnreadNotification(notificationIds: string[], isRead: boolean): Observable<any> {
 
     return this.notificationMockService.getReadUnreadNotificationEndpoint(notificationIds, isRead);
   }
@@ -89,16 +89,16 @@ export class NotificationService {
 
 
 
-    deleteNotification(notificationOrNotificationId: number | generated.NotificationViewModel): Observable<generated.NotificationViewModel> {
+    deleteNotification(notificationOrNotificationId: string | generated.NotificationViewModel): Observable<generated.NotificationViewModel> {
 
-    if (typeof notificationOrNotificationId === 'number' || notificationOrNotificationId instanceof Number) { // Todo: Test me if its check is valid
-      return this.notificationMockService.getDeleteNotificationEndpoint(notificationOrNotificationId as number).pipe(
+      if (typeof notificationOrNotificationId === 'string' || notificationOrNotificationId instanceof String) { // Todo: Test me if its check is valid
+        return this.notificationMockService.getDeleteNotificationEndpoint(notificationOrNotificationId as string).pipe(
         map(response => {
-          this.recentNotifications = this.recentNotifications.filter(n => n.notificationId != notificationOrNotificationId);
+          this.recentNotifications = this.recentNotifications.filter(n => n.id != notificationOrNotificationId);
             return generated.NotificationViewModel.fromJS(response);
         }));
     } else {
-      return this.deleteNotification(notificationOrNotificationId.notificationId);
+      return this.deleteNotification(notificationOrNotificationId.id);
     }
   }
 

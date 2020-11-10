@@ -253,7 +253,7 @@ namespace EventManager.DataAccess.Accounts
             if (claims == null)
                 claims = new string[] { };
 
-            string[] invalidClaims = claims.Where(c => ApplicationPermissions.GetPermissionByValue(c) == null).ToArray();
+            string[] invalidClaims = claims.Where(c => Permissions.GetPermissionByValue(c) == null).ToArray();
             if (invalidClaims.Any())
                 return (false, new[] { "The following claim types are invalid: " + string.Join(", ", invalidClaims) });
 
@@ -267,7 +267,7 @@ namespace EventManager.DataAccess.Accounts
 
             foreach (string claim in claims.Distinct())
             {
-                result = await this._roleManager.AddClaimAsync(role, new Claim(Claims.Permission, ApplicationPermissions.GetPermissionByValue(claim)));
+                result = await this._roleManager.AddClaimAsync(role, new Claim(Claims.Permission, Permissions.GetPermissionByValue(claim)));
 
                 if (!result.Succeeded)
                 {
@@ -283,7 +283,7 @@ namespace EventManager.DataAccess.Accounts
         {
             if (claims != null)
             {
-                string[] invalidClaims = claims.Where(c => ApplicationPermissions.GetPermissionByValue(c) == null).ToArray();
+                string[] invalidClaims = claims.Where(c => Permissions.GetPermissionByValue(c) == null).ToArray();
                 if (invalidClaims.Any())
                     return (false, new[] { "The following claim types are invalid: " + string.Join(", ", invalidClaims) });
             }
@@ -315,7 +315,7 @@ namespace EventManager.DataAccess.Accounts
                 {
                     foreach (string claim in claimsToAdd)
                     {
-                        result = await _roleManager.AddClaimAsync(role, new Claim(Claims.Permission, ApplicationPermissions.GetPermissionByValue(claim)));
+                        result = await _roleManager.AddClaimAsync(role, new Claim(Claims.Permission, Permissions.GetPermissionByValue(claim)));
                         if (!result.Succeeded)
                             return (false, result.Errors.Select(e => e.Description).ToArray());
                     }

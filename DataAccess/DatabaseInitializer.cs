@@ -93,7 +93,7 @@ namespace EventManager.DataAccess
                     const string adminRoleName = "administrator";
                     const string userRoleName = "user";
 
-                    await EnsureRoleAsync(_accountManager, adminRoleName, "Default administrator", ApplicationPermissions.GetAllPermissionValues());
+                    await EnsureRoleAsync(_accountManager, adminRoleName, "Default administrator", Permissions.GetAllPermissionValues());
                     await EnsureRoleAsync(_accountManager, userRoleName, "Default user", new string[] { });
 
                     await CreateUserAsync(_accountManager, "Manager", "admin", "P@55w0rd", "Sample Administrator User", "admin@wimberlytech.com", "+1 (123) 555-1212", new string[] { adminRoleName });

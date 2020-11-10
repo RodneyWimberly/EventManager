@@ -1,17 +1,22 @@
 ﻿using EventManager.DataAccess.Core.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventManager.DataAccess.Events.Models
 {
-    public abstract class EntityBase : IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity
+    public abstract class EntityBase : IPrimaryKeyEntity<string>, IAuditableEntity,
+        IConcurrencyTrackingEntity, IPermissionEntity
     {
+        #region IPrimaryKeyEntity<string>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         public string Id { get; set; }
+        #endregion
 
+        #region IAuditableEntity
         [Required]
         [MaxLength(36)]
         public string CreatedBy { get; set; }
@@ -29,9 +34,24 @@ namespace EventManager.DataAccess.Events.Models
         [Column(TypeName = "TEXT")]
         [MaxLength(28)]
         public DateTime CreatedDate { get; set; }
+        #endregion
 
+        #region IConcurrencyTrackingEntity
         [Timestamp]
         [Column(TypeName = "BLOB")]
         public byte[] RowVersion { get; set; }
+        #endregion
+
+        #region IPermissionEntity
+        public virtual List<Permission> GetPermissions(List<Permission> permissions)
+        {
+            return permissions;
+        }
+
+        public virtual List<Permission> GetAdminPermissions(List<Permission> permissions)
+        {
+            return permissions;
+        }
+        #endregion
     }
 }

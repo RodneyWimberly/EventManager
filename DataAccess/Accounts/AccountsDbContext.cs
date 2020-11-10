@@ -1,5 +1,6 @@
-﻿using EventManager.DataAccess.Core.Interfaces;
-using EventManager.DataAccess.Accounts.Models;
+﻿using EventManager.DataAccess.Accounts.Models;
+using EventManager.DataAccess.Core.Constants;
+using EventManager.DataAccess.Core.Interfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -16,11 +17,10 @@ namespace EventManager.DataAccess.Accounts
                                                         RoleClaim,
                                                         UserToken>, IHttpDbContext
     {
-        private const string systemUserId = "11111111-1111-1111-1111-111111111111";
         private string _currentUserId;
         public string CurrentUserId
         {
-            get => string.IsNullOrEmpty(_currentUserId) ? systemUserId : _currentUserId;
+            get => string.IsNullOrEmpty(_currentUserId) ? Ids.SystemUserId : _currentUserId;
             set => _currentUserId = value;
         }
 

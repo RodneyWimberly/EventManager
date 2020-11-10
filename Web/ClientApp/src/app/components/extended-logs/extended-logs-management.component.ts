@@ -19,7 +19,7 @@ export class ExtendedLogsManagementComponent implements OnInit, AfterViewInit {
   rowsCache: generated.ExtendedLogViewModel[] = [];
   editedLog: generated.ExtendedLogViewModel;
   sourceLog: generated.ExtendedLogViewModel;
-  editingLogId: { id: number };
+  editingLogId: { id: string };
   loadingIndicator: boolean;
 
   @ViewChild('idTemplate', { static: true })

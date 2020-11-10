@@ -51,11 +51,11 @@ namespace EventManager.Web.Controllers
             return Ok(_mapper.Map<IEnumerable<NotificationViewModel>>(notifications.Items));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         //[Authorize(Authorization.Policies.)]
         [ProducesResponseType(200, Type = typeof(NotificationViewModel))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             Notification notification = await _repository.FindAsync(id);
             if (notification == null)
@@ -65,10 +65,10 @@ namespace EventManager.Web.Controllers
         }
 
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(200, Type = typeof(NotificationViewModel))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             Notification notification = await _repository.FindAsync(id);
             if (notification == null)
@@ -99,7 +99,7 @@ namespace EventManager.Web.Controllers
                 return BadRequest(ModelState);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Put(string id, [FromBody] NotificationViewModel notificationVM)
@@ -119,10 +119,10 @@ namespace EventManager.Web.Controllers
                 return BadRequest(ModelState);
         }
 
-        [HttpPatch("{id:int}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<NotificationViewModel> patch)
+        public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<NotificationViewModel> patch)
         {
             if (ModelState.IsValid)
             {

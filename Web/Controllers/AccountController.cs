@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventManager.DataAccess;
 using EventManager.DataAccess.Accounts;
 using EventManager.DataAccess.Accounts.Models;
 using EventManager.DataAccess.Core;
@@ -521,7 +522,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(200, Type = typeof(List<PermissionViewModel>))]
         public IActionResult GetAllPermissions()
         {
-            return Ok(_mapper.Map<List<PermissionViewModel>>(ApplicationPermissions.AllPermissions));
+            return Ok(_mapper.Map<List<PermissionViewModel>>(Permissions.AllPermissions));
         }
 
 

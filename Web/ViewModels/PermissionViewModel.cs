@@ -1,4 +1,4 @@
-﻿using EventManager.DataAccess.Core;
+﻿using EventManager.DataAccess;
 
 namespace EventManager.Web.ViewModels
 {
@@ -10,7 +10,7 @@ namespace EventManager.Web.ViewModels
         public string Description { get; set; }
 
 
-        public static explicit operator PermissionViewModel(ApplicationPermission permission)
+        public static explicit operator PermissionViewModel(Permission permission)
         {
             return new PermissionViewModel
             {

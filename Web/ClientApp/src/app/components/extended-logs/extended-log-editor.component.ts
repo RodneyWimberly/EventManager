@@ -8,7 +8,7 @@ import * as generated from '../../services/endpoint.services';
     styleUrls: ['./extended-log-editor.component.scss']
 })
 export class ExtendedLogEditorComponent {
-    private editingLogId: number;
+    private editingLogId: string;
     public logEdit: generated.ExtendedLogViewModel = new generated.ExtendedLogViewModel();
     public selectedValues: { [key: string]: boolean; } = {};
     public formResetToggle = true;

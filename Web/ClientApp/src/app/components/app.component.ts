@@ -184,7 +184,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const recentNotifications = this.notificationService.recentNotifications;
 
     if (recentNotifications.length) {
-      this.notificationService.readUnreadNotification(recentNotifications.map(n => n.notificationId), true)
+      /*this.notificationService.readUnreadNotification(recentNotifications.map(n => n.id), true)
         .subscribe(response => {
           for (const n of recentNotifications) {
             n.isRead = true;
@@ -196,7 +196,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.alertService.logError(error);
             this.alertService.showMessage('Notification Error', 'Marking read notifications failed', MessageSeverity.error);
 
-          });
+          });*/
     }
   }
 

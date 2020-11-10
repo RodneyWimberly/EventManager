@@ -7,7 +7,7 @@ export class NotificationMockService {
 
     private demoNotifications = [
         {
-            notificationId: 1,
+            id: "1",
             header: '20 New Products were added to your inventory by "administrator"',
             body: '20 new "BMW M6" were added to your stock by "administrator" on 5/28/2017 4:54:13 PM',
             isRead: true,
@@ -15,7 +15,7 @@ export class NotificationMockService {
             date: '2017-05-28T16:29:13.5877958'
         },
         {
-            notificationId: 2,
+            id: "2",
             header: '1 Product running low',
             body: 'You are running low on "Nissan Patrol". 2 Items remaining',
             isRead: false,
@@ -23,7 +23,7 @@ export class NotificationMockService {
             date: '2017-05-28T19:54:42.4144502'
         },
         {
-            notificationId: 3,
+            id: "3",
             header: 'Tomorrow is half day',
             body: 'Guys, tomorrow we close by midday. Please check in your sales before noon. Thanx. Alex.',
             isRead: false,
@@ -34,9 +34,9 @@ export class NotificationMockService {
 
 
 
-    getNotificationEndpoint<T>(notificationId: number): Observable<T> {
+    getNotificationEndpoint<T>(notificationId: string): Observable<T> {
 
-        const notification = this.demoNotifications.find(val => val.notificationId == notificationId);
+        const notification = this.demoNotifications.find(val => val.id == notificationId);
         let response: HttpResponse<T>;
 
         if (notification) {
@@ -80,9 +80,9 @@ export class NotificationMockService {
 
 
 
-    getPinUnpinNotificationEndpoint<T>(notificationId: number, isPinned?: boolean, ): Observable<T> {
+    getPinUnpinNotificationEndpoint<T>(notificationId: string, isPinned?: boolean, ): Observable<T> {
 
-        const notification = this.demoNotifications.find(val => val.notificationId == notificationId);
+        const notification = this.demoNotifications.find(val => val.id == notificationId);
         let response: HttpResponse<T>;
 
         if (notification) {
@@ -104,11 +104,11 @@ export class NotificationMockService {
 
 
 
-    getReadUnreadNotificationEndpoint<T>(notificationIds: number[], isRead: boolean, ): Observable<T> {
+    getReadUnreadNotificationEndpoint<T>(notificationIds: string[], isRead: boolean, ): Observable<T> {
 
         for (const notificationId of notificationIds) {
 
-            const notification = this.demoNotifications.find(val => val.notificationId == notificationId);
+            const notification = this.demoNotifications.find(val => val.id == notificationId);
 
             if (notification) {
                 notification.isRead = isRead;
@@ -121,13 +121,13 @@ export class NotificationMockService {
 
 
 
-    getDeleteNotificationEndpoint<T>(notificationId: number): Observable<T> {
+    getDeleteNotificationEndpoint<T>(notificationId: string): Observable<T> {
 
-        const notification = this.demoNotifications.find(val => val.notificationId == notificationId);
+        const notification = this.demoNotifications.find(val => val.id == notificationId);
         let response: HttpResponse<T>;
 
         if (notification) {
-            this.demoNotifications = this.demoNotifications.filter(val => val.notificationId != notificationId);
+            this.demoNotifications = this.demoNotifications.filter(val => val.id != notificationId);
             response = this.createResponse<T>(notification, 200);
         } else {
             response = this.createResponse<T>(null, 404);

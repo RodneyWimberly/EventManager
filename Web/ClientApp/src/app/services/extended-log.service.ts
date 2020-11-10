@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as generated from './endpoint.services';
 
+
 @Injectable()
 export class ExtendedLogService {
     constructor(private extendedLogEndpointService: generated.ExtendedLogEndpointService) {

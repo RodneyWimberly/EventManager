@@ -1,4 +1,5 @@
-﻿using EventManager.DataAccess.Core;
+﻿using EventManager.DataAccess;
+using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ namespace EventManager.Web.Authorization
             if (context.User == null || requirement.OperationName != AccountManagementOperations.ReadOperationName)
                 return Task.CompletedTask;
 
-            if (context.User.HasClaim(Claims.Permission, ApplicationPermissions.ViewUsers) || GetIsSameUser(context.User, targetUserId))
+            if (context.User.HasClaim(Claims.Permission, Permissions.ViewUsers) || GetIsSameUser(context.User, targetUserId))
                 context.Succeed(requirement);
 
             return Task.CompletedTask;

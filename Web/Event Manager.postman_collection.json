@@ -1,0 +1,1292 @@
+{
+	"info": {
+		"_postman_id": "4f3a877c-a53c-4b19-a309-77d3876c1e7f",
+		"name": "Event Manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/api",
+			"item": [
+				{
+					"name": "/extendedlog",
+					"item": [
+						{
+							"name": "/level",
+							"item": [
+								{
+									"name": "/api/extendedlog/level/{level} - GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/extendedlog/level/4",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"extendedlog",
+												"level",
+												"4"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/extendedlog/level/{level}/{pageNumber:int}/{pageSize:int} - GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/extendedlog/level/4/1/1",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"extendedlog",
+												"level",
+												"4",
+												"1",
+												"1"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "/api/extendedlog - POST",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d15a6647-b951-4f4b-a5a8-f2731f3a939e",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);\r",
+											"pm.collectionVariables.set(\"UserId\", jsonData.id);\r",
+											"console.log(\"New UserId: \" + jsonData.id);\r",
+											"\r",
+											"pm.test(\"Response must be created, have a json body, and message is 'Generating Notifications'\", function () {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"     pm.response.to.have.status(201);\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json;\r",
+											"     pm.expect(jsonData.id).to.not.equal(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "    {\r\n        \"browser\": null,\r\n        \"host\": null,\r\n        \"path\": null,\r\n        \"user\": null,\r\n        \"eventId\": \"123\",\r\n        \"level\": 2,\r\n        \"levelDescription\": \"Information\",\r\n        \"message\": \"Generating Notifications\",\r\n        \"name\": \"EventManager.DataAccess.DatabaseInitializer\",\r\n        \"method\": null,\r\n        \"statusCode\": 0,\r\n        \"serverVariables\": null,\r\n        \"cookies\": null,\r\n        \"formVariables\": null,\r\n        \"queryString\": null,\r\n        \"timeStamp\": \"2020-11-07T05:44:21.460087-08:00\"\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{EventManager_Url}}/api/extendedlog",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"extendedlog"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/extendedlog/{id} - GET",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cb20cdd6-98e4-4a05-8d0c-5c4e1b264399",
+										"exec": [
+											"pm.test(\"Response must be valid, have a json body, and message is 'Generating Notifications'\", function () {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"     pm.response.to.be.ok;\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json;\r",
+											"     pm.expect(jsonData.message).to.equal(\"Generating Notifications\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/extendedlog/{{UserId}}",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"extendedlog",
+										"{{UserId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/extendedlog/{id} - PUT",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b8e0a2b6-16d8-4d77-bf7f-56e8570b2ab2",
+										"exec": [
+											"pm.test(\"Response must be valid, have a json body, and message is 'Test Message\", function () {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"     pm.response.to.be.ok;\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json;\r",
+											"     pm.expect(jsonData.message).to.equal(\"Test Message\");\r",
+											"});\r",
+											"postman.setNextRequest(null);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "    {\r\n    \t\"id\": \"{{UserId}}\",\r\n        \"browser\": null,\r\n        \"host\": null,\r\n        \"path\": null,\r\n        \"user\": null,\r\n        \"eventId\": \"123\",\r\n        \"level\": 2,\r\n        \"levelDescription\": \"Information\",\r\n        \"message\": \"Test Message\",\r\n        \"name\": \"EventManager.DataAccess.DatabaseInitializer\",\r\n        \"method\": null,\r\n        \"statusCode\": 0,\r\n        \"serverVariables\": null,\r\n        \"cookies\": null,\r\n        \"formVariables\": null,\r\n        \"queryString\": null,\r\n        \"timeStamp\": \"2020-11-07T05:44:21.460087-08:00\"\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{EventManager_Url}}/api/extendedlog/{{UserId}}",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"extendedlog",
+										"{{UserId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/extendedlog - GET",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "8a25b9c7-c008-408a-89f6-fa47abd07782",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/extendedlog",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"extendedlog"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/extendedlog/{pageNumber:int}/{pageSize:int} - GET",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification/1/1",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification",
+										"1",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/extendedlog - DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/extendedlog",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"extendedlog"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/extendedlog/{id} - DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/extendedlog",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"extendedlog"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/extendedlog/{id} - PATCH",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "    {\r\n    \t\"id\": \"34f809f6-75bb-4d65-9da3-c280e6e1360e\",\r\n        \"browser\": null,\r\n        \"host\": null,\r\n        \"path\": null,\r\n        \"user\": null,\r\n        \"eventId\": \"123\"\r\n        \"level\": 2,\r\n        \"levelDescription\": \"asdfsadfInformation\",\r\n        \"message\": \"Generating Notifications\",\r\n        \"name\": \"EventManager.DataAccess.DatabaseInitializer\",\r\n        \"method\": null,\r\n        \"statusCode\": 0,\r\n        \"serverVariables\": null,\r\n        \"cookies\": null,\r\n        \"formVariables\": null,\r\n        \"queryString\": null,\r\n        \"timeStamp\": \"2020-11-07T05:44:21.460087-08:00\"\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{EventManager_Url}}/api/extendedlog/34f809f6-75bb-4d65-9da3-c280e6e1360e",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"extendedlog",
+										"34f809f6-75bb-4d65-9da3-c280e6e1360e"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5a45298c-f92d-40d0-861d-9026e9a2352d",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "941b5970-da3e-4657-b0d1-ae2d9d5cb2c0",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/notification",
+					"item": [
+						{
+							"name": "/api/notification - GET",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/notification/{pageNumber:int}/{pageSize:int} - GET",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification/1/1",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification",
+										"1",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/notification/{id} - GET",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification/01a4d0db-e0df-4440-9ac8-2f40e276461c",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification",
+										"01a4d0db-e0df-4440-9ac8-2f40e276461c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/notification/{id} - DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification/01a4d0db-e0df-4440-9ac8-2f40e276461c",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification",
+										"01a4d0db-e0df-4440-9ac8-2f40e276461c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/notification - POST",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"header\": \"Rodney is cool\",\r\n        \"body\": \"The light failed to turn on at the scheduled time\",\r\n        \"isRead\": false,\r\n        \"isPinned\": false\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/notification/{id} - PUT",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"id\": \"f15520e7-c31b-4b59-85b0-17f8523305a6\",\r\n        \"header\": \"Action Failure\",\r\n        \"body\": \"The light failed to turn on at the scheduled time\",\r\n        \"isRead\": false,\r\n        \"isPinned\": true,\r\n        \"date\": \"2020-11-07T05:44:21-08:00\"\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification/f15520e7-c31b-4b59-85b0-17f8523305a6",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification",
+										"f15520e7-c31b-4b59-85b0-17f8523305a6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/notification/{id} - PATCH",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"id\": \"f15520e7-c31b-4b59-85b0-17f8523305a6\",\r\n        \"header\": \"Action Failure\",\r\n        \"body\": \"The light failed to turn on at the scheduled time\",\r\n        \"isRead\": false,\r\n        \"isPinned\": true,\r\n        \"date\": \"2020-11-07T05:44:21-08:00\"\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{EventManager_Url}}/api/notification/f15520e7-c31b-4b59-85b0-17f8523305a6",
+									"host": [
+										"{{EventManager_Url}}"
+									],
+									"path": [
+										"api",
+										"notification",
+										"f15520e7-c31b-4b59-85b0-17f8523305a6"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/account",
+					"item": [
+						{
+							"name": "/users",
+							"item": [
+								{
+									"name": "/me",
+									"item": [
+										{
+											"name": "/preferences",
+											"item": [
+												{
+													"name": "/api/account/users/me/preferences- GET",
+													"request": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{EventManager_Url}}/api/account/users/me",
+															"host": [
+																"{{EventManager_Url}}"
+															],
+															"path": [
+																"api",
+																"account",
+																"users",
+																"me"
+															]
+														},
+														"description": "UserPreferences"
+													},
+													"response": []
+												},
+												{
+													"name": "/api/account/users/me/preferences- PUT",
+													"request": {
+														"method": "PUT",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "\"data\": \"Rodney\",\r\n",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{EventManager_Url}}/api/account/users/me/preferences",
+															"host": [
+																"{{EventManager_Url}}"
+															],
+															"path": [
+																"api",
+																"account",
+																"users",
+																"me",
+																"preferences"
+															]
+														},
+														"description": "UserPreferences"
+													},
+													"response": []
+												}
+											],
+											"protocolProfileBehavior": {},
+											"_postman_isSubFolder": true
+										},
+										{
+											"name": "/api/account/users/me - GET",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"id": "06a00f69-e0f6-467d-bbbb-c16d8ff84fae",
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{EventManager_Url}}/api/account/users/me",
+													"host": [
+														"{{EventManager_Url}}"
+													],
+													"path": [
+														"api",
+														"account",
+														"users",
+														"me"
+													]
+												},
+												"description": "GetCurrentUser"
+											},
+											"response": []
+										},
+										{
+											"name": "/api/account/users/me - PUT",
+											"request": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"isLockedOut\": false,\r\n    \"id\": \"e4db75e1-70e3-4937-876b-4297977248d9\",\r\n    \"userName\": \"admin\",\r\n    \"fullName\": \"Sample Administrator User\",\r\n    \"email\": \"admin@wimberlytech.com\",\r\n    \"jobTitle\": \"Manager\",\r\n    \"phoneNumber\": \"+1 (123) 555-1212\",\r\n    \"configuration\": \"123\",\r\n    \"isEnabled\": true,\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{EventManager_Url}}/api/account/users/me",
+													"host": [
+														"{{EventManager_Url}}"
+													],
+													"path": [
+														"api",
+														"account",
+														"users",
+														"me"
+													]
+												},
+												"description": "UpdateCurrentUser"
+											},
+											"response": []
+										},
+										{
+											"name": "/api/account/users/me - PATCH",
+											"request": {
+												"method": "PATCH",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"id\": \"e4db75e1-70e3-4937-876b-4297977248d9\",\r\n    \"fullName\": \"Sample Administrator User\",\r\n    \"jobTitle\": \"Manager\",\r\n    \"phoneNumber\": \"+1 (123) 555-1212\",\r\n    \"configuration\": \"123\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{EventManager_Url}}/api/account/users/me",
+													"host": [
+														"{{EventManager_Url}}"
+													],
+													"path": [
+														"api",
+														"account",
+														"users",
+														"me"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"protocolProfileBehavior": {},
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "/username",
+									"item": [
+										{
+											"name": "/api/account/users/username/{username} - GET",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{EventManager_Url}}/api/account/users/username/admin",
+													"host": [
+														"{{EventManager_Url}}"
+													],
+													"path": [
+														"api",
+														"account",
+														"users",
+														"username",
+														"admin"
+													]
+												},
+												"description": "GetUserByUserName"
+											},
+											"response": []
+										}
+									],
+									"protocolProfileBehavior": {},
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "/unblock",
+									"item": [
+										{
+											"name": "/api/accoun/users/unblock/{id} - PUT",
+											"request": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"isLockedOut\": false,\r\n    \"id\": \"e4db75e1-70e3-4937-876b-4297977248d9\",\r\n    \"userName\": \"admin\",\r\n    \"fullName\": \"Sample Administrator User\",\r\n    \"email\": \"admin@wimberlytech.com\",\r\n    \"jobTitle\": \"Manager\",\r\n    \"phoneNumber\": \"+1 (123) 555-1212\",\r\n    \"configuration\": \"123\",\r\n    \"isEnabled\": true,\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{EventManager_Url}}/api/account/users/e4db75e1-70e3-4937-876b-4297977248d9",
+													"host": [
+														"{{EventManager_Url}}"
+													],
+													"path": [
+														"api",
+														"account",
+														"users",
+														"e4db75e1-70e3-4937-876b-4297977248d9"
+													]
+												},
+												"description": "UnblockUser"
+											},
+											"response": []
+										}
+									],
+									"protocolProfileBehavior": {},
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "/api/account/users - GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{eventEventManager_Urlmanager_url}}/api/account/users",
+											"host": [
+												"{{eventEventManager_Urlmanager_url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/users/{id} - GET",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "fc101af9-39bb-440d-aee1-4b7a45bcaa78",
+												"exec": [
+													"pm.environment.get(\"variable_key\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/users/{{UserId}}",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"users",
+												"{{UserId}}"
+											]
+										},
+										"description": "GetUserById"
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/users{pageNumber:int}/{pageSize:int} - GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/users",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"users"
+											]
+										},
+										"description": "GetUsers"
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/users/{id} - PUT",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"isLockedOut\": false,\r\n    \"id\": \"e4db75e1-70e3-4937-876b-4297977248d9\",\r\n    \"userName\": \"admin\",\r\n    \"fullName\": \"Sample Administrator User\",\r\n    \"email\": \"admin@wimberlytech.com\",\r\n    \"jobTitle\": \"Manager\",\r\n    \"phoneNumber\": \"+1 (123) 555-1212\",\r\n    \"configuration\": \"123\",\r\n    \"isEnabled\": true,\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/users/e4db75e1-70e3-4937-876b-4297977248d9",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"users",
+												"e4db75e1-70e3-4937-876b-4297977248d9"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/users/{id} - PATCH",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"e4db75e1-70e3-4937-876b-4297977248d9\",\r\n    \"fullName\": \"Sample Administrator User\",\r\n    \"jobTitle\": \"Manager\",\r\n    \"phoneNumber\": \"+1 (123) 555-1212\",\r\n    \"configuration\": \"123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/users/e4db75e1-70e3-4937-876b-4297977248d9",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"users",
+												"e4db75e1-70e3-4937-876b-4297977248d9"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/users/{id} - POST",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "825e7456-d64a-414b-a0e8-f653890b688f",
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);\r",
+													"pm.environment.set(\"UserId\", jsonData[\"id\"]);\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"isLockedOut\": false,\r\n    \"roles\": [\r\n        \"administrator\"\r\n    ],\r\n    \"userName\": \"rodney\",\r\n    \"fullName\": \"Sample Administrator User\",\r\n    \"email\": \"admin@wimberlytech.com\",\r\n    \"jobTitle\": \"Manager\",\r\n    \"phoneNumber\": \"+1 (123) 555-1212\",\r\n    \"configuration\": \"123\",\r\n    \"isEnabled\": true,\r\n    \"currentPassword\" : \"P@55w0rd\",\r\n    \"newPassword\": \"P@55w0rd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/users",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"users"
+											]
+										},
+										"description": "Register"
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/users/{id} - DELETE",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"isLockedOut\": false,\r\n    \"roles\": [\r\n        \"administrator\"\r\n    ],\r\n    \"userName\": \"rodney\",\r\n    \"fullName\": \"Sample Administrator User\",\r\n    \"email\": \"admin@wimberlytech.com\",\r\n    \"jobTitle\": \"Manager\",\r\n    \"phoneNumber\": \"+1 (123) 555-1212\",\r\n    \"configuration\": \"123\",\r\n    \"isEnabled\": true,\r\n    \"currentPassword\" : \"P@55w0rd\",\r\n    \"newPassword\": \"P@55w0rd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/users/4c832190-4edd-4de5-8a6f-f5dac9dd6ca4",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"users",
+												"4c832190-4edd-4de5-8a6f-f5dac9dd6ca4"
+											]
+										},
+										"description": "DeleteUser"
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "/roles",
+							"item": [
+								{
+									"name": "/name",
+									"item": [
+										{
+											"name": "/api/account/roles/name/{name} - GET",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{EventManager_Url}}/api/account/roles/name/administrator",
+													"host": [
+														"{{EventManager_Url}}"
+													],
+													"path": [
+														"api",
+														"account",
+														"roles",
+														"name",
+														"administrator"
+													]
+												},
+												"description": "GetRoleByName"
+											},
+											"response": []
+										}
+									],
+									"protocolProfileBehavior": {},
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "/api/account/roles/{id} - GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/roles/5a5d8bf2-bac5-479e-a379-5ec5d4c65747",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"roles",
+												"5a5d8bf2-bac5-479e-a379-5ec5d4c65747"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/roles - GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/roles/",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"roles",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/roles/{pageNumber:int}/{pageSize:int} - GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/roles/",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"roles",
+												""
+											]
+										},
+										"description": "GetRoles"
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/roles/{id} - PUT",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"3bd72c45-97d8-4675-9451-5daffd042b87\",\r\n    \"name\": \"user\",\r\n    \"description\": \"Default user test\",\r\n\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/roles/3bd72c45-97d8-4675-9451-5daffd042b87",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"roles",
+												"3bd72c45-97d8-4675-9451-5daffd042b87"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/roles - POST",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"manager\",\r\n    \"description\": \"Default manager\",\r\n    \"usersCount\": 1,\r\n    \"permissions\": []\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/roles/",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"roles",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/api/account/roles/{id} - DELETE",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"3bd72c45-97d8-4675-9451-5daffd042b87\",\r\n    \"name\": \"user\",\r\n    \"description\": \"Default user test\",\r\n\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/roles/04e21798-c2d4-42ab-9f7a-60a54ce72330",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"roles",
+												"04e21798-c2d4-42ab-9f7a-60a54ce72330"
+											]
+										},
+										"description": "DeleteRole"
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "/permissions",
+							"item": [
+								{
+									"name": "/api/account/permissions- GET",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EventManager_Url}}/api/account/roles/",
+											"host": [
+												"{{EventManager_Url}}"
+											],
+											"path": [
+												"api",
+												"account",
+												"roles",
+												""
+											]
+										},
+										"description": "GetAllPermissions"
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{OAuth_Token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "69e0ffc3-9860-4212-84f3-bbc4180f6711",
+				"type": "text/javascript",
+				"exec": [
+					"var appName = pm.collectionVariables.get(\"AppName\");",
+					"var tokenUrl = pm.environment.get(appName + \"_TokenUrl\");",
+					"var tokenExpiration = new Date(\"2010-10-10T10:10:10.416Z\");",
+					"if(pm.environment.has(appName + \"_TokenExpiration\")){",
+					"    tokenExpiration = new Date(pm.environment.get(appName + \"_TokenExpiration\"));",
+					"} ",
+					"if(new Date() > tokenExpiration) {",
+					"    if(!tokenUrl){",
+					"        var request = {",
+					"            url: pm.environment.get(appName + \"_Url\") + \"/.well-known/openid-configuration\", ",
+					"            method: 'GET',",
+					"            header: {",
+					"            'Content-Type': 'application/x-www-form-urlencoded'",
+					"            }",
+					"        };",
+					"        pm.sendRequest(request, function (err, res) {",
+					"            var json = res.json();",
+					"            tokenUrl = json.token_endpoint;",
+					"            pm.environment.set(appName + \"_TokenUrl\", tokenUrl);",
+					"            console.log(\"Retreieved openid-configuration: \" + JSON.stringify(json));",
+					"    ",
+					"            GetToken(tokenUrl);",
+					"        });",
+					"    }",
+					"    else{",
+					"        GetToken(tokenUrl);",
+					"    }",
+					"}",
+					"else",
+					"{",
+					"    console.log(\"Using existing Access Token\\r\\n \" +",
+					"                \"Token Path: \" + tokenUrl + \"\\r\\n \" +",
+					"                \"Expiration: \" + tokenExpiration + \"\\r\\n\" +",
+					"                \"Timestamp: \" + new Date() + \"\\r\\n \" +",
+					"                \"Token: \" + pm.environment.get(appName + \"_Token\"));",
+					"}",
+					"",
+					"function GetToken(tokenUrl){",
+					"    var request = {",
+					"        url: tokenUrl, ",
+					"        method: 'POST',",
+					"        header: {",
+					"            'Content-Type': 'application/x-www-form-urlencoded'",
+					"        },",
+					"        body: pm.environment.get(appName + \"_TokenRequest\")",
+					"    };",
+					"    pm.sendRequest(request, function (err, res) {",
+					"        var json = res.json();",
+					"        if(json.access_token && json.expires_in)",
+					"        {",
+					"            var date = new Date();",
+					"            tokenExpiration =  new Date(date.setTime(date.getTime() + json.expires_in * 1000));",
+					"            pm.environment.set(\"EventManager_TokenExpiration\", tokenExpiration);",
+					"            pm.environment.set(\"EventManager_Token\", json.access_token);",
+					"            console.log(\"New Access Token\\r\\n \" +",
+					"                        \"Token Path: \" + tokenUrl + \"\\r\\n \" +",
+					"                        \"Expiration: \" + tokenExpiration + \"\\r\\n\" +",
+					"                        \"Timestamp: \" + new Date() + \"\\r\\n \" +",
+					"                        \"Token: \" + json.access_token);",
+					"        }",
+					"        else",
+					"        {",
+					"            console.log(\"Request:\" + JSON.stringify(request));",
+					"            console.log(\"Response:\" + JSON.stringify(json));",
+					"            console.error(\"Unable to obtain Access Token\");",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5c1decf0-b574-437c-934e-dde36826c2a0",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "6ec236c4-efa2-44e9-aa8b-978018fc4d85",
+			"key": "AppName",
+			"value": "EventManager"
+		},
+		{
+			"id": "22b06ebe-9363-4c45-ac95-b3a2e425d9f3",
+			"key": "TokenPath",
+			"value": "/connect/token"
+		},
+		{
+			"id": "a5d0dfe1-2402-4546-a3f4-9e22be7595a6",
+			"key": "NotificationId",
+			"value": ""
+		},
+		{
+			"id": "a2d5532b-6b09-4c38-b406-751226acfaeb",
+			"key": "UserId",
+			"value": "4d464e21-b053-4ceb-b8cb-3e38f30b5e81"
+		},
+		{
+			"id": "951a0ae8-55a3-4e80-8daf-fd0528d7aa7e",
+			"key": "RoleId",
+			"value": ""
+		},
+		{
+			"id": "7cc3d1bd-3b28-42ba-a0a8-df866fa78372",
+			"key": "LogId",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}

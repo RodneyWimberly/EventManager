@@ -77,19 +77,19 @@ namespace EventManager.Web
             // Set authorization policies
             services.AddAuthorizationCore(options =>
             {
-                options.AddPolicy(Policies.ViewLogsPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ViewLogs));
-                options.AddPolicy(Policies.ManageLogsPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ManageLogs));
+                options.AddPolicy(Policies.ViewLogsPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ViewLogs));
+                options.AddPolicy(Policies.ManageLogsPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ManageLogs));
 
-                options.AddPolicy(Policies.ViewEventsPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ViewEvents));
-                options.AddPolicy(Policies.ManageEventsPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ManageEvents));
-                options.AddPolicy(Policies.ExecuteEventsPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ExecuteEvents));
+                options.AddPolicy(Policies.ViewEventsPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ViewEvents));
+                options.AddPolicy(Policies.ManageEventsPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ManageEvents));
+                options.AddPolicy(Policies.ExecuteEventsPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ExecuteEvents));
 
-                options.AddPolicy(Policies.ViewAllUsersPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ViewUsers));
-                options.AddPolicy(Policies.ManageAllUsersPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ManageUsers));
+                options.AddPolicy(Policies.ViewAllUsersPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ViewUsers));
+                options.AddPolicy(Policies.ManageAllUsersPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ManageUsers));
 
-                options.AddPolicy(Policies.ViewAllRolesPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ViewRoles));
+                options.AddPolicy(Policies.ViewAllRolesPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ViewRoles));
                 options.AddPolicy(Policies.ViewRoleByRoleNamePolicy, policy => policy.Requirements.Add(new ViewRoleAuthorizationRequirement()));
-                options.AddPolicy(Policies.ManageAllRolesPolicy, policy => policy.RequireClaim(Claims.Permission, ApplicationPermissions.ManageRoles));
+                options.AddPolicy(Policies.ManageAllRolesPolicy, policy => policy.RequireClaim(Claims.Permission, Permissions.ManageRoles));
 
                 options.AddPolicy(Policies.AssignAllowedRolesPolicy, policy => policy.Requirements.Add(new AssignRolesAuthorizationRequirement()));
             });
@@ -134,18 +134,12 @@ namespace EventManager.Web
         {
             StoragePath.Initialize(env.ContentRootPath);
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.InitializeDatabase();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
+            if (!env.IsDevelopment())
                 app.UseHsts();
-                app.InitializeDatabase();
-            }
 
+            app.UseDeveloperExceptionPage();
+            //app.UseExceptionHandler("/Error");
+            app.InitializeDatabase();
             app.UseEntityFrameworkLoggingScopeStateProvider();
             app.UseHttpsRedirection();
             app.UseStaticFiles();

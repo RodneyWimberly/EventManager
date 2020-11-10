@@ -1,4 +1,4 @@
-﻿using EventManager.DataAccess.Core;
+﻿using EventManager.DataAccess;
 using EventManager.DataAccess.Core.Constants;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
@@ -15,9 +15,9 @@ namespace EventManager.Web.Authorization
             {
                 context.Succeed(requirement);
             }
-            else if (context.User.HasClaim(Claims.Permission, ApplicationPermissions.AssignRoles))
+            else if (context.User.HasClaim(Claims.Permission, Permissions.AssignRoles))
             {
-                if (context.User.HasClaim(Claims.Permission, ApplicationPermissions.ViewRoles)) // If user has ViewRoles permission, then he can assign any roles
+                if (context.User.HasClaim(Claims.Permission, Permissions.ViewRoles)) // If user has ViewRoles permission, then he can assign any roles
                     context.Succeed(requirement);
 
                 else if (GetIsUserInAllAddedRoles(context.User, roles.newRoles, roles.currentRoles)) // Else user can only assign roles they're part of

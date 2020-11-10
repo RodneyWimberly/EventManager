@@ -73,11 +73,11 @@ namespace EventManager.Web.Controllers
                 return NotFound(level);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         [Authorize(Authorization.Policies.ViewLogsPolicy)]
         [ProducesResponseType(200, Type = typeof(ExtendedLogViewModel))]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             ExtendedLog extendedLog = await _repository.FindAsync(id);
             if (extendedLog == null)
@@ -91,16 +91,16 @@ namespace EventManager.Web.Controllers
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
         public async Task<IActionResult> DeleteAll()
         {
-            _unitOfWork.ExecuteSqlCommand("Delete from AppExtendedLogs");
+            _unitOfWork.ExecuteSqlCommand("Exec ClearAll");
             await _unitOfWork.SaveChangesAsync();
             return NoContent();
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(200, Type = typeof(ExtendedLogViewModel))]
         [ProducesResponseType(404)]
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             ExtendedLog extendedLog = await _repository.FindAsync(id);
             if (extendedLog == null)
@@ -132,7 +132,7 @@ namespace EventManager.Web.Controllers
                 return BadRequest(ModelState);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
@@ -153,11 +153,11 @@ namespace EventManager.Web.Controllers
                 return BadRequest(ModelState);
         }
 
-        [HttpPatch("{id:int}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [Authorize(Authorization.Policies.ManageLogsPolicy)]
-        public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<ExtendedLogViewModel> patch)
+        public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<ExtendedLogViewModel> patch)
         {
             if (ModelState.IsValid)
             {

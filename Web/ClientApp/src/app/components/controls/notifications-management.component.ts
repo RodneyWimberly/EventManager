@@ -155,7 +155,7 @@ export class NotificationsManagementComponent implements OnInit, OnDestroy {
                 this.alertService.stopLoadingMessage();
                 this.loadingIndicator = false;
 
-                this.rows = this.rows.filter(item => item.notificationId != row.notificationId);
+                this.rows = this.rows.filter(item => item.id != row.id);
             },
             error => {
                 this.alertService.stopLoadingMessage();
