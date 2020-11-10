@@ -3,6 +3,7 @@ using EventManager.Core;
 using EventManager.DataAccess.Accounts;
 using EventManager.DataAccess.Accounts.Models;
 using EventManager.DataAccess.Core;
+using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Events;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -11,17 +12,20 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.KeyVault;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.IdentityModel.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace EventManager.DataAccess
@@ -485,7 +489,8 @@ namespace EventManager.DataAccess
         }
 
         public static IServiceCollection AddAccountManagerDbContext(this IServiceCollection services, IConfigurationSection identityOptionsConfig,
-          string sqlConnectString, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
+          string sqlConnectString, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false,
+          bool developmentEnvironment = true)
 
         {
             string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName;
@@ -544,12 +549,16 @@ namespace EventManager.DataAccess
             services.Configure<IdentityOptions>(identityOptionsConfig);
 
             // Adds IdentityServer
-            services.AddIdentityServer()
+            IIdentityServerBuilder identityServerBuilder = services.AddIdentityServer()
                 .AddConfigurationStore<ConfigurationDbContext>()
                 .AddOperationalStore<PersistedGrantDbContext>()
-                .AddDeveloperSigningCredential()
                 .AddAspNetIdentity<Accounts.Models.User>()
                 .AddProfileService<ProfileService>();
+
+            if(developmentEnvironment)
+                identityServerBuilder.AddDeveloperSigningCredential();
+            else
+                identityServerBuilder.AddSigningCredential(GetIdentityServerCertificate(services));
 
             services.AddScoped<IAccountManager, AccountManager>();
 
@@ -608,6 +617,33 @@ namespace EventManager.DataAccess
                 entity.UpdatedDate = now;
                 entity.UpdatedBy = dbContext.CurrentUserId;
             }
+        }
+
+        private static X509Certificate2 GetIdentityServerCertificate(IServiceCollection services)
+        {
+            var clientId = IdentityServerValues.ApplicationClientId;
+            var clientSecret = IdentityServerValues.ApplicationClientSecret;
+            var secretIdentifier = "Gc-ZTH46t.isXlHFcign-US~~SWzm04l-0";
+
+            var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(async (authority, resource, scope) =>
+            {
+                var authContext = new AuthenticationContext(authority);
+                ClientCredential clientCreds = new ClientCredential(clientId, clientSecret);
+
+                AuthenticationResult result = await authContext.AcquireTokenAsync(resource, clientCreds);
+
+                if (result == null)
+                {
+                    throw new InvalidOperationException("Failed to obtain the JWT token");
+                }
+
+                return result.AccessToken;
+            }));
+
+            var pfxSecret = keyVaultClient.GetSecretAsync(secretIdentifier).Result;
+            var pfxBytes = Convert.FromBase64String(pfxSecret.Value);
+            var certificate = new X509Certificate2(pfxBytes);
+            return certificate;
         }
     }
 }

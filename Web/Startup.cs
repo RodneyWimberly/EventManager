@@ -3,7 +3,6 @@ using EventManager.Core;
 using EventManager.Core.Email;
 using EventManager.Core.Logging;
 using EventManager.DataAccess;
-using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Events.Models;
 using EventManager.Web.Authorization;
@@ -54,7 +53,7 @@ namespace EventManager.Web
             services.AddAccountManagerDbContext(
                Configuration.GetSection("IdentityOptions"),
                Configuration["ConnectionStrings:SqlConnectString"],
-               WebHostEnvironment.IsDevelopment());
+               WebHostEnvironment.IsDevelopment(), false, WebHostEnvironment.IsDevelopment());
 
             // Configure JSON serializer to not complain when returning entities plus reference and navigational properties
             services.AddMvc()
@@ -189,5 +188,8 @@ namespace EventManager.Web
                 }
             });
         }
+
     }
+
+
 }
