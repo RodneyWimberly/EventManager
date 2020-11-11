@@ -131,7 +131,8 @@ export class AuthEndpointService {
     }
 
     private configureOauthService(rememberMe?: boolean) {
-        this.oAuthService.issuer = this.baseUrl;
+      this.oAuthService.issuer = this.baseUrl;
+
         this.oAuthService.clientId = 'eventmanager_web';
         this.oAuthService.scope = 'openid email phone profile offline_access roles eventmanager_api';
         this.oAuthService.skipSubjectCheck = true;
