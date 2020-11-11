@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventManager.Core.Logging
 {
@@ -10,6 +7,8 @@ namespace EventManager.Core.Logging
     {
         public static IDisposable BeginScope(this ILogger logger)
         {
+            if (logger == null)
+                throw new ArgumentNullException(nameof(logger));
             LoggerState state = new LoggerState(null);
             return logger.BeginScope(state);
         }

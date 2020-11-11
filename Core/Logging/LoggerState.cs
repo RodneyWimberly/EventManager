@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EventManager.Core.Logging
 {
@@ -25,7 +25,7 @@ namespace EventManager.Core.Logging
             }
         }
 
-        private Dictionary<string, object> GetLoggerState(HttpContext context)
+        private static Dictionary<string, object> GetLoggerState(HttpContext context)
         {
             Dictionary<string, object> loggerState = new Dictionary<string, object>
             {
@@ -41,12 +41,12 @@ namespace EventManager.Core.Logging
             return loggerState;
         }
 
-        private Dictionary<string, string> QueryString(HttpContext context)
+        private static Dictionary<string, string> QueryString(HttpContext context)
         {
             return context.Request?.Query?.Keys.ToDictionary(k => k, k => context.Request.Query[k].ToString());
         }
 
-        private Dictionary<string, string> Form(HttpContext context)
+        private static Dictionary<string, string> Form(HttpContext context)
         {
             try
             {
@@ -60,12 +60,12 @@ namespace EventManager.Core.Logging
             return new Dictionary<string, string>();
         }
 
-        private Dictionary<string, string> Cookies(HttpContext context)
+        private static Dictionary<string, string> Cookies(HttpContext context)
         {
-            return context.Request?.Cookies?.Keys.ToDictionary(k => k, k => context.Request.Cookies[k].ToString());
+            return context.Request?.Cookies?.Keys.ToDictionary(k => k, k => context.Request.Cookies[k].ToString(CultureInfo.CurrentCulture));
         }
 
-        private Dictionary<string, string> ServerVariables(HttpContext context)
+        private static Dictionary<string, string> ServerVariables(HttpContext context)
         {
             return context.Request?.Headers?.Keys.ToDictionary(k => k, k => context.Request.Headers[k].ToString());
         }

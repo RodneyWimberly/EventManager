@@ -9,7 +9,7 @@ namespace EventManager.Core
     {
         public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
         {
-            if (assembly == null) throw new ArgumentNullException("assembly");
+            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
             try
             {
                 return assembly.GetTypes();
@@ -29,7 +29,7 @@ namespace EventManager.Core
         public static object InvokeMethod(this Type type, string method, params object[] args)
         {
             if (type == null)
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
 
             ConstructorInfo constructorInfo = type.GetConstructor(Type.EmptyTypes);
             if (constructorInfo == null)

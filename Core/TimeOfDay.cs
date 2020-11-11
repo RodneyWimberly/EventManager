@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc.Formatters;
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace EventManager.Core
@@ -13,9 +15,7 @@ namespace EventManager.Core
 
     public class TimeOfDay
     {
-        private const int MINUTES_PER_DAY = 60 * 24;
-        private const int SECONDS_PER_DAY = SECONDS_PER_HOUR * 24;
-        private const int SECONDS_PER_HOUR = 3600;
+        private const int secondsPerHour = 3600;
         private static Regex _TodRegex = new Regex(@"\d?\d:\d\d:\d\d|\d?\d:\d\d");
 
         public TimeOfDay()
@@ -36,6 +36,9 @@ namespace EventManager.Core
         }
         public TimeOfDay(TimeOfDay td)
         {
+            if (td == null)
+                throw new ArgumentNullException(nameof(td));
+
             Init(td.Hour, td.Minute, td.Second);
         }
 
@@ -53,14 +56,14 @@ namespace EventManager.Core
         {
             get
             {
-                return TotalSeconds / (24d * SECONDS_PER_HOUR);
+                return TotalSeconds / (24d * secondsPerHour);
             }
         }
         public double TotalHours
         {
             get
             {
-                return TotalSeconds / (1d * SECONDS_PER_HOUR);
+                return TotalSeconds / (1d * secondsPerHour);
             }
         }
         public double TotalMinutes
@@ -105,7 +108,7 @@ namespace EventManager.Core
         {
             DateTime now = DateTime.Now;
             DateTime dt = new DateTime(now.Year, now.Month, now.Day, Hour, Minute, Second);
-            return dt.ToString(format);
+            return dt.ToString(format, CultureInfo.CurrentCulture);
         }
         public TimeSpan ToTimeSpan()
         {
@@ -122,6 +125,10 @@ namespace EventManager.Core
         public static TimeOfDay Noon { get { return new TimeOfDay(12, 0, 0); } }
         public static TimeOfDay operator -(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null)
+                throw new ArgumentNullException(nameof(t1));
+            if (t2 == null)
+                throw new ArgumentNullException(nameof(t2));
             DateTime now = DateTime.Now;
             DateTime dt1 = new DateTime(now.Year, now.Month, now.Day, t1.Hour, t1.Minute, t1.Second);
             TimeSpan ts = new TimeSpan(t2.Hour, t2.Minute, t2.Second);
@@ -306,6 +313,11 @@ namespace EventManager.Core
         private void Init(DateTime dt)
         {
             Init(dt.Hour, dt.Minute, dt.Second);
+        }
+
+        public static TimeOfDay Subtract(TimeOfDay left, TimeOfDay right)
+        {
+            throw new NotImplementedException();
         }
     }
 }

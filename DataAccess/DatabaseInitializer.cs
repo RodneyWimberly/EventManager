@@ -106,8 +106,8 @@ namespace EventManager.DataAccess
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(LoggingEvents.INIT_DATABASE, ex, LoggingEvents.INIT_DATABASE.Name);
-                throw new Exception(LoggingEvents.INIT_DATABASE.Name, ex);
+                _logger.LogCritical(LoggingEvents.InitDatabase, ex, LoggingEvents.InitDatabase.Name);
+                throw new Exception(LoggingEvents.InitDatabase.Name, ex);
             }
         }
 
@@ -607,8 +607,8 @@ namespace EventManager.DataAccess
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(LoggingEvents.INIT_DATABASE, ex, LoggingEvents.INIT_DATABASE.Name);
-                throw new Exception(LoggingEvents.INIT_DATABASE.Name, ex);
+                _logger.LogCritical(LoggingEvents.InitDatabase, ex, LoggingEvents.InitDatabase.Name);
+                throw new Exception(LoggingEvents.InitDatabase.Name, ex);
             }
         }
 

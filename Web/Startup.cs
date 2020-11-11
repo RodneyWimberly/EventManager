@@ -13,14 +13,12 @@ using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NSwag.AspNetCore;
-using System;
 using System.Reflection;
 
 namespace EventManager.Web
@@ -178,13 +176,13 @@ namespace EventManager.Web
 
                 if (env.IsDevelopment())
                 {
-                    if (false)
-                    {
-                        spa.UseAngularCliServer(npmScript: "serve");
-                        spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); // Increase the timeout if angular app is taking longer to startup
-                    }
-                    else
-                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); // Use this instead to use the angular cli server
+                    //if (false)
+                    //{
+                    //   spa.UseAngularCliServer(npmScript: "serve");
+                    //  spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); // Increase the timeout if angular app is taking longer to startup
+                    //}
+                    //else
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); // Use this instead to use the angular cli server
                 }
             });
         }

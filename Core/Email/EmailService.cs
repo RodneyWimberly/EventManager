@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
+using System.Globalization;
 using System.Net.Security;
+using System.Resources;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -18,6 +20,8 @@ namespace EventManager.Core.Email
 
         public EmailService(IOptions<SmtpConfig> smtpConfig, ILogger<EmailService> logger)
         {
+            if (smtpConfig == null)
+                throw new ArgumentNullException(nameof(smtpConfig));
             _smtpConfig = smtpConfig.Value;
             _logger = logger;
         }
@@ -33,7 +37,7 @@ namespace EventManager.Core.Email
             MailboxAddress from = new MailboxAddress(_smtpConfig.Name, _smtpConfig.EmailAddress);
             MailboxAddress to = new MailboxAddress(recepientName, recepientEmail);
 
-            return await SendEmailAsync(from, new MailboxAddress[] { to }, subject, body, config, isHtml);
+            return await SendEmailAsync(from, new MailboxAddress[] { to }, subject, body, config, isHtml).ConfigureAwait(false);
         }
 
 
@@ -51,7 +55,7 @@ namespace EventManager.Core.Email
             MailboxAddress from = new MailboxAddress(senderName, senderEmail);
             MailboxAddress to = new MailboxAddress(recepientName, recepientEmail);
 
-            return await SendEmailAsync(from, new MailboxAddress[] { to }, subject, body, config, isHtml);
+            return await SendEmailAsync(from, new MailboxAddress[] { to }, subject, body, config, isHtml).ConfigureAwait(false);
         }
 
 
@@ -79,7 +83,11 @@ namespace EventManager.Core.Email
                 using (SmtpClient client = new SmtpClient())
                 {
                     if (!config.UseSSL)
-                        client.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
+                        client.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) =>
+                        {
+                            bool retVal = true;
+                            return retVal;
+                        };
 
                     await client.ConnectAsync(config.Host, config.Port, config.UseSSL).ConfigureAwait(false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
@@ -95,8 +103,9 @@ namespace EventManager.Core.Email
             }
             catch (Exception ex)
             {
-                _logger.LogError(LoggingEvents.SEND_EMAIL, ex, "An error occurred whilst sending email");
+                _logger.LogError(LoggingEvents.SendEmail, ex, new ResourceManager("Resource", this.GetType().Assembly).GetString("ERROR_SENDING_EMAIL", CultureInfo.CurrentCulture));
                 return (false, ex.Message);
+                throw;
             }
         }
     }

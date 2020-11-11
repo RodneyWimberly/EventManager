@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace EventManager.Core.Email
 {
@@ -13,8 +14,8 @@ namespace EventManager.Core.Email
                 testEmailTemplate = StoragePath.ReadPhysicalFile("Email/Templates/TestEmail.template");
 
             string emailMessage = testEmailTemplate
-                .Replace("{user}", recepientName)
-                .Replace("{testDate}", testDate.ToString());
+                .Replace("{user}", recepientName, StringComparison.InvariantCulture)
+                .Replace("{testDate}", testDate.ToString(CultureInfo.CurrentCulture), StringComparison.InvariantCulture);
 
             return emailMessage;
         }
@@ -25,7 +26,7 @@ namespace EventManager.Core.Email
                 plainTextTestEmailTemplate = StoragePath.ReadPhysicalFile("Email/Templates/PlainTextTestEmail.template");
 
             string emailMessage = plainTextTestEmailTemplate
-                .Replace("{date}", date.ToString());
+                .Replace("{date}", date.ToString(CultureInfo.CurrentCulture), StringComparison.InvariantCulture);
 
             return emailMessage;
         }
