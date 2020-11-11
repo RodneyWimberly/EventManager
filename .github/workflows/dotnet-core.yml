@@ -1,9 +1,9 @@
 name: Build and Deploy EventManager
 on:
   push:
-    branches: [ DBChangeOver ]
+    branches: [ master ]
   pull_request:
-    branches:  [ DBChangeOver ]
+    branches:  [ master ]
 jobs:
   create-and-deploy:
     name: DevOps Pipeline
