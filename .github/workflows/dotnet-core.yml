@@ -10,7 +10,7 @@ jobs:
     runs-on: windows-latest
     env:
         AZURE_WEBAPP_NAME: EM-WebUI
-        DOTNET_VERSION: '3.1.301'   
+        DOTNET_VERSION: '5.0.100'   
         NODE_VERSION: '12.19.0'
     steps:
     # Get latest code

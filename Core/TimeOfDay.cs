@@ -137,6 +137,10 @@ namespace EventManager.Core
         }
         public static bool operator !=(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null)
+                throw new ArgumentNullException(nameof(t1));
+            if (t2 == null)
+                throw new ArgumentNullException(nameof(t2));
             if (ReferenceEquals(t1, t2)) { return true; }
             else if (ReferenceEquals(t1, null)) { return true; }
             else
@@ -158,6 +162,10 @@ namespace EventManager.Core
         }
         public static TimeOfDay operator +(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t1 == null)
+                throw new ArgumentNullException(nameof(t1));
+            if (t2 == null)
+                throw new ArgumentNullException(nameof(t2));
             DateTime now = DateTime.Now;
             DateTime dt1 = new DateTime(now.Year, now.Month, now.Day, t1.Hour, t1.Minute, t1.Second);
             TimeSpan ts = new TimeSpan(t2.Hour, t2.Minute, t2.Second);
@@ -166,6 +174,8 @@ namespace EventManager.Core
         }
         public static bool operator <(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t2 == null)
+                throw new ArgumentNullException(nameof(t2));
             if (ReferenceEquals(t1, t2)) { return true; }
             else if (ReferenceEquals(t1, null)) { return true; }
             else
@@ -187,6 +197,8 @@ namespace EventManager.Core
         }
         public static bool operator <=(TimeOfDay t1, TimeOfDay t2)
         {
+            if (t2 == null)
+                throw new ArgumentNullException(nameof(t2));
             if (ReferenceEquals(t1, t2)) { return true; }
             else if (ReferenceEquals(t1, null)) { return true; }
             else
@@ -316,6 +328,11 @@ namespace EventManager.Core
         }
 
         public static TimeOfDay Subtract(TimeOfDay left, TimeOfDay right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static TimeOfDay Add(TimeOfDay left, TimeOfDay right)
         {
             throw new NotImplementedException();
         }

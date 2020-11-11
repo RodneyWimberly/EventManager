@@ -1,5 +1,5 @@
-﻿{
-  "runtime": "NetCore31",
+{
+  "runtime": "Net50",
   "defaultVariables": null,
   "documentGenerator": {
     "aspNetCoreToOpenApi": {
@@ -48,6 +48,7 @@
       "allowNullableBodyParameters": true,
       "output": "wwwroot/docs/api-specification.json",
       "outputType": "OpenApi3",
+      "newLineBehavior": "Auto",
       "assemblyPaths": [
         "bin/Debug/netcoreapp3.1/EventManager.Web.dll"
       ],
@@ -106,6 +107,7 @@
       "useGetBaseUrlMethod": true,
       "baseUrlTokenName": "API_BASE_URL",
       "queryNullValue": "",
+      "useAbortSignal": false,
       "inlineNamedDictionaries": false,
       "inlineNamedAny": false,
       "templateDirectory": null,
@@ -114,7 +116,8 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "ClientApp/src/app/services/endpoint.services.ts"
+      "output": "ClientApp/src/app/services/endpoint.services.ts",
+      "newLineBehavior": "Auto"
     }
   }
 }
