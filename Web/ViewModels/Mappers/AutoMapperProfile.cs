@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using EventManager.DataAccess;
 using EventManager.DataAccess.Accounts.Models;
-using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Events.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace EventManager.Web.ViewModels.Mappers
 {
@@ -33,7 +31,7 @@ namespace EventManager.Web.ViewModels.Mappers
             CreateMap<RoleViewModel, Role>()
                 .ForMember(d => d.Id, map => map.Condition(src => src.Id != null));
 
-            CreateMap<IdentityRoleClaim<string>, ClaimViewModel>()
+            CreateMap<RoleClaim, ClaimViewModel>()
                 .ForMember(d => d.Type, map => map.MapFrom(s => s.ClaimType))
                 .ForMember(d => d.Value, map => map.MapFrom(s => s.ClaimValue))
                 .ReverseMap();
@@ -41,7 +39,7 @@ namespace EventManager.Web.ViewModels.Mappers
             CreateMap<Permission, PermissionViewModel>()
                 .ReverseMap();
 
-            CreateMap<IdentityRoleClaim<string>, PermissionViewModel>()
+            CreateMap<RoleClaim, PermissionViewModel>()
                 .ConvertUsing(s => (PermissionViewModel)Permissions.GetPermissionByValue(s.ClaimValue));
 
             CreateMap<ExtendedLog, ExtendedLogViewModel>();
