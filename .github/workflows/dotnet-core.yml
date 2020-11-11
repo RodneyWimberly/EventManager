@@ -5,58 +5,65 @@ on:
   pull_request:
     branches:  [ DBChangeOver ]
 jobs:
-  create-and-deploy:
-    name: DevOps Pipeline
-    runs-on: windows-latest
-    env:
-        AZURE_WEBAPP_NAME: EM-WebUI
-        AZURE_WEBAPP_PACKAGE_PATH: '.'
-        DOTNET_VERSION: '3.1.301'   
-        DOTNET_SOLUTION_NAME: 'EventManager.sln'
-        NUGET_VERSION: '5.0'
-        NODE_VERSION: '12.19.0'
-        ANGULAR_VERSION: 8.0.x   
-    steps:
-    # Get latest code
-    - name: Clone Repository
-      uses: actions/checkout@v2
+    setup-environment:
+        name: Setup WebApp Build Environment
+        runs-on: windows-latest
+        env:
+            DOTNET_VERSION: '3.1.301'   
+            NODE_VERSION: '12.19.0'
+        steps:
+            # Get latest code
+            - name: Clone WebApp Repository
+                uses: actions/checkout@v2
 
-    # Install .NET Core
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}  
+            # Install .NET Core
+            - name: Install .NET Core 
+                uses: actions/setup-dotnet@v1
+                with:
+                    dotnet-version: ${{ env.DOTNET_VERSION }}  
 
-    # Install NuGet
-    - name: Install NuGet
-      uses: NuGet/setup-nuget@v1.0.2
-      with:
-        nuget-version: ${{ env.NUGET_VERSION }} 
+            # Install NodeJS
+            - name: Install NodeJS 
+                uses: actions/setup-node@v1
+                with:
+                    node-version: ${{ env.NODE_VERSION }}
 
-    # Install NodeJS
-    - name: Install NodeJS 
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ env.NODE_VERSION }}
+    build-and-test:
+        name: Restore Build and Test WebApp
+        needs: setup-environment
+        runs-on: windows-latest
+        steps:
+            # Run dotnet restore
+            - name: Restore WebApp Dependencies
+                run: dotnet restore
 
-    # Run NuGet and DotNet Restore
-    - name: Restore Dependencies
-      run: |
-        nuget restore ${{ env.DOTNET_SOLUTION_NAME }} 
-        dotnet restore
-    # Run dotnet build 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-          
-    # Run dotnet publish
-    - name: Publish
-      run: |
-        dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/webapp'
+            # Run dotnet build 
+            - name: Build WebApp
+                run: dotnet build --configuration Release --no-restore
+
+            # Run dotnet test
+            #- name: Test WebApp
+            #   run: dotnet test --no-restore --verbosity normal
+  
+    publish-and-deploy:
+        name: Publish and Deploy WebApp
+        needs: build-and-test
+        runs-on: windows-latest
+        steps:
+            # Run dotnet publish
+            - name: Publish WebApp
+                run: dotnet publish -c Release -o './webapp'
       
-   # Deploy to Azure Web apps
-    - name: Deploy
-      uses: azure/webapps-deploy@v2
-      with: 
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} 
-        package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/webapp'
+            # Deploy to Azure Web apps
+            - name: Deploy WebApp
+                uses: azure/webapps-deploy@v2
+                with: 
+                    app-name: 'EM-WebUI'
+                    publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} 
+                    package: ./webapp
+
+  
+
+   
+          
+   
