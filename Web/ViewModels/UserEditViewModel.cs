@@ -6,6 +6,8 @@
 
         public string NewPassword { get; set; }
 
+        public bool IsLockedOut { get; set; }
+
         public string[] Roles { get; set; }
     }
 }

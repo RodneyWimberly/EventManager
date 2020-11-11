@@ -51,6 +51,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NotificationsManagementComponent } from './components/controls/notifications-management.component';
 import { SearchBoxComponent } from './components/controls/search-box.component';
 import { ValidationControlComponent } from './components/controls/validation-control.component';
+import { CustomInputComponent } from './components/controls/custom-input.component';
 
 import { SettingsComponent } from './components/settings/settings.component';
 import { UserEditorComponent } from './components/settings/user-editor.component';
@@ -87,6 +88,7 @@ import { ExtendedLogEditorComponent } from './components/extended-logs/extended-
         ChartsModule
     ],
     declarations: [
+        CustomInputComponent,
         AppComponent,
         LoginComponent,
         HomeComponent,

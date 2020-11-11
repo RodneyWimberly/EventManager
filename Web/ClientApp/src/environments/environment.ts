@@ -8,8 +8,8 @@ import { Injectable, Inject, InjectionToken } from '@angular/core';
 
 export const environment = {
     production: false,
-    baseUrl: null, // Change this to the address of your backend API if different from frontend address
-    tokenUrl: null, // For IdentityServer/Authorization Server API. You can set to null if same as baseUrl
+  baseUrl: 'https://localhost:5001', // Change this to the address of your backend API if different from frontend address
+  tokenUrl: 'https://localhost:5001', // For IdentityServer/Authorization Server API. You can set to null if same as baseUrl
     loginUrl: '/login'
 };
 

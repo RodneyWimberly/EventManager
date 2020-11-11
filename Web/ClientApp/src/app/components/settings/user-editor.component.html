@@ -149,7 +149,7 @@
             <label class="col-form-label col-lg-3" for="confirmPassword-{{uniqueId}}">{{'users.editor.ConfirmPassword' | translate}}</label>
             <div class="col-lg-9">
               <input type="password" attr.id="confirmPassword-{{uniqueId}}" name="confirmPassword" [attr.autocomplete]="isGeneralEditor ? 'new-password' : null" placeholder="Confirm new password" class="form-control"
-                     [ngClass]="{'is-valid': f.submitted && confirmPassword.valid, 'is-invalid' : f.submitted && !confirmPassword.valid}" [(ngModel)]="userEdit.confirmPassword" #confirmPassword="ngModel"
+                     [ngClass]="{'is-valid': f.submitted && confirmPassword.valid, 'is-invalid' : f.submitted && !confirmPassword.valid}"
                      required validateEqual="newPassword" />
               <i *ngIf="showValidationErrors && f.submitted" class="fa form-control-feedback" [ngClass]="{'fa-check': confirmPassword.valid, 'fa-times' : !confirmPassword.valid}" aria-hidden="true"></i>
               <span *ngIf="showValidationErrors && f.submitted && confirmPassword.errors?.required" class="invalid-feedback">

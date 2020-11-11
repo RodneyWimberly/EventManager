@@ -3,11 +3,13 @@
   <div *ngIf="!isEditMode" class="col-lg-9">
     <p class="form-control-plaintext">{{controlValue}}</p>
   </div>
-  <div *ngIf="isEditMode" class="col-lg-10" >
+  <div *ngIf="isEditMode" class="col-lg-10">
     <ng-content></ng-content>
-    <i *ngIf="showValidationErrors && form.submitted" class="fa form-control-feedback"
+    <!-- && form.submitted-->
+    <i *ngIf="showValidationErrors" class="fa form-control-feedback"
        [ngClass]="{'fa-check': !hasError, 'fa-times' : hasError}" aria-hidden="true"></i>
-    <div *ngIf="showValidationErrors && form.submitted && hasError">
+    <!-- && form.submitted-->
+    <div *ngIf="showValidationErrors && hasError">
       <span class="invalid-feedback" *ngFor="let errorMessage of errorMessages">
         {{errorMessage}}
       </span>
