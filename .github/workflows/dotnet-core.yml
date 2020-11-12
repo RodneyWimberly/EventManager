@@ -9,7 +9,7 @@ jobs:
     name: DevOps Pipeline
     runs-on: windows-latest
     env:
-        AZURE_WEBAPP_NAME: EM-WebUI
+        AZURE_WEBAPP_NAME: em-webapp
         DOTNET_VERSION: '5.0.100'   
         NODE_VERSION: '12.19.0'
     steps:
