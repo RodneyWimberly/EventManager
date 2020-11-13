@@ -1,6 +1,6 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
-using EventManager.DataAccess.Accounts;
+using EventManager.DataAccess.Identity;
 using EventManager.DataAccess.Events;
 using EventManager.DataAccess.Events.Models;
 using IdentityServer4.AccessTokenValidation;
@@ -21,7 +21,7 @@ namespace EventManager.Web.Controllers
     {
         protected readonly EntityControllerHelper<Notification> _notificationHelper;
 
-        public NotificationControllerNew(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventsDbContext> unitOfWork, ILogger<NotificationController> logger)
+        public NotificationControllerNew(IIdentityManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<NotificationController> logger)
         {
             _notificationHelper = new EntityControllerHelper<Notification>(accountManager, httpAccessor, mapper, unitOfWork, logger);
             _notificationHelper.GetIncludeEvent += NotificationController_GetIncludeEvent;

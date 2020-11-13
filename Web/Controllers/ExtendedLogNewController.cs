@@ -1,7 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
-using EventManager.DataAccess.Accounts;
+using EventManager.DataAccess.Identity;
 using EventManager.DataAccess.Events;
 using EventManager.DataAccess.Events.Models;
 using EventManager.Web.Helpers;
@@ -22,13 +22,13 @@ namespace EventManager.Web.Controllers
     public class ExtendedLogControllerNew : ControllerBase
     {
         protected readonly IMapper _mapper;
-        protected readonly IUnitOfWork<EventsDbContext> _unitOfWork;
+        protected readonly IUnitOfWork<EventDbContext> _unitOfWork;
         protected readonly ILogger _logger;
         protected readonly HttpContext _httpContext;
-        protected readonly IAccountManager _accountManager;
+        protected readonly IIdentityManager _accountManager;
         protected readonly EntityControllerHelper<ExtendedLog> _extendedLogHelper;
 
-        public ExtendedLogControllerNew(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventsDbContext> unitOfWork, ILogger<ExtendedLogController> logger)
+        public ExtendedLogControllerNew(IIdentityManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<ExtendedLogController> logger)
         {
             _accountManager = accountManager;
             _httpContext = httpAccessor.HttpContext;

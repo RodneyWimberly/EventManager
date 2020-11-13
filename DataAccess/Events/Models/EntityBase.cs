@@ -6,8 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventManager.DataAccess.Events.Models
 {
-    public abstract class EntityBase : IPrimaryKeyEntity<string>, IAuditableEntity,
-        IConcurrencyTrackingEntity, IPermissionEntity
+    public abstract class EntityBase : IPrimaryKeyEntity<string>, IAuditableEntity, IPermissionEntity
     {
         #region IPrimaryKeyEntity<string>
         [Key]
@@ -36,11 +35,6 @@ namespace EventManager.DataAccess.Events.Models
         public DateTime CreatedDate { get; set; }
         #endregion
 
-        #region IConcurrencyTrackingEntity
-        [Timestamp]
-        [Column(TypeName = "BLOB")]
-        public byte[] RowVersion { get; set; }
-        #endregion
 
         #region IPermissionEntity
         public virtual List<Permission> GetPermissions(List<Permission> permissions)

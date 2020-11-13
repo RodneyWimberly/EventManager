@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EventManager.DataAccess;
-using EventManager.DataAccess.Accounts;
-using EventManager.DataAccess.Accounts.Models;
+using EventManager.DataAccess.Identity;
+using EventManager.DataAccess.Identity.Models;
 using EventManager.DataAccess.Core;
 using EventManager.Web.Authorization;
 using EventManager.Web.Helpers;
@@ -24,13 +24,13 @@ namespace EventManager.Web.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IAccountManager _accountManager;
+        private readonly IIdentityManager _accountManager;
         private readonly IAuthorizationService _authorizationService;
         private readonly ILogger<AccountController> _logger;
         private const string GetUserByIdActionName = "GetUserById";
         private const string GetRoleByIdActionName = "GetRoleById";
 
-        public AccountController(IMapper mapper, IAccountManager accountManager, IAuthorizationService authorizationService,
+        public AccountController(IMapper mapper, IIdentityManager accountManager, IAuthorizationService authorizationService,
             ILogger<AccountController> logger)
         {
             _mapper = mapper;

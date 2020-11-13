@@ -1,6 +1,6 @@
-﻿using EventManager.DataAccess.Accounts;
-using EventManager.DataAccess.Core.Enums;
+﻿using EventManager.DataAccess.Core.Enums;
 using EventManager.DataAccess.Core.Interfaces;
+using EventManager.DataAccess.Identity;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -23,9 +23,9 @@ namespace EventManager.DataAccess
     namespace Events.Models
     {
         public class ExtendedLog : Log<string>, IPrimaryKeyEntity<string>, IAuditableEntity,
-            IConcurrencyTrackingEntity, IPermissionEntity
+            IPermissionEntity
         {
-            public ExtendedLog(IHttpContextAccessor accessor, IAccountManager accountManager)
+            public ExtendedLog(IHttpContextAccessor accessor, IIdentityManager accountManager)
             {
                 if (accessor != null && accessor.HttpContext != null)
                 {
@@ -162,12 +162,6 @@ namespace EventManager.DataAccess
             [Column(TypeName = "TEXT")]
             [MaxLength(28)]
             public DateTime CreatedDate { get; set; }
-            #endregion
-
-            #region IConcurrencyTrackingEntity
-            [Timestamp]
-            [Column(TypeName = "BLOB")]
-            public byte[] RowVersion { get; set; }
             #endregion
 
             #region IPermissionEntity

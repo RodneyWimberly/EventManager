@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using EventManager.DataAccess;
-using EventManager.DataAccess.Accounts.Models;
+using EventManager.DataAccess.Identity.Models;
 using EventManager.DataAccess.Events.Models;
 
 namespace EventManager.Web.ViewModels.Mappers

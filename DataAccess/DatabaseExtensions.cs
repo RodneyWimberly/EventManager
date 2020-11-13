@@ -1,10 +1,10 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using EventManager.Core;
-using EventManager.DataAccess.Accounts;
-using EventManager.DataAccess.Accounts.Models;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Events;
+using EventManager.DataAccess.Identity;
+using EventManager.DataAccess.Identity.Models;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -62,16 +62,15 @@ namespace EventManager.DataAccess
         {
             entityTypeBuilder.SetupPrimaryKeyEntityProperty();
             entityTypeBuilder.SetupAuditableEntityProperties();
-            //entityTypeBuilder.SetupConcurrencyTrackingEntityProperties();
             entityTypeBuilder.ToTable(tableName);
             return entityTypeBuilder;
         }
 
-        public static EntityTypeBuilder<TEntity> SetupEntityContainer<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, string containerName) where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity
+        public static EntityTypeBuilder<TEntity> SetupEntityContainer<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, string containerName) where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity
         {
             entityTypeBuilder.SetupPrimaryKeyEntityProperty();
             entityTypeBuilder.SetupAuditableEntityProperties();
-            //entityTypeBuilder.SetupConcurrencyTrackingEntityProperties();
+            entityTypeBuilder.UseETagConcurrency();
             entityTypeBuilder.ToContainer(containerName);
             return entityTypeBuilder;
         }
@@ -80,12 +79,6 @@ namespace EventManager.DataAccess
         {
             entityTypeBuilder.Property(e => e.CreatedDate).SetupDateTimeEntityProperty();
             entityTypeBuilder.Property(e => e.UpdatedDate).SetupDateTimeEntityProperty();
-            return entityTypeBuilder;
-        }
-
-        public static EntityTypeBuilder<TEntity> SetupConcurrencyTrackingEntityProperties<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder) where TEntity : class, IConcurrencyTrackingEntity
-        {
-            entityTypeBuilder.Property(e => e.RowVersion).IsRowVersion();
             return entityTypeBuilder;
         }
 
@@ -455,24 +448,23 @@ namespace EventManager.DataAccess
 
         public static IServiceCollection AddHttpUnitOfWork(this IServiceCollection services)
         {
-            services.AddScoped<IRepositoryFactory, HttpUnitOfWork<EventsDbContext>>();
-            services.AddScoped<IUnitOfWork, HttpUnitOfWork<EventsDbContext>>();
-            services.AddScoped<IUnitOfWork<EventsDbContext>, HttpUnitOfWork<EventsDbContext>>();
-            services.AddScoped<IUnitOfWork<AccountsDbContext>, HttpUnitOfWork<AccountsDbContext>>();
+            services.AddScoped<IRepositoryFactory, HttpUnitOfWork<EventDbContext>>();
+            services.AddScoped<IUnitOfWork, HttpUnitOfWork<EventDbContext>>();
+            services.AddScoped<IUnitOfWork<EventDbContext>, HttpUnitOfWork<EventDbContext>>();
+            services.AddScoped<IUnitOfWork<IdentityDbContext>, HttpUnitOfWork<IdentityDbContext>>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             return services;
         }
 
-        public static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
-            string cosmosEndpoint, string cosmosKey, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
+        public static IServiceCollection AddEventDbContext(this IServiceCollection services,
+            IConfiguration configuration, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
 
         {
-            // EF Application DB
-            services.AddDbContext<EventsDbContext>(c =>
+            // EF Events DB
+            services.AddDbContext<EventDbContext>(c =>
             {
-                c.UseCosmos(cosmosEndpoint,
-                                    cosmosKey,
-                                    databaseName: "EventsDB",
+                c.UseCosmos(configuration["ConnectionStrings:EventDb"],
+                                    databaseName: "EventDB",
                                     options =>
                                     {
                                         options.ConnectionMode(ConnectionMode.Gateway);
@@ -487,17 +479,17 @@ namespace EventManager.DataAccess
             return services;
         }
 
-        public static IServiceCollection AddAccountManagerDbContext(this IServiceCollection services, IConfigurationSection identityOptionsConfig,
-          string sqlConnectString, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false,
-          bool developmentEnvironment = true)
+        public static IServiceCollection AddIdentityDbContext(this IServiceCollection services,
+            IConfiguration configuration, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
 
         {
-            string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName;
+            string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName,
+                identityDbConnection = configuration["ConnectionStrings:IdentityDb"];
 
             // EF AccountManager DB for users and roles
-            services.AddDbContext<AccountsDbContext>(c =>
+            services.AddDbContext<IdentityDbContext>(c =>
             {
-                c.UseSqlServer(sqlConnectString, providerOptions =>
+                c.UseSqlServer(identityDbConnection, providerOptions =>
                 {
                     providerOptions.CommandTimeout(60);
                     providerOptions.MigrationsAssembly(migrationsAssembly);
@@ -511,7 +503,7 @@ namespace EventManager.DataAccess
             {
                 cso.ConfigureDbContext = c =>
                 {
-                    c.UseSqlServer(sqlConnectString, providerOptions =>
+                    c.UseSqlServer(identityDbConnection, providerOptions =>
                     {
                         providerOptions.CommandTimeout(60);
                         providerOptions.MigrationsAssembly(migrationsAssembly);
@@ -528,7 +520,7 @@ namespace EventManager.DataAccess
                 oso.TokenCleanupInterval = 300;
                 oso.ConfigureDbContext = c =>
                 {
-                    c.UseSqlServer(sqlConnectString, providerOptions =>
+                    c.UseSqlServer(identityDbConnection, providerOptions =>
                     {
                         providerOptions.CommandTimeout(60);
                         providerOptions.MigrationsAssembly(migrationsAssembly);
@@ -539,27 +531,20 @@ namespace EventManager.DataAccess
             });
 
             // Add identity system for users and roles
-            services.AddIdentity<Accounts.Models.User, Role>()
-                .AddEntityFrameworkStores<AccountsDbContext>()
+            IdentityModelEventSource.ShowPII = enableSensitiveDataLogging;
+            services.AddIdentity<Identity.Models.User, Role>(a => a = configuration.GetSection("IdentityOptions").Get<IdentityOptions>())
+                .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Configure IdentityOptions
-            IdentityModelEventSource.ShowPII = enableSensitiveDataLogging;
-            services.Configure<IdentityOptions>(identityOptionsConfig);
-
             // Adds IdentityServer
-            IIdentityServerBuilder identityServerBuilder = services.AddIdentityServer()
+            services.AddIdentityServer()
                 .AddConfigurationStore<ConfigurationDbContext>()
                 .AddOperationalStore<PersistedGrantDbContext>()
-                .AddAspNetIdentity<Accounts.Models.User>()
-                .AddProfileService<ProfileService>();
+                .AddAspNetIdentity<Identity.Models.User>()
+                .AddProfileService<ProfileService>()
+                .AddDeveloperSigningCredential();
 
-            //if(developmentEnvironment)
-            identityServerBuilder.AddDeveloperSigningCredential();
-            //else
-            //    identityServerBuilder.AddSigningCredential(GetIdentityServerCertificate(services));
-
-            services.AddScoped<IAccountManager, AccountManager>();
+            services.AddScoped<IIdentityManager, IdentityManager>();
 
             return services;
         }

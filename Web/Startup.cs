@@ -43,15 +43,13 @@ namespace EventManager.Web
             services.AddLogging();
 
             // Setup use of EF DbContexts
-            services.AddApplicationDbContext(
-                Configuration["ConnectionStrings:CosmosEndPoint"],
-                 Configuration["ConnectionStrings:CosmosKey"],
+            services.AddEventDbContext(
+                Configuration,
                 WebHostEnvironment.IsDevelopment());
 
-            services.AddAccountManagerDbContext(
-               Configuration.GetSection("IdentityOptions"),
-               Configuration["ConnectionStrings:SqlConnectString"],
-               WebHostEnvironment.IsDevelopment(), false, WebHostEnvironment.IsDevelopment());
+            services.AddIdentityDbContext(
+               Configuration,
+               WebHostEnvironment.IsDevelopment());
 
             // Configure JSON serializer to not complain when returning entities plus reference and navigational properties
             services.AddMvc()
@@ -131,11 +129,14 @@ namespace EventManager.Web
         {
             StoragePath.Initialize(env.ContentRootPath);
 
-            if (!env.IsDevelopment())
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+            else
+            {
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
+            }
 
-            app.UseDeveloperExceptionPage();
-            //app.UseExceptionHandler("/Error");
             app.InitializeDatabase();
             app.UseEntityFrameworkLoggingScopeStateProvider();
             app.UseHttpsRedirection();

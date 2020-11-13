@@ -27,12 +27,10 @@ namespace EventManager.Web.ViewModels.Mappers
                         CreatedDate = source.CreatedDate,
                         UpdatedBy = source.UpdatedBy,
                         UpdatedDate = source.UpdatedDate,
-                        RowVersion = source.RowVersion
                     } :
                     _unitOfWork.GetRepository<Notification>().GetFirstOrDefault(predicate: n => n.Id == source.Id);
             }
-            if (destination.Id == source.Id &&
-                (destination.RowVersion == null || destination.RowVersion.IsEqualTo(source.RowVersion)))
+            if (destination.Id == source.Id)
             {
                 if (destination.Header != source.Header)
                     destination.Header = source.Header;

@@ -6,7 +6,7 @@ using System.Linq;
 namespace EventManager.Web.Controllers
 {
     public class GetIncludeEventArgs<TEntity> : EventArgs
-        where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity, new()
+        where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, new()
     {
         public GetIncludeEventArgs(IQueryable<TEntity> entityQuery, string propertyPaths)
         {

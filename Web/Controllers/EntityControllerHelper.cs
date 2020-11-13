@@ -1,11 +1,11 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
-using EventManager.DataAccess.Accounts;
-using EventManager.DataAccess.Accounts.Models;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Events;
+using EventManager.DataAccess.Identity;
+using EventManager.DataAccess.Identity.Models;
 using EventManager.Web.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -22,15 +22,15 @@ using System.Threading.Tasks;
 namespace EventManager.Web.Controllers
 {
     public class EntityControllerHelper<TEntity> : ControllerBase
-      where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity, new()
+      where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, new()
     {
         protected readonly IMapper _mapper;
-        protected readonly IUnitOfWork<EventsDbContext> _unitOfWork;
+        protected readonly IUnitOfWork<EventDbContext> _unitOfWork;
         protected readonly ILogger _logger;
         protected readonly HttpContext _httpContext;
-        protected readonly IAccountManager _accountManager;
+        protected readonly IIdentityManager _accountManager;
 
-        public EntityControllerHelper(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventsDbContext> unitOfWork, ILogger logger)
+        public EntityControllerHelper(IIdentityManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger logger)
         {
             _accountManager = accountManager;
             _httpContext = httpAccessor.HttpContext;

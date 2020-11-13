@@ -32,6 +32,12 @@ export class AuthEndpointService {
     public get baseUrl() { return this.configurations.baseUrl; }
     public get loginUrl() { return this.configurations.loginUrl; }
     public get homeUrl() { return this.configurations.homeUrl; }
+    public get clientId() { return this.configurations.clientId; }
+    public get clientSecret() { return this.configurations.clientSecret; }
+    public get docId() { return this.configurations.docId; }
+    public get docSecret() { return this.configurations.docSecret; }
+    public get apiId() { return this.configurations.apiId; }
+    public get apiSecret() { return this.configurations.apiSecret; }
 
     public loginRedirectUrl: string;
     public logoutRedirectUrl: string;
@@ -132,13 +138,12 @@ export class AuthEndpointService {
 
     private configureOauthService(rememberMe?: boolean) {
       this.oAuthService.issuer = this.baseUrl;
+      this.oAuthService.clientId = this.clientId;
+      this.oAuthService.scope = 'openid email phone profile offline_access roles ' + this.apiId;
+      this.oAuthService.skipSubjectCheck = true;
+      this.oAuthService.dummyClientSecret = this.clientSecret;
 
-        this.oAuthService.clientId = '3f9d64e1-675f-43d3-be3b-fe06c01d14d3';
-        this.oAuthService.scope = 'openid email phone profile offline_access roles eventmanager_api';
-        this.oAuthService.skipSubjectCheck = true;
-        this.oAuthService.dummyClientSecret = 'not_used';
-
-        AuthStorageService.RememberMe = rememberMe;
+      AuthStorageService.RememberMe = rememberMe;
     }
 
     private processLoginResponse(accessToken: string, rememberMe: boolean) {

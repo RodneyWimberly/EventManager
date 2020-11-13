@@ -22,9 +22,9 @@ namespace EventManager.Web
                 webBuilder.ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddEntityFramework<EventsDbContext,
+                    logging.AddEntityFramework<EventDbContext,
                         ExtendedLog,
-                        EntityFrameworkLogger<EventsDbContext, ExtendedLog, string>,
+                        EntityFrameworkLogger<EventDbContext, ExtendedLog, string>,
                         string>();
                     logging.AddEventLog(configure =>
                     {

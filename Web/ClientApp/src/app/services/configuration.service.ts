@@ -92,6 +92,12 @@ export class ConfigurationService {
     public baseUrl = environment.baseUrl || Utilities.baseUrl();
     public tokenUrl = environment.tokenUrl || environment.baseUrl || Utilities.baseUrl();
     public loginUrl = environment.loginUrl;
+    public clientId = environment.clientId;
+    public clientSecret = environment.clientSecret;
+    public docId = environment.docId;
+    public docSecret = environment.docSecret;
+    public apiId = environment.apiId;
+    public apiSecret = environment.apiSecret;
     public fallbackBaseUrl = 'http://www.wimberlytech.com';
     // ***End of defaults***
 

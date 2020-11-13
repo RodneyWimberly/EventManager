@@ -1,7 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
-using EventManager.DataAccess.Accounts;
+using EventManager.DataAccess.Identity;
 using EventManager.DataAccess.Events;
 using EventManager.DataAccess.Events.Models;
 using EventManager.Web.Helpers;
@@ -25,10 +25,10 @@ namespace EventManager.Web.Controllers
     public class EventController : ControllerBase
     {
         protected readonly IMapper _mapper;
-        protected readonly IUnitOfWork<EventsDbContext> _unitOfWork;
+        protected readonly IUnitOfWork<EventDbContext> _unitOfWork;
         protected readonly ILogger _logger;
         protected readonly HttpContext _httpContext;
-        protected readonly IAccountManager _accountManager;
+        protected readonly IIdentityManager _accountManager;
 
         protected readonly EntityControllerHelper<Event> _eventHelper;
         protected readonly EntityControllerHelper<EventLocation> _locationHelper;
@@ -36,7 +36,7 @@ namespace EventManager.Web.Controllers
         protected readonly EntityControllerHelper<EventOccurance> _occurrenceHelper;
         protected readonly EntityControllerHelper<EventService> _serviceHelper;
 
-        public EventController(IAccountManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventsDbContext> unitOfWork, ILogger<EventController> logger)
+        public EventController(IIdentityManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<EventController> logger)
         {
             _accountManager = accountManager;
             _httpContext = httpAccessor.HttpContext;
