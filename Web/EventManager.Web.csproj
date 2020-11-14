@@ -64,7 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\package-lock.json" />
     <None Remove="ClientApp\src\app\directives\input-ref.directive.ts" />
     <None Remove="GuestManager.db" />
   </ItemGroup>
