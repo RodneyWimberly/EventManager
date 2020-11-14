@@ -37,7 +37,7 @@ export class ValidationControlComponent implements OnInit {
     return this.translationService.getTranslation(this.translationKey);
   }
 
-  public get controlName(): string {
+  public get controlName(): string | number {
     return this.input.controlName;
   }
 
