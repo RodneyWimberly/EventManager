@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -132,5 +133,8 @@
       }
     }
   },
-  "defaultProject": "EventManager"
+  "defaultProject": "EventManager",
+  "cli": {
+    "analytics": "54f47ee5-48e6-4969-b28a-4a5cbbcdb298"
+  }
 }

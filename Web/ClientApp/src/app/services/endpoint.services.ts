@@ -25,6 +25,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
+@Injectable()
 export class AuthEndpointService {
     private readonly _discoveryDocUrl: string = '/.well-known/openid-configuration';
 

@@ -1,6 +1,5 @@
 import { Component, Input, ContentChild, OnInit } from '@angular/core';
 import { InputRefDirective } from '../../directives/input-ref.directive';
-import { debug } from 'util';
 
 @Component({
   selector: 'custom-input',
