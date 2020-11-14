@@ -669,7 +669,6 @@ namespace EventManager.DataAccess
 
         public async Task EnsureEventDbSeededAsync()
         {
-            string seedPath = @".\Seed\EventDb\";
             try
             {
                 await _eventContext.SeedEventDbEntityAsync<Notification>(_eventContext.Notifications, _logger);
