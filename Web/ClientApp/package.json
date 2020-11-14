@@ -1,5 +1,5 @@
 {
-  "name": "EventManager",
+  "name": "eventmanager",
   "version": "3.0.0",
   "description": "ASP.NET Core 3.0/Angular 8 startup project template with complete login, user and role management. Plus other useful services for Quick Application Development",
   "author": {
