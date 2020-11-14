@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace EventManager.Web.Controllers
 {
+    [ApiVersion("1.0")]
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]

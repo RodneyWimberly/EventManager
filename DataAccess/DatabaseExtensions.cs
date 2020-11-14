@@ -3,6 +3,7 @@ using EventManager.Core;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Events;
+using EventManager.DataAccess.Events.Models;
 using EventManager.DataAccess.Identity;
 using EventManager.DataAccess.Identity.Models;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -14,16 +15,21 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.KeyVault;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.IdentityModel.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -61,7 +67,6 @@ namespace EventManager.DataAccess
         public static EntityTypeBuilder<TEntity> SetupEntityTable<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, string tableName) where TEntity : class, IPrimaryKeyEntity<string>, IAuditableEntity, IConcurrencyTrackingEntity
         {
             entityTypeBuilder.SetupPrimaryKeyEntityProperty();
-            entityTypeBuilder.SetupAuditableEntityProperties();
             entityTypeBuilder.ToTable(tableName);
             return entityTypeBuilder;
         }
@@ -80,370 +85,6 @@ namespace EventManager.DataAccess
             entityTypeBuilder.Property(e => e.CreatedDate).SetupDateTimeEntityProperty();
             entityTypeBuilder.Property(e => e.UpdatedDate).SetupDateTimeEntityProperty();
             return entityTypeBuilder;
-        }
-
-        public static void AddRowVersionTriggers(this MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventsOnUpdate
-                AFTER UPDATE ON Events
-                BEGIN
-                    UPDATE Events
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventsOnInsert
-                AFTER INSERT ON Events
-                BEGIN
-                    UPDATE Events
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER GuestsOnUpdate
-                AFTER UPDATE ON Guests
-                BEGIN
-                    UPDATE Guests
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER GuestsOnInsert
-                AFTER INSERT ON Guests
-                BEGIN
-                    UPDATE Guests
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER LogsOnUpdate
-                AFTER UPDATE ON Logs
-                BEGIN
-                    UPDATE Logs
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER LogsOnInsert
-                AFTER INSERT ON Logs
-                BEGIN
-                    UPDATE Logs
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER NotificationsOnUpdate
-                AFTER UPDATE ON Notifications
-                BEGIN
-                    UPDATE Notifications
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER NotificationsOnInsert
-                AFTER INSERT ON Notifications
-                BEGIN
-                    UPDATE Notifications
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER RolesOnUpdate
-                AFTER UPDATE ON Roles
-                BEGIN
-                    UPDATE Roles
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER RolesOnInsert
-                AFTER INSERT ON Roles
-                BEGIN
-                    UPDATE Roles
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER ServicesOnUpdate
-                AFTER UPDATE ON Services
-                BEGIN
-                    UPDATE Services
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER ServicesOnInsert
-                AFTER INSERT ON Services
-                BEGIN
-                    UPDATE Services
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UsersOnUpdate
-                AFTER UPDATE ON Users
-                BEGIN
-                    UPDATE Users
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UsersOnInsert
-                AFTER INSERT ON Users
-                BEGIN
-                    UPDATE Users
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventLocationsOnUpdate
-                AFTER UPDATE ON EventLocations
-                BEGIN
-                    UPDATE EventLocations
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventLocationsOnInsert
-                AFTER INSERT ON EventLocations
-                BEGIN
-                    UPDATE EventLocations
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER RoleClaimsOnUpdate
-                AFTER UPDATE ON RoleClaims
-                BEGIN
-                    UPDATE RoleClaims
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER RoleClaimsOnInsert
-                AFTER INSERT ON RoleClaims
-                BEGIN
-                    UPDATE RoleClaims
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventServicesOnUpdate
-                AFTER UPDATE ON EventServices
-                BEGIN
-                    UPDATE EventServices
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventServicesOnInsert
-                AFTER INSERT ON EventServices
-                BEGIN
-                    UPDATE EventServices
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserClaimsOnUpdate
-                AFTER UPDATE ON UserClaims
-                BEGIN
-                    UPDATE UserClaims
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserClaimsOnInsert
-                AFTER INSERT ON UserClaims
-                BEGIN
-                    UPDATE UserClaims
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserLoginsOnUpdate
-                AFTER UPDATE ON UserLogins
-                BEGIN
-                    UPDATE UserLogins
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserLoginsOnInsert
-                AFTER INSERT ON UserLogins
-                BEGIN
-                    UPDATE UserLogins
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserRolesOnUpdate
-                AFTER UPDATE ON UserRoles
-                BEGIN
-                    UPDATE UserRoles
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserRolesOnInsert
-                AFTER INSERT ON UserRoles
-                BEGIN
-                    UPDATE UserRoles
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserTokensOnUpdate
-                AFTER UPDATE ON UserTokens
-                BEGIN
-                    UPDATE UserTokens
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER UserTokensOnInsert
-                AFTER INSERT ON UserTokens
-                BEGIN
-                    UPDATE UserTokens
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventSchedulesOnUpdate
-                AFTER UPDATE ON EventSchedules
-                BEGIN
-                    UPDATE EventSchedules
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventSchedulesOnInsert
-                AFTER INSERT ON EventSchedules
-                BEGIN
-                    UPDATE EventSchedules
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventOccurancesOnUpdate
-                AFTER UPDATE ON EventOccurances
-                BEGIN
-                    UPDATE EventOccurances
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER EventOccurancesOnInsert
-                AFTER INSERT ON EventOccurances
-                BEGIN
-                    UPDATE EventOccurances
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER DemeritsOnUpdate
-                AFTER UPDATE ON Demerits
-                BEGIN
-                    UPDATE Demerits
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER DemeritsOnInsert
-                AFTER INSERT ON Demerits
-                BEGIN
-                    UPDATE Demerits
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER GuestEventOccurancesOnUpdate
-                AFTER UPDATE ON GuestEventOccurances
-                BEGIN
-                    UPDATE GuestEventOccurances
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
-            migrationBuilder.Sql(
-                @"
-                CREATE TRIGGER GuestEventOccurancesOnInsert
-                AFTER INSERT ON GuestEventOccurances
-                BEGIN
-                    UPDATE GuestEventOccurances
-                    SET RowVersion = randomblob(8)
-                    WHERE rowid = NEW.rowid;
-                END
-            ");
         }
 
         public static IServiceCollection AddHttpUnitOfWork(this IServiceCollection services)
@@ -483,53 +124,6 @@ namespace EventManager.DataAccess
             IConfiguration configuration, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
 
         {
-            string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName,
-                identityDbConnection = configuration["ConnectionStrings:IdentityDb"];
-
-            // EF AccountManager DB for users and roles
-            services.AddDbContext<IdentityDbContext>(c =>
-            {
-                c.UseSqlServer(identityDbConnection, providerOptions =>
-                {
-                    providerOptions.CommandTimeout(60);
-                    providerOptions.MigrationsAssembly(migrationsAssembly);
-                });
-                c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
-                c.UseLazyLoadingProxies(useLazyLoadingProxies);
-            });
-
-            // EF IdentityServer ConfigurationStore DB
-            services.AddConfigurationDbContext<ConfigurationDbContext>(cso =>
-            {
-                cso.ConfigureDbContext = c =>
-                {
-                    c.UseSqlServer(identityDbConnection, providerOptions =>
-                    {
-                        providerOptions.CommandTimeout(60);
-                        providerOptions.MigrationsAssembly(migrationsAssembly);
-                    });
-                    c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
-                    c.UseLazyLoadingProxies(useLazyLoadingProxies);
-                };
-            });
-
-            // EF IdentityServer PersistedGrant DB
-            services.AddOperationalDbContext<PersistedGrantDbContext>(oso =>
-            {
-                oso.EnableTokenCleanup = true;
-                oso.TokenCleanupInterval = 300;
-                oso.ConfigureDbContext = c =>
-                {
-                    c.UseSqlServer(identityDbConnection, providerOptions =>
-                    {
-                        providerOptions.CommandTimeout(60);
-                        providerOptions.MigrationsAssembly(migrationsAssembly);
-                    });
-                    c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
-                    c.UseLazyLoadingProxies(useLazyLoadingProxies);
-                };
-            });
-
             // Add identity system for users and roles
             IdentityModelEventSource.ShowPII = enableSensitiveDataLogging;
             services.AddIdentity<Identity.Models.User, Role>(a => a = configuration.GetSection("IdentityOptions").Get<IdentityOptions>())
@@ -537,41 +131,136 @@ namespace EventManager.DataAccess
                 .AddDefaultTokenProviders();
 
             // Adds IdentityServer
-            services.AddIdentityServer()
-                .AddConfigurationStore<ConfigurationDbContext>()
-                .AddOperationalStore<PersistedGrantDbContext>()
+            IIdentityServerBuilder identityServerBuilder = services.AddIdentityServer()
                 .AddAspNetIdentity<Identity.Models.User>()
                 .AddProfileService<ProfileService>()
                 .AddDeveloperSigningCredential();
+
+            // Setup InMemort DB
+            if (configuration["ConnectionStrings:UseInMemoryDatabase"] == "True")
+            {
+                identityServerBuilder.UseIdentityServerInMemoryStore();
+                services.AddDbContext<IdentityDbContext>(opt => opt.UseInMemoryDatabase("IdentityDb-" + Guid.NewGuid().ToString()));
+            }
+            else
+            {
+                string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName,
+                    identityDbConnection = configuration["ConnectionStrings:IdentityDb"];
+
+                // EF AccountManager DB for users and roles
+                services.AddDbContext<IdentityDbContext>(c =>
+                {
+                    c.UseSqlServer(identityDbConnection, providerOptions =>
+                    {
+                        providerOptions.CommandTimeout(60);
+                        providerOptions.MigrationsAssembly(migrationsAssembly);
+                    });
+                    c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+                    c.UseLazyLoadingProxies(useLazyLoadingProxies);
+                });
+
+                // EF IdentityServer ConfigurationStore DB
+                services.AddConfigurationDbContext<ConfigurationDbContext>(cso =>
+                {
+                    cso.ConfigureDbContext = c =>
+                    {
+                        c.UseSqlServer(identityDbConnection, providerOptions =>
+                        {
+                            providerOptions.CommandTimeout(60);
+                            providerOptions.MigrationsAssembly(migrationsAssembly);
+                        });
+                        c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+                        c.UseLazyLoadingProxies(useLazyLoadingProxies);
+                    };
+                });
+
+                // EF IdentityServer PersistedGrant DB
+                services.AddOperationalDbContext<PersistedGrantDbContext>(oso =>
+                {
+                    oso.EnableTokenCleanup = true;
+                    oso.TokenCleanupInterval = 300;
+                    oso.ConfigureDbContext = c =>
+                    {
+                        c.UseSqlServer(identityDbConnection, providerOptions =>
+                        {
+                            providerOptions.CommandTimeout(60);
+                            providerOptions.MigrationsAssembly(migrationsAssembly);
+                        });
+                        c.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+                        c.UseLazyLoadingProxies(useLazyLoadingProxies);
+                    };
+                });
+
+                identityServerBuilder.UseIdentityServerPermentStore();
+            }
 
             services.AddScoped<IIdentityManager, IdentityManager>();
 
             return services;
         }
 
-        public static IApplicationBuilder InitializeDatabase(this IApplicationBuilder app)
+        public static bool AllMigrationsApplied(this DbContext context)
         {
-            return app.InitializeDatabaseAsync().Result;
+            IEnumerable<string> applied = context.GetService<IHistoryRepository>()
+                .GetAppliedMigrations()
+                .Select(m => m.MigrationId);
+
+
+            IEnumerable<string> total = context.GetService<IMigrationsAssembly>()
+                .Migrations
+                .Select(m => m.Key);
+
+            return !total.Except(applied).Any();
         }
 
-        public static async Task<IApplicationBuilder> InitializeDatabaseAsync(this IApplicationBuilder app)
+        public static async Task SeedEventDbEntityAsync<T>(this EventDbContext context, IQueryable<EntityBase> entities, ILogger logger = null) where T : EntityBase
+        {
+            string seedFile = Path.Combine(AppContext.BaseDirectory, "Seed", "EventDB", $"{typeof(T).Name}.json");
+            if (File.Exists(seedFile) && !(await entities.ToListAsync()).Any())
+            {
+                logger?.LogInformation($"Seeding {context.GetType().Name}::{typeof(T).Name} with {seedFile}");
+                List<T> seedEntities = JsonConvert.DeserializeObject<List<T>>(await File.ReadAllTextAsync(seedFile));
+                await context.AddRangeAsync(seedEntities);
+                await context.SaveChangesAsync();
+                logger?.LogInformation($"Seeding of {context.GetType().Name}::{typeof(T).Name} has completed!");
+            }
+        }
+
+        public static async Task<IApplicationBuilder> InitializeDatabaseAsync(this IApplicationBuilder app, IConfiguration configuration)
         {
             using (IServiceScope serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 DatabaseInitializer databaseInitializer = serviceScope.ServiceProvider.GetService<DatabaseInitializer>();
+                if (configuration["ConnectionStrings:UseInMemoryDatabase"] == "False" &&
+                    configuration["ConnectionStrings:UseMigrationService"] == "True")
+                {
+                    await databaseInitializer.MigrateIdentityDbAsync();
+                    await databaseInitializer.MigrateEventDBAsync();
+                }
 
-                await databaseInitializer.InitializeApplicationDatabaseAsync();
-                await databaseInitializer.InitializeAccountManagerDatabaseAsync();
+                if (configuration["ConnectionStrings:UseSeedService"] == "True")
+                {
+                    await databaseInitializer.EnsureIdentityDbSeededAsync();
+                    await databaseInitializer.EnsureEventDbSeededAsync();
+                }
             }
             return app;
         }
 
-        public static IIdentityServerBuilder UseInMemoryStore(this IIdentityServerBuilder builder)
+        public static IIdentityServerBuilder UseIdentityServerInMemoryStore(this IIdentityServerBuilder builder)
         {
             builder.AddInMemoryPersistedGrants()
                 .AddInMemoryIdentityResources(DatabaseInitializer.GetIdentityResources())
                 .AddInMemoryApiResources(DatabaseInitializer.GetApiResources())
+                .AddInMemoryApiScopes(DatabaseInitializer.GetApiScopes())
                 .AddInMemoryClients(DatabaseInitializer.GetClients());
+            return builder;
+        }
+        public static IIdentityServerBuilder UseIdentityServerPermentStore(this IIdentityServerBuilder builder)
+        {
+            builder.AddConfigurationStore<ConfigurationDbContext>()
+                .AddOperationalStore<PersistedGrantDbContext>();
+
             return builder;
         }
 

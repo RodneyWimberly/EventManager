@@ -1,0 +1,23 @@
+[
+  {
+    "Body": "The light failed to turn on at the scheduled time",
+    "Date": "2020-11-12T05:28:47.8913211Z",
+    "Header": "Action Failure",
+    "IsPinned": false,
+    "IsRead": false
+  },
+  {
+    "Body": "Failed to read the air temperature sensor",
+    "Date": "2020-11-12T05:28:47.9549857Z",
+    "Header": "Sensor Read Failure",
+    "IsPinned": false,
+    "IsRead": false
+  },
+  {
+    "Body": "Failed to read the CO2 PPM sensor",
+    "Date": "2020-11-12T05:28:47.9722490Z",
+    "Header": "Sensor Read Failure",
+    "IsPinned": false,
+    "IsRead": true
+  }
+]

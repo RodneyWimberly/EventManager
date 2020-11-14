@@ -2,7 +2,6 @@
 using EventManager.DataAccess;
 using EventManager.DataAccess.Identity;
 using EventManager.DataAccess.Identity.Models;
-using EventManager.DataAccess.Core;
 using EventManager.Web.Authorization;
 using EventManager.Web.Helpers;
 using EventManager.Web.ViewModels;
@@ -18,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace EventManager.Web.Controllers
 {
+    [ApiVersion("1.0")]
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]

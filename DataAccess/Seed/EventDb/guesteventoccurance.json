@@ -1,0 +1,22 @@
+[
+  {
+    "Id": "1",
+    "EventOccuranceId": "1",
+    "GuestId": "1"
+  },
+  {
+    "Id": "2",
+    "EventOccuranceId": "1",
+    "GuestId": "2"
+  },
+  {
+    "Id": "3",
+    "EventOccuranceId": "1",
+    "GuestId": "3"
+  },
+  {
+    "Id": "4",
+    "EventOccuranceId": "1",
+    "GuestId": "4"
+  }
+]

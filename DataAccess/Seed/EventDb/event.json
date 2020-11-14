@@ -1,0 +1,12 @@
+[
+  {
+    "Id": "1",
+    "Description": "Overnight homeless shelter",
+    "Name": "Shelter @ Orenco Station"
+  },
+  {
+    "Id": "2",
+    "Description": "Daytime homeless shelter",
+    "Name": "Sonrise Day Center"
+  }
+]

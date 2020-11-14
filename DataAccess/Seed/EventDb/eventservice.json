@@ -1,0 +1,52 @@
+[
+  {
+    "Id": "1",
+    "EventId": "1",
+    "ServiceId": "1"
+  },
+  {
+    "Id": "2",
+    "EventId": "1",
+    "ServiceId": "2"
+  },
+  {
+    "Id": "3",
+    "EventId": "1",
+    "ServiceId": "4"
+  },
+  {
+    "Id": "4",
+    "EventId": "1",
+    "ServiceId": "5"
+  },
+  {
+    "Id": "5",
+    "EventId": "1",
+    "ServiceId": "7"
+  },
+  {
+    "Id": "6",
+    "EventId": "2",
+    "ServiceId": "1"
+  },
+  {
+    "Id": "7",
+    "EventId": "2",
+    "ServiceId": "3"
+  },
+  {
+    "Id": "8",
+    "EventId": "2",
+    "ServiceId": "5"
+  },
+  {
+    "Id": "9",
+    "EventId": "2",
+    "ServiceId": "6"
+  },
+  {
+    "Id": "10",
+    "EventId": "2",
+    "ServiceId": "7"
+  }
+]

@@ -10,16 +10,23 @@ using EventManager.Web.ViewModels;
 using EventManager.Web.ViewModels.Mappers;
 using FluentValidation;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NSwag.AspNetCore;
+using System;
 using System.Reflection;
+using System.Text;
 
 namespace EventManager.Web
 {
@@ -42,6 +49,23 @@ namespace EventManager.Web
             // Logging
             services.AddLogging();
 
+            // API versioning service
+            services.AddApiVersioning(options =>
+            {
+                //o.Conventions.Controller<UserController>().HasApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+            });
+
+            // format code as "'v'major[.minor][-status]"
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
             // Setup use of EF DbContexts
             services.AddEventDbContext(
                 Configuration,
@@ -52,22 +76,44 @@ namespace EventManager.Web
                WebHostEnvironment.IsDevelopment());
 
             // Configure JSON serializer to not complain when returning entities plus reference and navigational properties
-            services.AddMvc()
+            services.AddMvc(option => option.EnableEndpointRouting = true)
                 .AddControllersAsServices()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
-            // Set authentication to use identity server and set identity server authentication options
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            if (Configuration["Authentication:UseIdentityServer4"] == "False")
+            {
+                //JWT API authentication service
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                }
+                 );
+            }
+            else
+            {
+                // Set authentication to use identity server and set identity server authentication options
+                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = Configuration["ApplicationUrl"].TrimEnd('/');
+                    options.Authority = Configuration["Authentication:IdentityServer4IP"].TrimEnd('/');
                     options.SupportedTokens = SupportedTokens.Jwt;
                     options.RequireHttpsMetadata = !WebHostEnvironment.IsDevelopment();
                     options.ApiName = IdentityServerValues.ApiId;
                 });
+            }
 
             // Set authorization policies
             services.AddAuthorizationCore(options =>
@@ -96,7 +142,15 @@ namespace EventManager.Web
             services.AddSingleton<IAuthorizationHandler, AssignRolesAuthorizationHandler>();
 
             // Add CORS
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy-public",
+                    builder => builder.AllowAnyOrigin()   //WithOrigins and define a specific origin to be allowed (e.g. https://mydomain.com)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                //.AllowCredentials()
+                .Build());
+            });
 
             // Set health checks listener
             services.AddHealthChecks();
@@ -133,26 +187,21 @@ namespace EventManager.Web
                 app.UseDeveloperExceptionPage();
             else
             {
+                //app.UseMiddleware<ExceptionHandlerMiddleware>();
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
-            }
-
-            app.InitializeDatabase();
-            app.UseEntityFrameworkLoggingScopeStateProvider();
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            if (!env.IsDevelopment())
-            {
+                app.UseStaticFiles();
                 app.UseSpaStaticFiles();
             }
 
+            app.InitializeDatabaseAsync(Configuration).Wait();
+            app.UseEntityFrameworkLoggingScopeStateProvider();
+            app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors(builder => builder
-               .AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod());
-
+            app.UseCors("CorsPolicy-public");
             app.UseIdentityServer();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwaggerUi3(settings =>
@@ -161,9 +210,6 @@ namespace EventManager.Web
                 settings.Path = "/docs";
                 settings.DocumentPath = "/docs/api-specification.json";
             });
-
-            //app.UseCookiePolicy();
-            //app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
@@ -174,16 +220,15 @@ namespace EventManager.Web
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
-
                 if (env.IsDevelopment())
                 {
-                    //if (false)
-                    //{
-                    //   spa.UseAngularCliServer(npmScript: "serve");
-                    //  spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); // Increase the timeout if angular app is taking longer to startup
-                    //}
-                    //else
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); // Use this instead to use the angular cli server
+                    if (Configuration["UseProxyToSpaDevelopmentServer"] == "True")
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); 
+                    else
+                    {
+                        spa.UseAngularCliServer(npmScript: "serve");
+                        spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); 
+                    }
                 }
             });
         }

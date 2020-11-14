@@ -1,0 +1,22 @@
+[
+  {
+    "Id": "1",
+    "Address1": "6701 NE Campus Way Dr",
+    "Address2": "Cafeteria",
+    "City": "Hillsboro",
+    "EventId": "1",
+    "Name": "Sonrise Cafeteria",
+    "State": "OR",
+    "ZipCode": "97124"
+  },
+  {
+    "Id": "2",
+    "Address1": "6701 NE Campus Way Dr",
+    "Address2": "Bron Hall",
+    "City": "Hillsboro",
+    "EventId": "2",
+    "Name": "Sonrise Day Center",
+    "State": "OR",
+    "ZipCode": "97124"
+  }
+]

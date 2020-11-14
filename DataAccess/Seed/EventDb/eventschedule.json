@@ -1,0 +1,38 @@
+[
+  {
+    "Id": "1",
+    "CheckInEndTime": "18:30:00",
+    "CheckInStartTime": "17:30:00",
+    "DaysOfTheWeek": 0,
+    "EndDate": "2021-02-28T08:00:00.0000000Z",
+    "EndTime": "08:30:00",
+    "EventId": "1",
+    "EventLocationId": "1",
+    "StartDate": "2020-12-01T08:00:00.0000000Z",
+    "StartTime": "17:30:00"
+  },
+  {
+    "Id": "2",
+    "CheckInEndTime": "18:30:00",
+    "CheckInStartTime": "17:30:00",
+    "DaysOfTheWeek": 0,
+    "EndDate": "2021-02-28T08:00:00.0000000Z",
+    "EndTime": "07:30:00",
+    "EventId": "1",
+    "EventLocationId": "1",
+    "StartDate": "2020-12-01T08:00:00.0000000Z",
+    "StartTime": "17:30:00"
+  },
+  {
+    "Id": "3",
+    "CheckInEndTime": "15:00:00",
+    "CheckInStartTime": "09:00:00",
+    "DaysOfTheWeek": 0,
+    "EndDate": "2020-12-31T08:00:00.0000000Z",
+    "EndTime": "15:00:00",
+    "EventId": "2",
+    "EventLocationId": "2",
+    "StartDate": "2020-01-01T08:00:00.0000000Z",
+    "StartTime": "09:00:00"
+  }
+]

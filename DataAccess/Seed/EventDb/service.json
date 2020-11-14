@@ -1,0 +1,44 @@
+[
+  {
+    "Id": "1",
+    "Description": "Shower",
+    "Name": "Shower",
+    "ServiceType": 1
+  },
+  {
+    "Id": "2",
+    "Description": "Breakfast",
+    "Name": "Breakfast",
+    "ServiceType": 0
+  },
+  {
+    "Id": "3",
+    "Description": "Lunch",
+    "Name": "Lunch",
+    "ServiceType": 0
+  },
+  {
+    "Id": "4",
+    "Description": "Dinner",
+    "Name": "Dinner",
+    "ServiceType": 0
+  },
+  {
+    "Id": "5",
+    "Description": "Sleep",
+    "Name": "Sleep",
+    "ServiceType": 0
+  },
+  {
+    "Id": "6",
+    "Description": "Counseling",
+    "Name": "Counseling",
+    "ServiceType": 1
+  },
+  {
+    "Id": "7",
+    "Description": "Bath ans Toiletry Items",
+    "Name": "Bath and Toiletry",
+    "ServiceType": 0
+  }
+]

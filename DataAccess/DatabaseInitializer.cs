@@ -26,8 +26,8 @@ namespace EventManager.DataAccess
         private readonly PersistedGrantDbContext _persistedGrantContext;
         private readonly ConfigurationDbContext _configurationContext;
         private readonly EventDbContext _eventContext;
-        private readonly IdentityDbContext _accountsContext;
-        private readonly IIdentityManager _accountManager;
+        private readonly IdentityDbContext _identityContext;
+        private readonly IIdentityManager _identityManager;
 
         public DatabaseInitializer(ILogger<DatabaseInitializer> logger, PersistedGrantDbContext persistedGrantContext, ConfigurationDbContext configurationContext, EventDbContext eventsContext, IdentityDbContext accountsContext, IIdentityManager accountManager)
         {
@@ -35,33 +35,25 @@ namespace EventManager.DataAccess
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;
             _eventContext = eventsContext;
-            _accountsContext = accountsContext;
-            _accountManager = accountManager;
+            _identityContext = accountsContext;
+            _identityManager = accountManager;
         }
 
-        public void InitializeAccountManagerDatabase()
-        {
-            InitializeAccountManagerDatabaseAsync().Wait();
-        }
-
-        public async Task InitializeAccountManagerDatabaseAsync()
+        #region IdentityDB
+        public async Task EnsureIdentityDbSeededAsync()
         {
             try
             {
-                // PersistedGrant
-                _logger.LogInformation("Running PersistedGrantDbContext Migration");
-                await _persistedGrantContext.Database.MigrateAsync();
+                _persistedGrantContext.ChangeTracker.LazyLoadingEnabled = false;
+                _configurationContext.ChangeTracker.LazyLoadingEnabled = false;
+                _identityContext.ChangeTracker.LazyLoadingEnabled = false;
 
                 // Configuration
-                _logger.LogInformation("Running ConfigurationDbContext Migration");
-                await _configurationContext.Database.MigrateAsync();
-
                 if (!await _configurationContext.Clients.AnyAsync())
                 {
                     _logger.LogInformation("Generating Identity Server Clients");
                     await _configurationContext.Clients.AddRangeAsync(GetClients().Select(m => m.ToEntity()));
                     await _configurationContext.SaveChangesAsync();
-                    _logger.LogInformation("Generating Identity Server Clients Completed");
                 }
 
                 if (!await _configurationContext.IdentityResources.AnyAsync())
@@ -69,7 +61,6 @@ namespace EventManager.DataAccess
                     _logger.LogInformation("Generating Identity Server IdentityResources");
                     await _configurationContext.IdentityResources.AddRangeAsync(GetIdentityResources().Select(m => m.ToEntity()));
                     await _configurationContext.SaveChangesAsync();
-                    _logger.LogInformation("Generating Identity Server IdentityResources Completed");
                 }
 
                 if (!await _configurationContext.ApiResources.AnyAsync())
@@ -77,7 +68,6 @@ namespace EventManager.DataAccess
                     _logger.LogInformation("Generating Identity Server ApiResources");
                     await _configurationContext.ApiResources.AddRangeAsync(GetApiResources().Select(m => m.ToEntity()));
                     await _configurationContext.SaveChangesAsync();
-                    _logger.LogInformation("Generating Identity Server ApiResources Completed");
                 }
 
                 if (!await _configurationContext.ApiScopes.AnyAsync())
@@ -85,53 +75,111 @@ namespace EventManager.DataAccess
                     _logger.LogInformation("Generating Identity Server ApiScopes");
                     await _configurationContext.ApiScopes.AddRangeAsync(GetApiScopes().Select(m => m.ToEntity()));
                     await _configurationContext.SaveChangesAsync();
-                    _logger.LogInformation("Generating Identity Server ApiScopes Completed");
                 }
 
-                // AccountManager
-                _logger.LogInformation("Running AccountManagerDbContext Migration");
-                _accountsContext.ChangeTracker.LazyLoadingEnabled = false;
-                await _accountsContext.Database.MigrateAsync();
 
-                if (!await _accountsContext.Users.AnyAsync())
+                // Identity               
+                if (!await _identityContext.Users.AnyAsync())
                 {
-                    _logger.LogInformation("Generating Account Manager sample accounts");
+                    _logger.LogInformation("Generating Identity sample accounts");
 
                     const string adminRoleName = "administrator";
                     const string userRoleName = "user";
 
-                    await EnsureRoleAsync(_accountManager, adminRoleName, "Default administrator", Permissions.GetAllPermissionValues());
-                    await EnsureRoleAsync(_accountManager, userRoleName, "Default user", new string[] { });
+                    await EnsureRoleAsync(_identityManager, adminRoleName, "Default administrator", Permissions.GetAllPermissionValues());
+                    await EnsureRoleAsync(_identityManager, userRoleName, "Default user", new string[] { });
 
-                    await CreateUserAsync(_accountManager, "Manager", "admin", "P@55w0rd", "Sample Administrator User", "admin@wimberlytech.com", "+1 (123) 555-1212", new string[] { adminRoleName });
-                    await CreateUserAsync(_accountManager, "Worker", "user", "P@55w0rd", "Sample Standard User", "user@wimberlytech.com", "+1 (123) 555-1212", new string[] { userRoleName });
+                    await CreateUserAsync(_identityManager, "Manager", "admin", "P@55w0rd", "Sample Administrator User", "admin@wimberlytech.com", "+1 (123) 555-1212", new string[] { adminRoleName });
+                    await CreateUserAsync(_identityManager, "Worker", "user", "P@55w0rd", "Sample Standard User", "user@wimberlytech.com", "+1 (123) 555-1212", new string[] { userRoleName });
 
-                    await _accountsContext.SaveChangesAsync();
-                    _logger.LogInformation("Sample account generation completed");
+                    await _identityContext.SaveChangesAsync();
                 }
-                _logger.LogInformation("AccountManagerDbContext Migration completed");
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(LoggingEvents.InitDatabase, ex, LoggingEvents.InitDatabase.Name);
-                throw new Exception(LoggingEvents.InitDatabase.Name, ex);
+                string message = LoggingEvents.SeedingDatabase.Name + " em-identitydb";
+                _logger.LogCritical(LoggingEvents.SeedingDatabase, ex, message);
+                throw new Exception(message, ex);
             }
         }
 
-        public void InitializeApplicationDatabase()
+        public async Task MigrateIdentityDbAsync()
         {
-            InitializeApplicationDatabaseAsync().Wait();
+            try
+            {
+                if (!_persistedGrantContext.AllMigrationsApplied())
+                {
+                    _logger.LogInformation("Running PersistedGrantDbContext Migration");
+                    await _persistedGrantContext.Database.MigrateAsync();
+                    await _persistedGrantContext.SaveChangesAsync();
+                }
+                if (!_configurationContext.AllMigrationsApplied())
+                {
+                    _logger.LogInformation("Running ConfigurationDbContext Migration");
+                    await _configurationContext.Database.MigrateAsync();
+                    await _configurationContext.SaveChangesAsync();
+                }
+                if (!_identityContext.AllMigrationsApplied())
+                {
+                    _logger.LogInformation("Running IdentityDbContext Migration");
+                    await _identityContext.Database.MigrateAsync();
+                    await _identityContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = LoggingEvents.MigratingDatabase.Name + " em-identitydb";
+                _logger.LogCritical(LoggingEvents.MigratingDatabase, ex, message);
+                throw new Exception(message, ex);
+            }
         }
 
-        public async Task InitializeApplicationDatabaseAsync()
+        private async Task EnsureRoleAsync(IIdentityManager accountManager, string roleName, string description, string[] claims)
+        {
+            if ((await accountManager.GetRoleByNameAsync(roleName)) == null)
+            {
+                Role applicationRole = new Role(roleName, description);
+
+                (bool Succeeded, string[] Errors) = await accountManager.CreateRoleAsync(applicationRole, claims);
+
+                if (!Succeeded)
+                    throw new Exception($"Seeding \"{description}\" role failed. Errors: {string.Join(Environment.NewLine, Errors)}");
+            }
+        }
+
+        private async Task<User> CreateUserAsync(IIdentityManager accountManager, string jobTitle, string userName, string password, string fullName, string email, string phoneNumber, string[] roles)
+        {
+            User User = new User
+            {
+                JobTitle = jobTitle,
+                UserName = userName,
+                FullName = fullName,
+                Email = email,
+                PhoneNumber = phoneNumber,
+                EmailConfirmed = true,
+                IsEnabled = true
+            };
+
+            (bool Succeeded, string[] Errors) = await accountManager.CreateUserAsync(User, roles, password);
+
+            if (!Succeeded)
+                throw new Exception($"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, Errors)}");
+
+
+            return User;
+        }
+        #endregion
+
+        #region EventDb
+
+        public async Task EnsureEventDbSeededNewAsync()
         {
             try
             {
                 _eventContext.ChangeTracker.LazyLoadingEnabled = false;
 
                 // Migration
-                _logger.LogInformation("Running AccountManagerDbContext Migration");
-                await _eventContext.Database.EnsureCreatedAsync();
+
 
                 // Notifications
                 if (!_eventContext.Notifications.ToList().Any())
@@ -614,12 +662,52 @@ namespace EventManager.DataAccess
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(LoggingEvents.InitDatabase, ex, LoggingEvents.InitDatabase.Name);
-                throw new Exception(LoggingEvents.InitDatabase.Name, ex);
+                _logger.LogCritical(LoggingEvents.SeedingDatabase, ex, LoggingEvents.SeedingDatabase.Name);
+                throw new Exception(LoggingEvents.SeedingDatabase.Name, ex);
             }
         }
 
+        public async Task EnsureEventDbSeededAsync()
+        {
+            string seedPath = @".\Seed\EventDb\";
+            try
+            {
+                await _eventContext.SeedEventDbEntityAsync<Notification>(_eventContext.Notifications, _logger);
+                await _eventContext.SeedEventDbEntityAsync<Service>(_eventContext.Services, _logger);
+                await _eventContext.SeedEventDbEntityAsync<Event>(_eventContext.Events, _logger);
+                await _eventContext.SeedEventDbEntityAsync<EventLocation>(_eventContext.EventLocations, _logger);
+                await _eventContext.SeedEventDbEntityAsync<EventSchedule>(_eventContext.EventSchedules, _logger);
+                await _eventContext.SeedEventDbEntityAsync<EventService>(_eventContext.EventServices, _logger);
+                await _eventContext.SeedEventDbEntityAsync<Guest>(_eventContext.Guests, _logger);
+                await _eventContext.SeedEventDbEntityAsync<EventOccurance>(_eventContext.EventOccurances, _logger);
+                await _eventContext.SeedEventDbEntityAsync<GuestEventOccurance>(_eventContext.GuestEventOccurances, _logger);
+                await _eventContext.SeedEventDbEntityAsync<Demerit>(_eventContext.Demerits, _logger);
+            }
+            catch (Exception ex)
+            {
+                string message = LoggingEvents.SeedingDatabase.Name + " em-eventdb";
+                _logger.LogCritical(LoggingEvents.SeedingDatabase, ex, message);
+                throw new Exception(message, ex);
+            }
+        }
 
+        public async Task MigrateEventDBAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Running EventDbContext Migration");
+                await _eventContext.Database.EnsureCreatedAsync();
+            }
+            catch (Exception ex)
+            {
+                string message = LoggingEvents.MigratingDatabase.Name + " em-eventdb";
+                _logger.LogCritical(LoggingEvents.MigratingDatabase, ex, message);
+                throw new Exception(message, ex);
+            }
+        }
+        #endregion
+
+        #region IdentityServer4 Domain Helpers
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
             return new List<IdentityResource>
@@ -701,41 +789,6 @@ namespace EventManager.DataAccess
                 }
             };
         }
-
-        private async Task EnsureRoleAsync(IIdentityManager accountManager, string roleName, string description, string[] claims)
-        {
-            if ((await accountManager.GetRoleByNameAsync(roleName)) == null)
-            {
-                Role applicationRole = new Role(roleName, description);
-
-                (bool Succeeded, string[] Errors) = await accountManager.CreateRoleAsync(applicationRole, claims);
-
-                if (!Succeeded)
-                    throw new Exception($"Seeding \"{description}\" role failed. Errors: {string.Join(Environment.NewLine, Errors)}");
-            }
-        }
-
-        private async Task<User> CreateUserAsync(IIdentityManager accountManager, string jobTitle, string userName, string password, string fullName, string email, string phoneNumber, string[] roles)
-        {
-            User User = new User
-            {
-                JobTitle = jobTitle,
-                UserName = userName,
-                FullName = fullName,
-                Email = email,
-                PhoneNumber = phoneNumber,
-                EmailConfirmed = true,
-                IsEnabled = true
-            };
-
-            (bool Succeeded, string[] Errors) = await accountManager.CreateUserAsync(User, roles, password);
-
-            if (!Succeeded)
-                throw new Exception($"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, Errors)}");
-
-
-            return User;
-        }
-
+        #endregion 
     }
 }

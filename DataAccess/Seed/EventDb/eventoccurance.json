@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1",
+    "Date": "2020-01-02T08:00:00.0000000Z",
+    "EventId": "1",
+    "EventLocationId": "1",
+    "EventScheduleId": "1",
+    "Lead": "Jeff"
+  },
+  {
+    "Id": "2",
+    "Date": "2020-01-03T08:00:00.0000000Z",
+    "EventId": "2",
+    "EventLocationId": "2",
+    "EventScheduleId": "3",
+    "Lead": "Tori"
+  },
+  {
+    "Id": "3",
+    "Date": "2020-01-03T08:00:00.0000000Z",
+    "EventId": "1",
+    "EventLocationId": "1",
+    "EventScheduleId": "2",
+    "Lead": "Roxanne"
+  }
+]

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Formatters;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -39,6 +38,13 @@ namespace EventManager.Core
             if (td == null)
                 throw new ArgumentNullException(nameof(td));
 
+            Init(td.Hour, td.Minute, td.Second);
+        }
+        public TimeOfDay(string tds)
+        {
+            if (tds == null)
+                throw new ArgumentNullException(nameof(tds));
+            TimeOfDay td = TimeOfDay.Parse(tds);
             Init(td.Hour, td.Minute, td.Second);
         }
 
@@ -279,6 +285,29 @@ namespace EventManager.Core
             DateTime dt2 = new DateTime(dt1.Year, dt1.Month, dt1.Day, t2.Hour, t2.Minute, t2.Second);
             return dt1 >= dt2;
         }
+        public static implicit operator TimeOfDay(string td)
+        {
+            if (td == null)
+                return null;
+            return Parse(td);
+        }
+
+        public static explicit operator string(TimeOfDay td)
+        {
+            if (td == null)
+                return null;
+            return td.ToString();
+        }
+        public static implicit operator TimeOfDay(int td)
+        {
+            return new TimeOfDay(td);
+        }
+
+        public static explicit operator int(TimeOfDay td)
+        {
+            return td.HHMMSS;
+        }
+
         /// <summary>
         /// Input examples:
         /// 14:21:17            (2pm 21min 17sec)
@@ -298,9 +327,9 @@ namespace EventManager.Core
             string text = m.Value;
             string[] fields = text.Split(':');
             if (fields.Length < 2) { throw new ArgumentException("No valid time of day pattern found in input text"); }
-            int hour = Convert.ToInt32(fields[0]);
-            int min = Convert.ToInt32(fields[1]);
-            int sec = fields.Length > 2 ? Convert.ToInt32(fields[2]) : 0;
+            int hour = Convert.ToInt32(fields[0], CultureInfo.CurrentCulture);
+            int min = Convert.ToInt32(fields[1], CultureInfo.CurrentCulture);
+            int sec = fields.Length > 2 ? Convert.ToInt32(fields[2], CultureInfo.CurrentCulture) : 0;
 
             return new TimeOfDay(hour, min, sec);
         }
@@ -327,14 +356,6 @@ namespace EventManager.Core
             Init(dt.Hour, dt.Minute, dt.Second);
         }
 
-        public static TimeOfDay Subtract(TimeOfDay left, TimeOfDay right)
-        {
-            throw new NotImplementedException();
-        }
 
-        public static TimeOfDay Add(TimeOfDay left, TimeOfDay right)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
