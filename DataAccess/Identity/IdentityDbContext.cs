@@ -1,6 +1,6 @@
-﻿using EventManager.DataAccess.Identity.Models;
-using EventManager.DataAccess.Core.Constants;
+﻿using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Interfaces;
+using EventManager.DataAccess.Identity.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;

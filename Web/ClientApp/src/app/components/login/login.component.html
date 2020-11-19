@@ -10,7 +10,7 @@
       <div class="card-body">
         <div class="col-md-8 offset-md-2">
           <form *ngIf="formResetToggle" class="login" name="loginForm" #f="ngForm" novalidate
-                (ngSubmit)="f.form.valid ? login() :
+                (ngSubmit)="f.form.valid ? login(0) :
                           (!username.valid && showErrorAlert('Username is required', 'Please enter a valid username'));
                           (!password.valid && showErrorAlert('Password is required', 'Please enter a valid password'))">
             <div class="form-group row has-feedback-icon">
@@ -43,12 +43,21 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row">
-              <div class="offset-md-3 col-md-9">
-                <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-                  <i *ngIf="isLoading" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading ? 'Logging in...' : 'Login'}}
-                </button>
+            <div  ngPreserveWhitespaces class="form-group row">
+              <div class="offset-md-3 col-md-9">    
+                <span>
+                  <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+                    <i *ngIf="isLoading" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading ? 'Logging in...' : 'Login'}}
+                  </button>
+                </span>
+                <span>
+                  <a class="nav-link" class.disabled-link="isLoading" href="javascript:;" [hidden]="isLoading" (click)="login(1)">
+                    <i *ngIf="isLoading" class='fa fa-circle-o-notch fa-spin'></i>
+                    <i *ngIf="!isLoading" class="icon-google"></i>
+                  </a>
+                </span>
               </div>
+            
             </div>
           </form>
         </div>

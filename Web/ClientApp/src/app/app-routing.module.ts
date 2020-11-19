@@ -2,6 +2,7 @@ import { NgModule, Injectable } from '@angular/core';
 import { Routes, RouterModule, DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
 
 import { LoginComponent } from './components/login/login.component';
+import { LandingPageComponent } from './components/login/landing-page.component';
 import { HomeComponent } from './components/home/home.component';
 import { ExtendedLogsComponent } from './components/extended-logs/extended-logs.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -10,6 +11,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import * as generated from './services/endpoint.services';
 import { AuthGuardService} from './services/auth-guard.service';
 import { Utilities } from './helpers/utilities';
+import { PoliciesComponent } from './components/policies/policies.component';
+import { LoginRedirectComponent } from './components/login/login-redirect.component';
 
 
 
@@ -37,7 +40,9 @@ export class LowerCaseUrlSerializer extends DefaultUrlSerializer {
 
 const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [AuthGuardService], data: { title: 'Home' } },
+    { path: 'auth', component: LoginRedirectComponent, data: { title: 'Login Redirect' } },
     { path: 'login', component: LoginComponent, data: { title: 'Login' } },
+    { path: 'policies', component: PoliciesComponent, data: { title: 'Policies' } },
     { path: 'logs', component: ExtendedLogsComponent, canActivate: [AuthGuardService], data: { title: 'Logs' } },
     { path: 'settings', component: SettingsComponent, canActivate: [AuthGuardService], data: { title: 'Settings' } },
     { path: 'about', component: AboutComponent, data: { title: 'About Us' } },

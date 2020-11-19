@@ -69,19 +69,32 @@ namespace EventManager.Web.Controllers
             propertyPaths.ForEach(p => p = p.Trim());
             IQueryable<Event> root = e.EntityQuery;
             if (propertyPaths.Contains("locations.schedules"))
+            {
                 root = e.Include = root.Include(e => e.Locations).ThenInclude(l => l.Schedules);
+            }
             else if (propertyPaths.Contains("locations"))
+            {
                 root = e.Include = root.Include(e => e.Locations);
+            }
 
             if (propertyPaths.Contains("schedules.location"))
+            {
                 root = e.Include = root.Include(e => e.Schedules).ThenInclude(s => s.Location);
+            }
             else if (propertyPaths.Contains("schedules"))
+            {
                 root = e.Include = root.Include(e => e.Schedules);
+            }
 
             if (propertyPaths.Contains("occurrences"))
+            {
                 root = e.Include = root.Include(e => e.Occurances);
+            }
+
             if (propertyPaths.Contains("services"))
+            {
                 root = e.Include = root.Include(e => e.Services);
+            }
         }
 
         [HttpGet("{includePropertyPaths?}")]
@@ -153,10 +166,14 @@ namespace EventManager.Web.Controllers
             propertyPaths.ForEach(p => p = p.Trim());
             IQueryable<EventLocation> root = e.EntityQuery;
             if (propertyPaths.Contains("schedules"))
+            {
                 root = e.Include = root.Include(e => e.Schedules);
+            }
 
             if (propertyPaths.Contains("event"))
+            {
                 root = e.Include = root.Include(e => e.Event);
+            }
         }
 
         [HttpGet("Location/{includePropertyPaths?}")]
@@ -190,9 +207,14 @@ namespace EventManager.Web.Controllers
         {
             IPagedList<EventLocation> pagedList;
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventLocation>().GetPagedListAsync(predicate: l => l.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventLocation>().GetPagedListAsync(predicate: l => l.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize, include: e => _locationHelper.GetInclude(e, includePropertyPaths));
+            }
+
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
         }
@@ -212,9 +234,13 @@ namespace EventManager.Web.Controllers
         {
             IPagedList<EventLocation> pagedList;
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventLocation>().GetPagedListAsync(predicate: l => l.Schedules.Any(s => s.Id == eventScheduleId), pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventLocation>().GetPagedListAsync(predicate: l => l.Schedules.Any(s => s.Id == eventScheduleId), pageIndex: pageNumber, pageSize: pageSize, include: e => _locationHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -273,7 +299,9 @@ namespace EventManager.Web.Controllers
             propertyPaths.ForEach(p => p = p.Trim());
             IQueryable<EventSchedule> root = e.EntityQuery;
             if (propertyPaths.Contains("location"))
+            {
                 root = e.Include = root.Include(e => e.Location);
+            }
         }
 
 
@@ -309,9 +337,13 @@ namespace EventManager.Web.Controllers
             IPagedList<EventSchedule> pagedList;
 
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventSchedule>().GetPagedListAsync(predicate: s => s.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventSchedule>().GetPagedListAsync(predicate: s => s.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize, include: e => _scheduleHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -333,9 +365,13 @@ namespace EventManager.Web.Controllers
             IPagedList<EventSchedule> pagedList;
 
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventSchedule>().GetPagedListAsync(predicate: s => s.EventLocationId == eventLocationId, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventSchedule>().GetPagedListAsync(predicate: s => s.EventLocationId == eventLocationId, pageIndex: pageNumber, pageSize: pageSize, include: e => _scheduleHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -427,9 +463,13 @@ namespace EventManager.Web.Controllers
             IPagedList<EventOccurance> pagedList;
 
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventOccurance>().GetPagedListAsync(predicate: o => o.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventOccurance>().GetPagedListAsync(predicate: o => o.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize, include: e => _occurrenceHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -452,9 +492,13 @@ namespace EventManager.Web.Controllers
             IPagedList<EventOccurance> pagedList;
 
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventOccurance>().GetPagedListAsync(predicate: o => o.EventLocationId == eventLocationId, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventOccurance>().GetPagedListAsync(predicate: o => o.EventLocationId == eventLocationId, pageIndex: pageNumber, pageSize: pageSize, include: e => _occurrenceHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -476,9 +520,13 @@ namespace EventManager.Web.Controllers
             IPagedList<EventOccurance> pagedList;
 
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventOccurance>().GetPagedListAsync(predicate: o => o.EventScheduleId == eventScheduleid, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventOccurance>().GetPagedListAsync(predicate: o => o.EventScheduleId == eventScheduleid, pageIndex: pageNumber, pageSize: pageSize, include: e => _occurrenceHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -571,9 +619,13 @@ namespace EventManager.Web.Controllers
             IPagedList<EventService> pagedList;
 
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventService>().GetPagedListAsync(predicate: s => s.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventService>().GetPagedListAsync(predicate: s => s.EventId == eventId, pageIndex: pageNumber, pageSize: pageSize, include: e => _serviceHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -595,9 +647,13 @@ namespace EventManager.Web.Controllers
             IPagedList<EventService> pagedList;
 
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<EventService>().GetPagedListAsync(predicate: s => s.ServiceId == serviceId, pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<EventService>().GetPagedListAsync(predicate: s => s.ServiceId == serviceId, pageIndex: pageNumber, pageSize: pageSize, include: e => _serviceHelper.GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);

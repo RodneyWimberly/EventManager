@@ -69,9 +69,13 @@ namespace EventManager.Web.Controllers
         {
             IPagedList<ExtendedLog> extendedLogs = await _repository.GetPagedListAsync(l => l.Level == level, pageIndex: pageNumber, pageSize: pageSize);
             if (extendedLogs.Items.Count > 0)
+            {
                 return Ok(_mapper.Map<IEnumerable<ExtendedLogViewModel>>(extendedLogs.Items));
+            }
             else
+            {
                 return NotFound(level);
+            }
         }
 
         [HttpGet("{id}")]
@@ -82,9 +86,13 @@ namespace EventManager.Web.Controllers
         {
             ExtendedLog extendedLog = await _repository.FindAsync(id);
             if (extendedLog == null)
+            {
                 return NotFound(id);
+            }
             else
+            {
                 return Ok(_mapper.Map<ExtendedLogViewModel>(extendedLog));
+            }
         }
 
         [HttpDelete]
@@ -105,7 +113,10 @@ namespace EventManager.Web.Controllers
         {
             ExtendedLog extendedLog = await _repository.FindAsync(id);
             if (extendedLog == null)
+            {
                 return NotFound(id);
+            }
+
             ExtendedLogViewModel extendedLogVM = _mapper.Map<ExtendedLogViewModel>(extendedLog);
             _repository.Delete(extendedLog);
             await _unitOfWork.SaveChangesAsync();
@@ -114,15 +125,19 @@ namespace EventManager.Web.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         [ProducesResponseType(201, Type = typeof(ExtendedLogViewModel))]
         [ProducesResponseType(400)]
-        [Authorize(Authorization.Policies.ManageLogsPolicy)]
+        //[Authorize(Authorization.Policies.ManageLogsPolicy)]
         public async Task<IActionResult> Post([FromBody] ExtendedLogViewModel extendedLogVM)
         {
             if (ModelState.IsValid)
             {
                 if (extendedLogVM == null)
+                {
                     return BadRequest($"{nameof(extendedLogVM)} cannot be null");
+                }
+
                 ExtendedLog extendedLog = _mapper.Map<ExtendedLog>(extendedLogVM);
                 EntityEntry<ExtendedLog> addedExtendedLog = await _repository.InsertAsync(extendedLog);
                 await _unitOfWork.SaveChangesAsync();
@@ -130,7 +145,9 @@ namespace EventManager.Web.Controllers
                 return CreatedAtAction("GetById", new { id = extendedLogVM.Id }, extendedLogVM);
             }
             else
+            {
                 return BadRequest(ModelState);
+            }
         }
 
         [HttpPut("{id}")]
@@ -142,16 +159,23 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (extendedLogVM == null)
+                {
                     return BadRequest($"{nameof(extendedLogVM)} cannot be null");
+                }
 
                 if (id != extendedLogVM.Id)
+                {
                     return BadRequest("Conflicting ExtendedLog id in parameter and model data");
+                }
+
                 _repository.Update(_mapper.Map<ExtendedLog>(extendedLogVM));
                 await _unitOfWork.SaveChangesAsync();
                 return NoContent();
             }
             else
+            {
                 return BadRequest(ModelState);
+            }
         }
 
         [HttpPatch("{id}")]
@@ -163,7 +187,9 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (patch == null)
+                {
                     return BadRequest($"{nameof(patch)} cannot be null");
+                }
 
                 ExtendedLogViewModel extendedLogVM = _mapper.Map<ExtendedLogViewModel>(await _repository.FindAsync(id));
                 patch.ApplyTo(extendedLogVM, e => ModelState.AddModelError("", e.ErrorMessage));

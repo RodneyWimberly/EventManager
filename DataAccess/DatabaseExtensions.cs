@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.KeyVault;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -292,31 +291,6 @@ namespace EventManager.DataAccess
             }
         }
 
-        private static X509Certificate2 GetIdentityServerCertificate(IServiceCollection services)
-        {
-            var clientId = IdentityServerValues.ApplicationClientId;
-            var clientSecret = IdentityServerValues.ApplicationClientSecret;
-            var secretIdentifier = "Gc-ZTH46t.isXlHFcign-US~~SWzm04l-0";
-
-            var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(async (authority, resource, scope) =>
-            {
-                var authContext = new AuthenticationContext(authority);
-                ClientCredential clientCreds = new ClientCredential(clientId, clientSecret);
-
-                AuthenticationResult result = await authContext.AcquireTokenAsync(resource, clientCreds);
-
-                if (result == null)
-                {
-                    throw new InvalidOperationException("Failed to obtain the JWT token");
-                }
-
-                return result.AccessToken;
-            }));
-
-            var pfxSecret = keyVaultClient.GetSecretAsync(secretIdentifier).Result;
-            var pfxBytes = Convert.FromBase64String(pfxSecret.Value);
-            var certificate = new X509Certificate2(pfxBytes);
-            return certificate;
-        }
+       
     }
 }

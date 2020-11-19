@@ -28,7 +28,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -43,16 +42,15 @@
     <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" Version="5.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.9.0">
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.9.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="13.9.0" />
-    <PackageReference Include="NSwag.MSBuild" Version="13.9.0">
+    <PackageReference Include="NSwag.AspNetCore" Version="13.9.2" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.9.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,6 +68,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\EventManager.Core.csproj" />
     <ProjectReference Include="..\DataAccess\EventManager.DataAccess.csproj" />
+    <ProjectReference Include="..\Logging\EventManager.Logging.ServiceClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,7 +98,7 @@
 
  <Target Name="NSwag" AfterTargets="Build" Condition=" '$(Configuration)' == 'RebuildClientDebug' Or  '$(Configuration)' == 'RebuildClientRelease' ">
     <Copy SourceFiles="@(Reference)" DestinationFolder="$(OutDir)References" />
-    <Exec Command="$(NSwagExe_Core30) run /variables:Configuration=$(Configuration)" />
+    <Exec Command="$(NSwagExe_Net50) run /variables:Configuration=$(Configuration)" />
     <RemoveDir Directories="$(OutDir)References" />
   </Target>
   
@@ -121,6 +120,6 @@
     </ItemGroup>
   </Target>
 
-  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties clientapp_4dist_4main-es2015_1js_1map__JsonSchema="https://json.schemastore.org/swagger-2.0" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

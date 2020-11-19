@@ -60,9 +60,13 @@ namespace EventManager.Web.Controllers
         {
             Notification notification = await _repository.FindAsync(id);
             if (notification == null)
+            {
                 return NotFound(id);
+            }
             else
+            {
                 return Ok(_mapper.Map<NotificationViewModel>(notification));
+            }
         }
 
 
@@ -73,7 +77,10 @@ namespace EventManager.Web.Controllers
         {
             Notification notification = await _repository.FindAsync(id);
             if (notification == null)
+            {
                 return NotFound(id);
+            }
+
             NotificationViewModel notificationVM = _mapper.Map<NotificationViewModel>(notification);
             _repository.Delete(notification);
             await _unitOfWork.SaveChangesAsync();
@@ -89,7 +96,10 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (notificationVM == null)
+                {
                     return BadRequest($"{nameof(notificationVM)} cannot be null");
+                }
+
                 Notification notification = _mapper.Map<Notification>(notificationVM);
                 EntityEntry<Notification> addedNotification = await _repository.InsertAsync(notification);
                 await _unitOfWork.SaveChangesAsync();
@@ -97,7 +107,9 @@ namespace EventManager.Web.Controllers
                 return CreatedAtAction("GetByNotificationId", new { notificationId = notificationVM.Id }, notificationVM);
             }
             else
+            {
                 return BadRequest(ModelState);
+            }
         }
 
         [HttpPut("{id}")]
@@ -108,16 +120,23 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (notificationVM == null)
+                {
                     return BadRequest($"{nameof(notificationVM)} cannot be null");
+                }
 
                 if (id != notificationVM.Id)
+                {
                     return BadRequest("Conflicting Notification Id in parameter and model data");
+                }
+
                 _repository.Update(_mapper.Map<Notification>(notificationVM));
                 await _unitOfWork.SaveChangesAsync();
                 return NoContent();
             }
             else
+            {
                 return BadRequest(ModelState);
+            }
         }
 
         [HttpPatch("{id}")]
@@ -128,7 +147,9 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (patch == null)
+                {
                     return BadRequest($"{nameof(patch)} cannot be null");
+                }
 
                 NotificationViewModel notificationVM = _mapper.Map<NotificationViewModel>(await _repository.FindAsync(id));
                 patch.ApplyTo(notificationVM, e => ModelState.AddModelError("", e.ErrorMessage));

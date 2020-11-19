@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-
 import { AlertService, MessageSeverity, DialogType } from '../../services/alert.service';
 import * as generated from '../../services/endpoint.services';
 import { ConfigurationService } from '../../services/configuration.service';
 import { Utilities } from '../../helpers/utilities';
-import { UserLoginModel } from '../../models/user-login.model';
+import { AuthProviders, UserLoginModel } from '../../models/user-login.model';
+import { Observable, Subject } from 'rxjs';
+
+export type LoginDialogOperations = "show" | "hide";
 
 @Component({
-  selector: 'app-login',
+  selector: 'login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-
 export class LoginComponent implements OnInit, OnDestroy {
 
   userLogin = new UserLoginModel();
@@ -19,25 +20,22 @@ export class LoginComponent implements OnInit, OnDestroy {
   formResetToggle = true;
   modalClosedCallback: () => void;
   loginStatusSubscription: any;
+  loginDialogOperations = new Subject<LoginDialogOperations>();
 
-  @Input()
-  isModal = false;
-
+  @Input() isModal = false;
 
   constructor(private alertService: AlertService, private authEndpointService: generated.AuthEndpointService, private configurations: ConfigurationService) {
 
   }
 
-
   ngOnInit() {
-
     this.userLogin.rememberMe = this.authEndpointService.rememberMe;
-
-    if (this.getShouldRedirect()) {
+    
+    if (!this.isAuthRedirect && this.shouldRedirect) {
       this.authEndpointService.redirectLoginUser();
     } else {
       this.loginStatusSubscription = this.authEndpointService.getLoginStatusEvent().subscribe(isLoggedIn => {
-        if (this.getShouldRedirect()) {
+        if (!this.isAuthRedirect && this.shouldRedirect) {
           this.authEndpointService.redirectLoginUser();
         }
       });
@@ -51,8 +49,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  get isAuthRedirect() {
+    return window.location.pathname.toLowerCase().indexOf("auth") > -1;
+  }
 
-  getShouldRedirect() {
+  get loginDialogOperationsEvent(): Observable<LoginDialogOperations> {
+    return this.loginDialogOperations.asObservable();
+  }
+
+  get shouldRedirect() {
     return !this.isModal && this.authEndpointService.isLoggedIn && !this.authEndpointService.isSessionExpired;
   }
 
@@ -61,60 +66,50 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.alertService.showMessage(caption, message, MessageSeverity.error);
   }
 
+  showModal() {
+    this.loginDialogOperations.next("show");
+  }
+
+  hideModal() {
+    this.loginDialogOperations.next("hide");
+  }
+
   closeModal() {
     if (this.modalClosedCallback) {
       this.modalClosedCallback();
     }
   }
 
-
-  login() {
+  async login(authProvider: AuthProviders) {
     this.isLoading = true;
-    this.alertService.startLoadingMessage('', 'Attempting login...');
+    this.hideModal();
+    try {
+      if (authProvider != AuthProviders.IdentityServer) {
+        //await this.authEndpointService.logout();
+      }
+      await this.authEndpointService.login(authProvider, this.userLogin.userName, this.userLogin.password, this.userLogin.rememberMe)
+    }
+    catch (error) {
+      this.alertService.stopLoadingMessage();
+      if (Utilities.checkNoNetwork(error)) {
+        this.alertService.showStickyMessage(Utilities.noNetworkMessageCaption, Utilities.noNetworkMessageDetail, MessageSeverity.error, error);
+        this.offerAlternateHost();
+      } else {
+        const errorMessage = Utilities.getHttpResponseMessage(error);
 
-    this.authEndpointService.login(this.userLogin.userName, this.userLogin.password, this.userLogin.rememberMe)
-      .subscribe(
-        user => {
-          setTimeout(() => {
-            this.alertService.stopLoadingMessage();
-            this.isLoading = false;
-            this.reset();
+        if (errorMessage) {
+          this.alertService.showStickyMessage('Unable to login', this.mapLoginErrorMessage(errorMessage), MessageSeverity.error, error);
+        } else {
+          this.alertService.showStickyMessage('Unable to login', 'An error occured whilst logging in, please try again later.\nError: ' + Utilities.getResponseBody(error), MessageSeverity.error, error);
+        }
+      }
 
-            if (!this.isModal) {
-              this.alertService.showMessage('Login', `Welcome ${user.userName}!`, MessageSeverity.success);
-            } else {
-              this.alertService.showMessage('Login', `Session for ${user.userName} restored!`, MessageSeverity.success);
-              setTimeout(() => {
-                this.alertService.showStickyMessage('Session Restored', 'Please try your last operation again', MessageSeverity.default);
-              }, 500);
-
-              this.closeModal();
-            }
-          }, 500);
-        },
-        error => {
-
-          this.alertService.stopLoadingMessage();
-
-          if (Utilities.checkNoNetwork(error)) {
-            this.alertService.showStickyMessage(Utilities.noNetworkMessageCaption, Utilities.noNetworkMessageDetail, MessageSeverity.error, error);
-            this.offerAlternateHost();
-          } else {
-            const errorMessage = Utilities.getHttpResponseMessage(error);
-
-            if (errorMessage) {
-              this.alertService.showStickyMessage('Unable to login', this.mapLoginErrorMessage(errorMessage), MessageSeverity.error, error);
-            } else {
-              this.alertService.showStickyMessage('Unable to login', 'An error occured whilst logging in, please try again later.\nError: ' + Utilities.getResponseBody(error), MessageSeverity.error, error);
-            }
-          }
-
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 500);
-        });
+      setTimeout(() => {
+        this.isLoading = false;
+        this.showModal();
+      }, 500);
+    }
   }
-
 
   offerAlternateHost() {
 
@@ -124,7 +119,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         DialogType.prompt,
         (value: string) => {
           this.configurations.baseUrl = value;
-          this.configurations.tokenUrl = value;
           this.alertService.showStickyMessage('API Changed!', 'The target Web API has been changed to: ' + value, MessageSeverity.warn);
         },
         null,
@@ -156,4 +150,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.formResetToggle = true;
     });
   }
+
+  
 }

@@ -16,7 +16,8 @@
     "Logs": "Logs",
     "NotFound": "Not-Found",
     "About": "About",
-    "Settings": "Settings"
+    "Settings": "Settings",
+    "LandingPage": "Choose login provider"
   },
   "home": {
     "NoWidgets1": "You have no widgets displayed. Goto",

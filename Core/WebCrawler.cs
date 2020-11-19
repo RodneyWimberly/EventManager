@@ -8,8 +8,8 @@ namespace EventManager.Core
 {
     public class WebCrawler
     {
-        Logger<WebCrawler> _logger;
-        HttpClient _httpClient;
+        private readonly Logger<WebCrawler> _logger;
+        private readonly HttpClient _httpClient;
 
         public WebCrawler(Logger<WebCrawler> logger, HttpClient httpClient)
         {

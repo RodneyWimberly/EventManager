@@ -7,7 +7,7 @@ namespace EventManager.Core
     {
         public static void Initialize(string rootPath)
         {
-            RootPath = rootPath; 
+            RootPath = rootPath;
             WWWRootPath = Path.Combine(RootPath, "wwwroot");
             ClientAppPath = Path.Combine(RootPath, "ClientApp");
             EmailTemplatesPath = Path.Combine(RootPath, "EmailTemplates");
@@ -28,7 +28,9 @@ namespace EventManager.Core
             string dirPath = Path.GetDirectoryName(LogFile);
 
             if (!Directory.Exists(dirPath))
+            {
                 Directory.CreateDirectory(dirPath);
+            }
 
             using (StreamWriter writer = File.AppendText(LogFile))
             {
@@ -41,7 +43,9 @@ namespace EventManager.Core
             FileInfo fileInfo = new FileInfo(path);
 
             if (!fileInfo.Exists)
+            {
                 throw new FileNotFoundException($"Cannot read file \"{path}\" because it was not found!");
+            }
 
             using (Stream fs = fileInfo.OpenRead())
             {

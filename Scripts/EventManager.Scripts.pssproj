@@ -22,7 +22,8 @@
     <ManifestPath>$(OutDir)\$(ProjectName).psd1</ManifestPath>
     <Guid>b3d091a8-10cd-4ff2-b156-41145f60b417</Guid>
     <ProcessorArchitecture />
-    <StartupFile>(Currently Open Script)</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <PackageAsExecutable>True</PackageAsExecutable>
     <Bundle>True</Bundle>
   </PropertyGroup>

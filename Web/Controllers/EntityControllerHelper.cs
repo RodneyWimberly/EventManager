@@ -58,9 +58,13 @@ namespace EventManager.Web.Controllers
         {
             IPagedList<TEntity> pagedList;
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize);
+            }
             else
+            {
                 pagedList = await _unitOfWork.GetRepository<TEntity>().GetPagedListAsync(pageIndex: pageNumber, pageSize: pageSize, include: e => GetInclude(e, includePropertyPaths));
+            }
 
             _httpContext.Response.AddPagination(pagedList.PageIndex, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
             return Ok(pagedList.Items);
@@ -70,14 +74,22 @@ namespace EventManager.Web.Controllers
         {
             TEntity entity;
             if (string.IsNullOrEmpty(includePropertyPaths))
+            {
                 entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id);
+            }
             else
+            {
                 entity = await _unitOfWork.GetRepository<TEntity>().GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e, includePropertyPaths));
+            }
 
             if (entity == null)
+            {
                 return NotFound(id);
+            }
             else
+            {
                 return Ok(entity);
+            }
         }
 
         public async Task<IActionResult> Delete(string id)
@@ -86,7 +98,9 @@ namespace EventManager.Web.Controllers
             TEntity entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, disableTracking: false);
 
             if (entity == null)
+            {
                 return NotFound(id);
+            }
             else
             {
                 repository.Delete(entity);
@@ -100,13 +114,18 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (entity == null)
+                {
                     return BadRequest($"{nameof(entity)} cannot be null");
+                }
+
                 EntityEntry<TEntity> addedEntity = await _unitOfWork.GetRepository<TEntity>().InsertAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
                 return CreatedAtAction($"Get{typeof(TEntity).Name}", new { id = addedEntity.Entity.Id }, addedEntity.Entity);
             }
             else
+            {
                 return BadRequest(ModelState);
+            }
         }
 
         public async Task<IActionResult> Update(string id, string includePropertyPaths = "", TEntity entity = null)
@@ -114,10 +133,14 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (entity == null)
+                {
                     return BadRequest($"{nameof(entity)} cannot be null");
+                }
 
                 if (id != entity.Id)
+                {
                     return BadRequest($"Conflicting {nameof(entity)} Id in parameter and model data");
+                }
 
                 try
                 {
@@ -125,9 +148,13 @@ namespace EventManager.Web.Controllers
                     repository.Update(entity);
                     await _unitOfWork.SaveChangesAsync();
                     if (string.IsNullOrEmpty(includePropertyPaths))
+                    {
                         entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id);
+                    }
                     else
+                    {
                         entity = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e, includePropertyPaths));
+                    }
 
                     return Ok(entity);
                 }
@@ -137,7 +164,9 @@ namespace EventManager.Web.Controllers
                 }
             }
             else
+            {
                 return BadRequest(ModelState);
+            }
         }
 
         public async Task<IActionResult> Patch(string id, string includePropertyPaths = "", JsonPatchDocument<TEntity> patch = null)
@@ -145,7 +174,9 @@ namespace EventManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (patch == null)
+                {
                     return BadRequest($"{nameof(patch)} cannot be null");
+                }
 
                 IRepository<TEntity> repository = _unitOfWork.GetRepository<TEntity>();
                 TEntity entityToUpdate = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, disableTracking: false);
@@ -157,9 +188,13 @@ namespace EventManager.Web.Controllers
                     {
                         await _unitOfWork.SaveChangesAsync();
                         if (string.IsNullOrEmpty(includePropertyPaths))
+                        {
                             entityToUpdate = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id);
+                        }
                         else
+                        {
                             entityToUpdate = await repository.GetFirstOrDefaultAsync(predicate: e => e.Id == id, include: e => GetInclude(e, includePropertyPaths));
+                        }
 
                         return Ok(entityToUpdate);
                     }
@@ -179,7 +214,9 @@ namespace EventManager.Web.Controllers
             object clientValues = exceptionEntry.Entity;
             PropertyValues databaseEntry = exceptionEntry.GetDatabaseValues();
             if (databaseEntry == null)
+            {
                 ModelState.AddModelError(string.Empty, $"Unable to update the table with the requested changes. The {typeof(TEntity).Name} was deleted by another user.");
+            }
             else
             {
                 object databaseValues = databaseEntry.ToObject();
@@ -192,7 +229,9 @@ namespace EventManager.Web.Controllers
                     if (databaseProperty.Name == "RowVersion" ||
                         databaseProperty.Name == "UpdatedBy" ||
                         databaseProperty.Name == "UpdatedDate")
+                    {
                         continue;
+                    }
 
                     PropertyInfo clientProperty = clientProperties.Where(d =>
                         d.Name == databaseProperty.Name &&
@@ -205,7 +244,9 @@ namespace EventManager.Web.Controllers
                         if (databaseValue != null &&
                             clientValue != null &&
                             !databaseValue.Equals(clientValue))
+                        {
                             ModelState.AddModelError($"{entityName}.{databaseProperty.Name}", $"New table value: {databaseValue} / Your conflicting value: {clientValue}");
+                        }
                     }
                 }
                 string userName, updatedBy, updatedDate;
@@ -214,7 +255,9 @@ namespace EventManager.Web.Controllers
                     updatedBy = databaseProperties.First(p => p.Name == "UpdatedBy").GetValue(databaseValues).ToString();
                     updatedDate = databaseProperties.First(p => p.Name == "UpdatedDate").GetValue(databaseValues).ToString();
                     if (updatedBy == Ids.SystemUserId)
+                    {
                         userName = "System User";
+                    }
                     else
                     {
                         User user = await _accountManager.GetUserByIdAsync(updatedBy);

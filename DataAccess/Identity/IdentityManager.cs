@@ -1,5 +1,4 @@
-﻿using EventManager.DataAccess.Core;
-using EventManager.DataAccess.Core.Constants;
+﻿using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Identity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -59,7 +58,9 @@ namespace EventManager.DataAccess.Identity
                 .SingleOrDefaultAsync();
 
             if (user == null)
+            {
                 return null;
+            }
 
             List<string> userRoleIds = user.Roles.Select(r => r.RoleId).ToList();
             string[] roles = await _context.Roles
@@ -77,10 +78,14 @@ namespace EventManager.DataAccess.Identity
                 .OrderBy(u => u.UserName);
 
             if (page != -1)
+            {
                 usersQuery = usersQuery.Skip((page - 1) * pageSize);
+            }
 
             if (pageSize != -1)
+            {
                 usersQuery = usersQuery.Take(pageSize);
+            }
 
             List<User> users = await usersQuery.ToListAsync();
             List<string> userRoleIds = users.SelectMany(u => u.Roles.Select(r => r.RoleId)).ToList();
@@ -97,13 +102,15 @@ namespace EventManager.DataAccess.Identity
         {
             IdentityResult result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
+            {
                 return (false, result.Errors.Select(e => e.Description).ToArray());
+            }
 
             user = await _userManager.FindByNameAsync(user.UserName);
 
             try
             {
-                result = await this._userManager.AddToRolesAsync(user, roles.Distinct());
+                result = await _userManager.AddToRolesAsync(user, roles.Distinct());
             }
             catch
             {
@@ -129,7 +136,9 @@ namespace EventManager.DataAccess.Identity
         {
             IdentityResult result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
+            {
                 return (false, result.Errors.Select(e => e.Description).ToArray());
+            }
 
             if (roles != null)
             {
@@ -141,14 +150,18 @@ namespace EventManager.DataAccess.Identity
                 {
                     result = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
                     if (!result.Succeeded)
+                    {
                         return (false, result.Errors.Select(e => e.Description).ToArray());
+                    }
                 }
 
                 if (rolesToAdd.Any())
                 {
                     result = await _userManager.AddToRolesAsync(user, rolesToAdd);
                     if (!result.Succeeded)
+                    {
                         return (false, result.Errors.Select(e => e.Description).ToArray());
+                    }
                 }
             }
 
@@ -161,7 +174,9 @@ namespace EventManager.DataAccess.Identity
 
             IdentityResult result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
             if (!result.Succeeded)
+            {
                 return (false, result.Errors.Select(e => e.Description).ToArray());
+            }
 
             return (true, new string[] { });
         }
@@ -170,7 +185,9 @@ namespace EventManager.DataAccess.Identity
         {
             IdentityResult result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
             if (!result.Succeeded)
+            {
                 return (false, result.Errors.Select(e => e.Description).ToArray());
+            }
 
             return (true, new string[] { });
         }
@@ -180,7 +197,9 @@ namespace EventManager.DataAccess.Identity
             if (!await _userManager.CheckPasswordAsync(user, password))
             {
                 if (!_userManager.SupportsUserLockout)
+                {
                     await _userManager.AccessFailedAsync(user);
+                }
 
                 return false;
             }
@@ -198,7 +217,9 @@ namespace EventManager.DataAccess.Identity
             User user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
+            {
                 return await DeleteUserAsync(user);
+            }
 
             return (true, new string[] { });
         }
@@ -238,10 +259,14 @@ namespace EventManager.DataAccess.Identity
                 .OrderBy(r => r.Name);
 
             if (page != -1)
+            {
                 rolesQuery = rolesQuery.Skip((page - 1) * pageSize);
+            }
 
             if (pageSize != -1)
+            {
                 rolesQuery = rolesQuery.Take(pageSize);
+            }
 
             List<Role> roles = await rolesQuery.ToListAsync();
 
@@ -251,23 +276,27 @@ namespace EventManager.DataAccess.Identity
         public async Task<(bool Succeeded, string[] Errors)> CreateRoleAsync(Role role, IEnumerable<string> claims)
         {
             if (claims == null)
+            {
                 claims = new string[] { };
+            }
 
             string[] invalidClaims = claims.Where(c => Permissions.GetPermissionByValue(c) == null).ToArray();
             if (invalidClaims.Any())
+            {
                 return (false, new[] { "The following claim types are invalid: " + string.Join(", ", invalidClaims) });
-
+            }
 
             IdentityResult result = await _roleManager.CreateAsync(role);
             if (!result.Succeeded)
+            {
                 return (false, result.Errors.Select(e => e.Description).ToArray());
-
+            }
 
             role = await _roleManager.FindByNameAsync(role.Name);
 
             foreach (string claim in claims.Distinct())
             {
-                result = await this._roleManager.AddClaimAsync(role, new Claim(Claims.Permission, Permissions.GetPermissionByValue(claim)));
+                result = await _roleManager.AddClaimAsync(role, new Claim(Claims.Permission, Permissions.GetPermissionByValue(claim)));
 
                 if (!result.Succeeded)
                 {
@@ -285,14 +314,17 @@ namespace EventManager.DataAccess.Identity
             {
                 string[] invalidClaims = claims.Where(c => Permissions.GetPermissionByValue(c) == null).ToArray();
                 if (invalidClaims.Any())
+                {
                     return (false, new[] { "The following claim types are invalid: " + string.Join(", ", invalidClaims) });
+                }
             }
 
 
             IdentityResult result = await _roleManager.UpdateAsync(role);
             if (!result.Succeeded)
+            {
                 return (false, result.Errors.Select(e => e.Description).ToArray());
-
+            }
 
             if (claims != null)
             {
@@ -307,7 +339,9 @@ namespace EventManager.DataAccess.Identity
                     {
                         result = await _roleManager.RemoveClaimAsync(role, roleClaims.Where(c => c.Value == claim).FirstOrDefault());
                         if (!result.Succeeded)
+                        {
                             return (false, result.Errors.Select(e => e.Description).ToArray());
+                        }
                     }
                 }
 
@@ -317,7 +351,9 @@ namespace EventManager.DataAccess.Identity
                     {
                         result = await _roleManager.AddClaimAsync(role, new Claim(Claims.Permission, Permissions.GetPermissionByValue(claim)));
                         if (!result.Succeeded)
+                        {
                             return (false, result.Errors.Select(e => e.Description).ToArray());
+                        }
                     }
                 }
             }
@@ -337,7 +373,9 @@ namespace EventManager.DataAccess.Identity
             Role role = await _roleManager.FindByNameAsync(roleName);
 
             if (role != null)
+            {
                 return await DeleteRoleAsync(role);
+            }
 
             return (true, new string[] { });
         }

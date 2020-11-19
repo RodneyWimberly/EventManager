@@ -9,3 +9,12 @@ export class UserLoginModel {
     password: string;
     rememberMe: boolean;
 }
+
+export enum AuthProviders {
+  IdentityServer,
+  Google,
+  Microsoft,
+  Facebook,
+  Twitter,
+  GitHub
+}

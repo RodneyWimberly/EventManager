@@ -143,7 +143,9 @@ namespace EventManager.DataAccess
                 (bool Succeeded, string[] Errors) = await accountManager.CreateRoleAsync(applicationRole, claims);
 
                 if (!Succeeded)
+                {
                     throw new Exception($"Seeding \"{description}\" role failed. Errors: {string.Join(Environment.NewLine, Errors)}");
+                }
             }
         }
 
@@ -163,8 +165,9 @@ namespace EventManager.DataAccess
             (bool Succeeded, string[] Errors) = await accountManager.CreateUserAsync(User, roles, password);
 
             if (!Succeeded)
+            {
                 throw new Exception($"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, Errors)}");
-
+            }
 
             return User;
         }

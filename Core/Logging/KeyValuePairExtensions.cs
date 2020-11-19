@@ -8,14 +8,22 @@ namespace EventManager.Core.Logging
     {
         internal static bool Is(this KeyValuePair<string, object> keyValue, string field)
         {
-            if (string.IsNullOrWhiteSpace(keyValue.Key)) return false;
+            if (string.IsNullOrWhiteSpace(keyValue.Key))
+            {
+                return false;
+            }
+
             return string.Equals(keyValue.Key, field, StringComparison.OrdinalIgnoreCase);
         }
 
         internal static bool Is(this KeyValuePair<string, object> keyValue, string field, out string result)
         {
             result = null;
-            if (!keyValue.Is(field)) return false;
+            if (!keyValue.Is(field))
+            {
+                return false;
+            }
+
             result = keyValue.Value?.ToString();
             return true;
         }
@@ -23,9 +31,21 @@ namespace EventManager.Core.Logging
         internal static bool IsStatusCode(this KeyValuePair<string, object> keyValue, out int? statusCode)
         {
             statusCode = null;
-            if (!keyValue.Is("statuscode")) return false;
-            if (keyValue.Value == null || string.IsNullOrWhiteSpace(keyValue.Value.ToString())) return false;
-            if (!int.TryParse(keyValue.Value.ToString(), out int code)) return false;
+            if (!keyValue.Is("statuscode"))
+            {
+                return false;
+            }
+
+            if (keyValue.Value == null || string.IsNullOrWhiteSpace(keyValue.Value.ToString()))
+            {
+                return false;
+            }
+
+            if (!int.TryParse(keyValue.Value.ToString(), out int code))
+            {
+                return false;
+            }
+
             statusCode = code;
             return true;
         }
@@ -73,7 +93,11 @@ namespace EventManager.Core.Logging
         internal static bool IsServerVariables(this KeyValuePair<string, object> keyValue, out List<Item> serverVariables)
         {
             serverVariables = null;
-            if (!keyValue.Is("servervariables")) return false;
+            if (!keyValue.Is("servervariables"))
+            {
+                return false;
+            }
+
             serverVariables = keyValue.ToItemList();
             return true;
         }
@@ -81,7 +105,11 @@ namespace EventManager.Core.Logging
         internal static bool IsCookies(this KeyValuePair<string, object> keyValue, out List<Item> cookies)
         {
             cookies = null;
-            if (!keyValue.Is("cookies")) return false;
+            if (!keyValue.Is("cookies"))
+            {
+                return false;
+            }
+
             cookies = keyValue.ToItemList();
             return true;
         }
@@ -89,7 +117,11 @@ namespace EventManager.Core.Logging
         internal static bool IsForm(this KeyValuePair<string, object> keyValue, out List<Item> form)
         {
             form = null;
-            if (!keyValue.Is("form")) return false;
+            if (!keyValue.Is("form"))
+            {
+                return false;
+            }
+
             form = keyValue.ToItemList();
             return true;
         }
@@ -97,7 +129,11 @@ namespace EventManager.Core.Logging
         internal static bool IsQueryString(this KeyValuePair<string, object> keyValue, out List<Item> queryString)
         {
             queryString = null;
-            if (!keyValue.Is("querystring")) return false;
+            if (!keyValue.Is("querystring"))
+            {
+                return false;
+            }
+
             queryString = keyValue.ToItemList();
             return true;
         }
@@ -112,22 +148,30 @@ namespace EventManager.Core.Logging
             }
             else if (property.Value is Dictionary<string, string> dictionary)
             {
-                foreach (var key in dictionary.Keys)
+                foreach (string key in dictionary.Keys)
                 {
-                    var value = dictionary[key];
+                    string value = dictionary[key];
                     result.Add(new Item(key, value != null ? value.Trim() : value));
                 }
             }
             else if (property.Value is string && !string.IsNullOrWhiteSpace(property.Value?.ToString()))
             {
-                var keyValues = property.Value.ToString().Split(new string[] { "], [" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var rde in keyValues)
+                string[] keyValues = property.Value.ToString().Split(new string[] { "], [" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string rde in keyValues)
                 {
-                    var keyAndValue = rde.TrimStart('[').TrimEnd(']').Split(',');
-                    if (keyAndValue.Length != 2) continue;
-                    var key = keyAndValue[0];
-                    var value = keyAndValue[1];
-                    if (string.IsNullOrWhiteSpace(key)) continue;
+                    string[] keyAndValue = rde.TrimStart('[').TrimEnd(']').Split(',');
+                    if (keyAndValue.Length != 2)
+                    {
+                        continue;
+                    }
+
+                    string key = keyAndValue[0];
+                    string value = keyAndValue[1];
+                    if (string.IsNullOrWhiteSpace(key))
+                    {
+                        continue;
+                    }
+
                     key = key.Trim();
                     value = value != null ? value.Trim() : value;
                     result.Add(new Item(key, value));

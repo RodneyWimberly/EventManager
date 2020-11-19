@@ -8,7 +8,7 @@ namespace EventManager.Core.Logging
 {
     public class LoggerState
     {
-        private HttpContext _httpContext;
+        private readonly HttpContext _httpContext;
         public LoggerState(IHttpContextAccessor accessor)
         {
             _httpContext = accessor?.HttpContext;
@@ -19,9 +19,13 @@ namespace EventManager.Core.Logging
             get
             {
                 if (_httpContext == null)
+                {
                     return new Dictionary<string, object>();
+                }
                 else
+                {
                     return GetLoggerState(_httpContext);
+                }
             }
         }
 

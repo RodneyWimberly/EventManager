@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
 import { AppTranslationService } from './app-translation.service';
 import { AppThemeService } from './app-theme.service';
 import { LocalStorageService } from './local-storage.service';
@@ -7,6 +7,8 @@ import { DbKeys } from '../helpers/db-keys';
 import { Utilities } from '../helpers/utilities';
 import { environment } from '../../environments/environment';
 import { UserConfigurationModel } from '../models/user-configuration.model';
+import { AuthProviders } from '../models/user-login.model';
+import { AuthConfig } from 'angular-oauth2-oidc';
 
 @Injectable()
 export class ConfigurationService {
@@ -90,15 +92,18 @@ export class ConfigurationService {
     public static readonly defaultShowDashboardBanner: boolean = true;
 
     public baseUrl = environment.baseUrl || Utilities.baseUrl();
-    public tokenUrl = environment.tokenUrl || environment.baseUrl || Utilities.baseUrl();
+    public get tokenUrl() { return this.authProvider.baseUrl || environment.baseUrl || Utilities.baseUrl(); }
     public loginUrl = environment.loginUrl;
-    public clientId = environment.clientId;
-    public clientSecret = environment.clientSecret;
-    public docId = environment.docId;
-    public docSecret = environment.docSecret;
-    public apiId = environment.apiId;
-    public apiSecret = environment.apiSecret;
     public fallbackBaseUrl = 'http://www.wimberlytech.com';
+  public get authProviderType(): AuthProviders {
+    return this.localStorageService.getData("AuthProvider");
+  }
+  public set authProviderType(value: AuthProviders) {
+    this.localStorageService.saveSyncedSessionData(value, "AuthProvider");
+  }
+    public get authProvider() { return environment.authProviders.find(ap => ap.name == AuthProviders[this.authProviderType]); }
+  
+
     // ***End of defaults***
 
     private _language: string = null;
@@ -111,6 +116,33 @@ export class ConfigurationService {
 
     private onConfigurationImported: Subject<boolean> = new Subject<boolean>();
     configurationImported$ = this.onConfigurationImported.asObservable();
+
+    public get authConfig(): AuthConfig {
+      const config = new AuthConfig();
+      config.skipSubjectCheck = true;
+      config.skipIssuerCheck = true;
+      //config.responseType = 'token';
+      config.strictDiscoveryDocumentValidation = false;
+      config.showDebugInformation = true;
+      config.clearHashAfterLogin = false;
+      config.nonceStateSeparator = ";";
+      config.requestAccessToken = true;
+      config.oidc = true;
+
+      let provider = this.authProvider;
+      if (!provider)
+        throwError('Unable to locate the Auth provider configuration');
+      config.issuer = provider.baseUrl;
+      config.redirectUri = provider.redirectUrl;
+
+      let client = provider.clients.find(c => c.name == 'Event Manager Web')
+      if (!client)
+        throwError('Unable to locate the client in Auth provider configuration');
+      config.clientId = client.clientId;
+      config.scope = client.scopes.join(' ');
+      //config.dummyClientSecret = client.clientSecret;
+      return config;
+    }
 
     private loadLocalChanges() {
 

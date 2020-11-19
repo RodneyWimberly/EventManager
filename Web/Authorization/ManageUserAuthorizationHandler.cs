@@ -1,5 +1,4 @@
 ﻿using EventManager.DataAccess;
-using EventManager.DataAccess.Core;
 using EventManager.DataAccess.Core.Constants;
 using EventManager.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -16,10 +15,14 @@ namespace EventManager.Web.Authorization
                 (requirement.OperationName != AccountManagementOperations.CreateOperationName &&
                  requirement.OperationName != AccountManagementOperations.UpdateOperationName &&
                  requirement.OperationName != AccountManagementOperations.DeleteOperationName))
+            {
                 return Task.CompletedTask;
+            }
 
             if (context.User.HasClaim(Claims.Permission, Permissions.ManageUsers) || GetIsSameUser(context.User, targetUserId))
+            {
                 context.Succeed(requirement);
+            }
 
             return Task.CompletedTask;
         }
@@ -28,7 +31,9 @@ namespace EventManager.Web.Authorization
         private bool GetIsSameUser(ClaimsPrincipal user, string targetUserId)
         {
             if (string.IsNullOrWhiteSpace(targetUserId))
+            {
                 return false;
+            }
 
             return Utilities.GetUserId(user) == targetUserId;
         }

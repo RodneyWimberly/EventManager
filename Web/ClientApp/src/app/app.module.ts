@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
+import { OAuthLogger, OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { ToastaModule } from 'ngx-toasta';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -45,6 +45,8 @@ import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
 
 import { AppComponent } from './components/app.component';
 import { LoginComponent } from './components/login/login.component';
+import { LoginDialogOperations } from './components/login/login.component';
+import { LandingPageComponent } from './components/login/landing-page.component';
 import { HomeComponent } from './components/home/home.component';
 import { AboutComponent } from './components/about/about.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
@@ -63,72 +65,76 @@ import { RoleEditorComponent } from './components/settings/role-editor.component
 import { ExtendedLogsComponent } from './components/extended-logs/extended-logs.component';
 import { ExtendedLogsManagementComponent } from './components/extended-logs/extended-logs-management.component';
 import { ExtendedLogEditorComponent } from './components/extended-logs/extended-log-editor.component';
+import { PoliciesComponent } from './components/policies/policies.component';
+import { LoginRedirectComponent } from './components/login/login-redirect.component';
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        FormsModule,
-        AppRoutingModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useClass: TranslateLanguageLoader
-            }
-        }),
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    FormsModule,
+    AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useClass: TranslateLanguageLoader
+      }
+    }),
     NgxDatatableModule,
-        OAuthModule.forRoot(),
-        ToastaModule.forRoot(),
-        TooltipModule.forRoot(),
-        PopoverModule.forRoot(),
-        BsDropdownModule.forRoot(),
-        CarouselModule.forRoot(),
-        ModalModule.forRoot(),
-        ChartsModule
-    ],
-    declarations: [
-        CustomInputComponent,
-        AppComponent,
-        LoginComponent,
-        HomeComponent,
-        ExtendedLogsComponent, ExtendedLogsManagementComponent, ExtendedLogEditorComponent,
-        SettingsComponent,
-        UsersManagementComponent, UserEditorComponent, UserPreferencesComponent,
-        RolesManagementComponent, RoleEditorComponent,
-        AboutComponent,
-        NotFoundComponent,
-        NotificationsManagementComponent,
-        SearchBoxComponent, ValidationControlComponent,
-        EventConditionsValidatorDirective,
-        EqualValidatorDirective,
-        LastElementDirective,
-        AutofocusDirective,
-        BootstrapTabDirective,
-        BootstrapToggleDirective,
-        BootstrapSelectDirective,
-        BootstrapDatepickerDirective,
-        InputRefDirective,
-        GroupByPipe, EnumToArrayPipe
-    ],
-    providers: [
-        { provide: ErrorHandler, useClass: AppErrorHandler },
-        { provide: OAuthStorage, useClass: AuthStorageService },
-        AlertService,
-        AppThemeService,
-        ConfigurationService,
-        AppTitleService,
-        AppTranslationService,
-        NotificationService,
-        AccountService,
-        ExtendedLogService,
-        NotificationMockService,
-        generated.AccountEndpointService,
-        generated.ExtendedLogEndpointService,
-        generated.EventEndpointService,
-        LocalStorageService
-    ],
-    bootstrap: [AppComponent]
+    OAuthModule.forRoot(),
+    ToastaModule.forRoot(),
+    TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    CarouselModule.forRoot(),
+    ModalModule.forRoot(),
+    ChartsModule
+  ],
+  declarations: [
+    CustomInputComponent,
+    AppComponent,
+    LandingPageComponent, LoginComponent, LoginRedirectComponent,
+    PoliciesComponent,
+    HomeComponent,
+    ExtendedLogsComponent, ExtendedLogsManagementComponent, ExtendedLogEditorComponent,
+    SettingsComponent,
+    UsersManagementComponent, UserEditorComponent, UserPreferencesComponent,
+    RolesManagementComponent, RoleEditorComponent,
+    AboutComponent,
+    NotFoundComponent,
+    NotificationsManagementComponent,
+    SearchBoxComponent, ValidationControlComponent,
+    EventConditionsValidatorDirective,
+    EqualValidatorDirective,
+    LastElementDirective,
+    AutofocusDirective,
+    BootstrapTabDirective,
+    BootstrapToggleDirective,
+    BootstrapSelectDirective,
+    BootstrapDatepickerDirective,
+    InputRefDirective,
+    GroupByPipe, EnumToArrayPipe
+  ],
+  providers: [
+    { provide: ErrorHandler, useClass: AppErrorHandler },
+    { provide: OAuthStorage, useClass: AuthStorageService },
+   // { provide: OAuthLogger, useExisting: console },
+    AlertService,
+    AppThemeService,
+    ConfigurationService,
+    AppTitleService,
+    AppTranslationService,
+    NotificationService,
+    AccountService,
+    ExtendedLogService,
+    NotificationMockService,
+    generated.AccountEndpointService,
+    generated.ExtendedLogEndpointService,
+    generated.EventEndpointService,
+    LocalStorageService
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

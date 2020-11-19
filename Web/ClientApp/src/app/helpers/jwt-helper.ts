@@ -30,7 +30,7 @@ export class JwtHelper {
     public decodeToken(token: string): any {
         const parts = token.split('.');
 
-        if (parts.length !== 3) {
+        if (parts.length != 3  ) {
             throw new Error('JWT must have 3 parts');
         }
 

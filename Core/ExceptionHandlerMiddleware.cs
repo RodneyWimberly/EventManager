@@ -20,7 +20,10 @@ namespace EventManager.Web
         public async Task Invoke(HttpContext context)
         {
             if (context == null)
+            {
                 throw new ArgumentNullException(nameof(context));
+            }
+
             try
             {
                 await _next.Invoke(context).ConfigureAwait(false);
@@ -34,10 +37,10 @@ namespace EventManager.Web
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            var response = context.Response;
+            HttpResponse response = context.Response;
             response.ContentType = "application/json";
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            var result = JsonConvert.SerializeObject(new
+            string result = JsonConvert.SerializeObject(new
             {
                 error = new
                 {

@@ -7,7 +7,7 @@ namespace EventManager.Core
 {
     public static class EncryptionExtensions
     {
-        const string encryptionKey = "eid729";
+        private const string encryptionKey = "eid729";
 
         public static string Encrypt(this string clearText)
         {
@@ -32,7 +32,10 @@ namespace EventManager.Core
         public static string Decrypt(this string cipherText)
         {
             if (cipherText == null)
+            {
                 return null;
+            }
+
             cipherText = cipherText.Replace(" ", "+");
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())

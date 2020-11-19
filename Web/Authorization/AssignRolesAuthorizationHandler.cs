@@ -18,10 +18,13 @@ namespace EventManager.Web.Authorization
             else if (context.User.HasClaim(Claims.Permission, Permissions.AssignRoles))
             {
                 if (context.User.HasClaim(Claims.Permission, Permissions.ViewRoles)) // If user has ViewRoles permission, then he can assign any roles
+                {
                     context.Succeed(requirement);
-
+                }
                 else if (GetIsUserInAllAddedRoles(context.User, roles.newRoles, roles.currentRoles)) // Else user can only assign roles they're part of
+                {
                     context.Succeed(requirement);
+                }
             }
 
 
@@ -32,11 +35,14 @@ namespace EventManager.Web.Authorization
         private bool GetIsRolesChanged(string[] newRoles, string[] currentRoles)
         {
             if (newRoles == null)
+            {
                 newRoles = new string[] { };
+            }
 
             if (currentRoles == null)
+            {
                 currentRoles = new string[] { };
-
+            }
 
             bool roleAdded = newRoles.Except(currentRoles).Any();
             bool roleRemoved = currentRoles.Except(newRoles).Any();
@@ -48,11 +54,14 @@ namespace EventManager.Web.Authorization
         private bool GetIsUserInAllAddedRoles(ClaimsPrincipal contextUser, string[] newRoles, string[] currentRoles)
         {
             if (newRoles == null)
+            {
                 newRoles = new string[] { };
+            }
 
             if (currentRoles == null)
+            {
                 currentRoles = new string[] { };
-
+            }
 
             System.Collections.Generic.IEnumerable<string> addedRoles = newRoles.Except(currentRoles);
 

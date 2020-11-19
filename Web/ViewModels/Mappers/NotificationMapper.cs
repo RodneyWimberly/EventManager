@@ -7,7 +7,7 @@ namespace EventManager.Web.ViewModels.Mappers
 {
     public class NotificationMapper : ITypeConverter<NotificationViewModel, Notification>
     {
-        readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         public NotificationMapper(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -16,7 +16,9 @@ namespace EventManager.Web.ViewModels.Mappers
         public Notification Convert(NotificationViewModel source, Notification destination, ResolutionContext context)
         {
             if (source == null)
+            {
                 return null;
+            }
 
             if (destination == null)
             {
@@ -33,18 +35,35 @@ namespace EventManager.Web.ViewModels.Mappers
             if (destination.Id == source.Id)
             {
                 if (destination.Header != source.Header)
+                {
                     destination.Header = source.Header;
+                }
+
                 if (destination.Body != source.Body)
+                {
                     destination.Body = source.Body;
+                }
+
                 if (destination.IsRead != source.IsRead)
+                {
                     destination.IsRead = source.IsRead;
+                }
+
                 if (destination.IsPinned != source.IsPinned)
+                {
                     destination.IsPinned = source.IsPinned;
+                }
+
                 if (destination.Date != source.Date)
+                {
                     destination.Date = source.Date;
+                }
             }
             else
+            {
                 throw new MappingConcurrencyException<NotificationViewModel, Notification>(source, destination);
+            }
+
             return destination;
         }
     }

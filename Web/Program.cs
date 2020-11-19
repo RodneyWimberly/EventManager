@@ -1,10 +1,8 @@
-using EventManager.DataAccess.Events;
-using EventManager.DataAccess.Events.Models;
+using EventManager.Logging.ServiceClient.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
 namespace EventManager.Web
 {
@@ -15,49 +13,71 @@ namespace EventManager.Web
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.ConfigureLogging((hostingContext, logging) =>
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    if (hostingContext.Configuration["EnabledLoggers:AzureDiagnostics"] == "True")
-                        logging.AddAzureWebAppDiagnostics();
-                    if (hostingContext.Configuration["EnabledLoggers:EntityFramework"] == "True")
-                        logging.AddEntityFramework<EventDbContext,
-                            ExtendedLog,
-                            EntityFrameworkLogger<EventDbContext, ExtendedLog, string>,
-                            string>();
-                    if (hostingContext.Configuration["EnabledLoggers:EventLog"] == "True")
-                        logging.AddEventLog(configure =>
+                    webBuilder.ConfigureLogging((hostingContext, logging) =>
+                    {
+                        logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                        if (hostingContext.Configuration["EnabledLoggers:AzureDiagnostics"] == "True")
                         {
-                            configure.LogName = "EventManager";
-                            configure.SourceName = "EventManager";
-                            configure.Filter = (string category, LogLevel level) =>
+                            logging.AddAzureWebAppDiagnostics();
+                        }
+
+                        if (hostingContext.Configuration["EnabledLoggers:EntityFramework"] == "True")
+                        {
+                            logging.AddServiceClient(configure =>
+                                configure.Url = hostingContext.Configuration["ConnectionStrings:ServiceClientLoggerUrl"]);
+                        }
+
+                        if (hostingContext.Configuration["EnabledLoggers:EventLog"] == "True")
+                        {
+                            logging.AddEventLog(configure =>
                             {
-                                if (category.Contains("EventManager") ||
-                                    category.Contains("Controller") ||
-                                    category.Contains("Repository"))
-                                    return true;
-                                if (level > LogLevel.Information)
-                                    return true;
-                                else
-                                    return false;
-                            };
-                        });
-                    if (hostingContext.Configuration["EnabledLoggers:EventSource"] == "True")
-                        logging.AddEventSourceLogger();
-                    if (hostingContext.Configuration["EnabledLoggers:TraceSource"] == "True")
-                        logging.AddTraceSource(
-                            new SourceSwitch("EventManager", "EventManager Event Trace Log")
-                            {
-                                Level = SourceLevels.All
-                            },
-                            new XmlWriterTraceListener("EventTraceLog.xml"));
+                                configure.LogName = "EventManager";
+                                configure.SourceName = "EventManager";
+                                configure.Filter = (string category, LogLevel level) =>
+                                {
+                                    if (category.Contains("EventManager") ||
+                                        category.Contains("Controller") ||
+                                        category.Contains("Repository"))
+                                    {
+                                        return true;
+                                    }
+
+                                    if (level > LogLevel.Information)
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                                };
+                            });
+                        }
+
+                        if (hostingContext.Configuration["EnabledLoggers:EventSource"] == "True")
+                        {
+                            logging.AddEventSourceLogger();
+                        }
+
+                        if (hostingContext.Configuration["EnabledLoggers:TraceSource"] == "True")
+                        {
+                            logging.AddTraceSource(
+                                new SourceSwitch("EventManager", "EventManager Event Trace Log")
+                                {
+                                    Level = SourceLevels.All
+                                },
+                                new XmlWriterTraceListener("EventTraceLog.xml"));
+                        }
+                    }
+                    );
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://*:5000/", "https://*:5001/");
                 });
-                webBuilder.UseStartup<Startup>();
-                webBuilder.UseUrls("http://*:5000/", "https://*:5001/");
-            });
+        }
     }
 }

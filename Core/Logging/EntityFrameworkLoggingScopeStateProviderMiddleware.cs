@@ -22,8 +22,11 @@ namespace EventManager.Core.Logging
         public async Task Invoke(HttpContext context)
         {
             if (context == null)
+            {
                 throw new ArgumentNullException(nameof(context));
-            var loggerState = new Dictionary<string, object>
+            }
+
+            Dictionary<string, object> loggerState = new Dictionary<string, object>
             {
                 { "url", context.Request?.Path.Value },
                 { "method", context.Request?.Method },

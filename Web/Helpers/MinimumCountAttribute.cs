@@ -29,24 +29,28 @@ namespace EventManager.Web.Helpers
         public override bool IsValid(object value)
         {
             if (value == null)
+            {
                 return !_required;
-
+            }
 
             ICollection<string> stringList = value as ICollection<string>;
             if (!_allowEmptyStringValues && stringList != null)
+            {
                 return stringList.Count(s => !string.IsNullOrWhiteSpace(s)) >= _minCount;
-
+            }
 
             ICollection list = value as ICollection;
             if (list != null)
+            {
                 return list.Count >= _minCount;
+            }
 
             return false;
         }
 
         public override string FormatErrorMessage(string name)
         {
-            return String.Format(this.ErrorMessageString, name, _minCount);
+            return string.Format(ErrorMessageString, name, _minCount);
         }
     }
 }

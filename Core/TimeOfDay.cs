@@ -15,7 +15,7 @@ namespace EventManager.Core
     public class TimeOfDay
     {
         private const int secondsPerHour = 3600;
-        private static Regex _TodRegex = new Regex(@"\d?\d:\d\d:\d\d|\d?\d:\d\d");
+        private static readonly Regex _TodRegex = new Regex(@"\d?\d:\d\d:\d\d|\d?\d:\d\d");
 
         public TimeOfDay()
         {
@@ -36,56 +36,31 @@ namespace EventManager.Core
         public TimeOfDay(TimeOfDay td)
         {
             if (td == null)
+            {
                 throw new ArgumentNullException(nameof(td));
+            }
 
             Init(td.Hour, td.Minute, td.Second);
         }
         public TimeOfDay(string tds)
         {
             if (tds == null)
+            {
                 throw new ArgumentNullException(nameof(tds));
+            }
+
             TimeOfDay td = TimeOfDay.Parse(tds);
             Init(td.Hour, td.Minute, td.Second);
         }
 
-        public int HHMMSS
-        {
-            get
-            {
-                return Hour * 10000 + Minute * 100 + Second;
-            }
-        }
+        public int HHMMSS => Hour * 10000 + Minute * 100 + Second;
         public int Hour { get; private set; }
         public int Minute { get; private set; }
         public int Second { get; private set; }
-        public double TotalDays
-        {
-            get
-            {
-                return TotalSeconds / (24d * secondsPerHour);
-            }
-        }
-        public double TotalHours
-        {
-            get
-            {
-                return TotalSeconds / (1d * secondsPerHour);
-            }
-        }
-        public double TotalMinutes
-        {
-            get
-            {
-                return TotalSeconds / 60d;
-            }
-        }
-        public int TotalSeconds
-        {
-            get
-            {
-                return Hour * 3600 + Minute * 60 + Second;
-            }
-        }
+        public double TotalDays => TotalSeconds / (24d * secondsPerHour);
+        public double TotalHours => TotalSeconds / (1d * secondsPerHour);
+        public double TotalMinutes => TotalSeconds / 60d;
+        public int TotalSeconds => Hour * 3600 + Minute * 60 + Second;
         public bool Equals(TimeOfDay other)
         {
             if (other == null) { return false; }
@@ -122,19 +97,25 @@ namespace EventManager.Core
         }
         public DateTime ToToday()
         {
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             return new DateTime(now.Year, now.Month, now.Day, Hour, Minute, Second);
         }
 
         #region -- Static --
-        public static TimeOfDay Midnight { get { return new TimeOfDay(0, 0, 0); } }
-        public static TimeOfDay Noon { get { return new TimeOfDay(12, 0, 0); } }
+        public static TimeOfDay Midnight => new TimeOfDay(0, 0, 0);
+        public static TimeOfDay Noon => new TimeOfDay(12, 0, 0);
         public static TimeOfDay operator -(TimeOfDay t1, TimeOfDay t2)
         {
             if (t1 == null)
+            {
                 throw new ArgumentNullException(nameof(t1));
+            }
+
             if (t2 == null)
+            {
                 throw new ArgumentNullException(nameof(t2));
+            }
+
             DateTime now = DateTime.Now;
             DateTime dt1 = new DateTime(now.Year, now.Month, now.Day, t1.Hour, t1.Minute, t1.Second);
             TimeSpan ts = new TimeSpan(t2.Hour, t2.Minute, t2.Second);
@@ -144,9 +125,15 @@ namespace EventManager.Core
         public static bool operator !=(TimeOfDay t1, TimeOfDay t2)
         {
             if (t1 == null)
+            {
                 throw new ArgumentNullException(nameof(t1));
+            }
+
             if (t2 == null)
+            {
                 throw new ArgumentNullException(nameof(t2));
+            }
+
             if (ReferenceEquals(t1, t2)) { return true; }
             else if (ReferenceEquals(t1, null)) { return true; }
             else
@@ -169,9 +156,15 @@ namespace EventManager.Core
         public static TimeOfDay operator +(TimeOfDay t1, TimeOfDay t2)
         {
             if (t1 == null)
+            {
                 throw new ArgumentNullException(nameof(t1));
+            }
+
             if (t2 == null)
+            {
                 throw new ArgumentNullException(nameof(t2));
+            }
+
             DateTime now = DateTime.Now;
             DateTime dt1 = new DateTime(now.Year, now.Month, now.Day, t1.Hour, t1.Minute, t1.Second);
             TimeSpan ts = new TimeSpan(t2.Hour, t2.Minute, t2.Second);
@@ -181,7 +174,10 @@ namespace EventManager.Core
         public static bool operator <(TimeOfDay t1, TimeOfDay t2)
         {
             if (t2 == null)
+            {
                 throw new ArgumentNullException(nameof(t2));
+            }
+
             if (ReferenceEquals(t1, t2)) { return true; }
             else if (ReferenceEquals(t1, null)) { return true; }
             else
@@ -204,7 +200,10 @@ namespace EventManager.Core
         public static bool operator <=(TimeOfDay t1, TimeOfDay t2)
         {
             if (t2 == null)
+            {
                 throw new ArgumentNullException(nameof(t2));
+            }
+
             if (ReferenceEquals(t1, t2)) { return true; }
             else if (ReferenceEquals(t1, null)) { return true; }
             else
@@ -288,14 +287,20 @@ namespace EventManager.Core
         public static implicit operator TimeOfDay(string td)
         {
             if (td == null)
+            {
                 return null;
+            }
+
             return Parse(td);
         }
 
         public static explicit operator string(TimeOfDay td)
         {
             if (td == null)
+            {
                 return null;
+            }
+
             return td.ToString();
         }
         public static implicit operator TimeOfDay(int td)

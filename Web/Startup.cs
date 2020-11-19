@@ -184,7 +184,9 @@ namespace EventManager.Web
             StoragePath.Initialize(env.ContentRootPath);
 
             if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
+            }
             else
             {
                 //app.UseMiddleware<ExceptionHandlerMiddleware>();
@@ -193,7 +195,6 @@ namespace EventManager.Web
                 app.UseStaticFiles();
                 app.UseSpaStaticFiles();
             }
-
             app.InitializeDatabaseAsync(Configuration).Wait();
             app.UseEntityFrameworkLoggingScopeStateProvider();
             app.UseHttpsRedirection();
@@ -223,11 +224,13 @@ namespace EventManager.Web
                 if (env.IsDevelopment())
                 {
                     if (Configuration["UseProxyToSpaDevelopmentServer"] == "True")
-                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); 
+                    {
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    }
                     else
                     {
                         spa.UseAngularCliServer(npmScript: "serve");
-                        spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); 
+                        spa.Options.StartupTimeout = TimeSpan.FromSeconds(120);
                     }
                 }
             });

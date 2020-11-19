@@ -33,7 +33,9 @@ namespace EventManager.DataAccess
                     string friendlyName = string.IsNullOrWhiteSpace(FullName) ? UserName : FullName;
 
                     if (!string.IsNullOrWhiteSpace(JobTitle))
+                    {
                         friendlyName = $"{JobTitle} {friendlyName}";
+                    }
 
                     return friendlyName;
                 }
@@ -52,7 +54,7 @@ namespace EventManager.DataAccess
             public bool IsEnabled { get; set; }
 
             [NotMapped]
-            public bool IsLockedOut => this.LockoutEnabled && this.LockoutEnd >= DateTimeOffset.UtcNow;
+            public bool IsLockedOut => LockoutEnabled && LockoutEnd >= DateTimeOffset.UtcNow;
 
             #region IAuditableEntity
             [Required]

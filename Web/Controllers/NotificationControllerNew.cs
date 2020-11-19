@@ -1,8 +1,8 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using AutoMapper;
-using EventManager.DataAccess.Identity;
 using EventManager.DataAccess.Events;
 using EventManager.DataAccess.Events.Models;
+using EventManager.DataAccess.Identity;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

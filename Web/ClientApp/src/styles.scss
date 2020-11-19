@@ -344,3 +344,41 @@ i.page-caption {
 .clear-input:hover {
   color: #2580db !important;
 }
+
+.logo {
+  padding: 10px;
+  display: block;
+  margin: 0 auto;
+  background: url('./app/assets/logo.png') no-repeat center center;
+  }
+
+.icon-google {
+  padding: 10px;
+  display: block;
+  margin: 0 auto;
+  background: url('./app/assets/images/googleloginpng.png') no-repeat center center;
+}
+
+.icon-microsoft {
+  height: 100px;
+  width: auto;
+  padding: 10px;
+  display: block;
+  margin: 0 auto;
+  background: url('./app/assets/logo.png') no-repeat center center;
+}
+
+.icon-facebook {
+  height: 100px;
+  width: auto;
+  padding: 10px;
+  display: block;
+  margin: 0 auto;
+  background: url('./app/assets/logo.png') no-repeat center center;
+}
+
+.disabled-link {
+  pointer-events: none
+}
+
+

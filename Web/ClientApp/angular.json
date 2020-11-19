@@ -25,7 +25,8 @@
             "tsConfig": "tsconfig.app.json",
             "progress": true,
             "assets": [
-              "src/assets"
+              "src/assets",
+              "src/assets/images"
             ],
             "styles": [
               "src/styles.scss"

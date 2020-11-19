@@ -15,13 +15,16 @@ namespace EventManager.Core.Email
 
     public class EmailService : IEmailService
     {
-        readonly SmtpConfig _smtpConfig;
-        readonly ILogger _logger;
+        private readonly SmtpConfig _smtpConfig;
+        private readonly ILogger _logger;
 
         public EmailService(IOptions<SmtpConfig> smtpConfig, ILogger<EmailService> logger)
         {
             if (smtpConfig == null)
+            {
                 throw new ArgumentNullException(nameof(smtpConfig));
+            }
+
             _smtpConfig = smtpConfig.Value;
             _logger = logger;
         }
@@ -78,22 +81,28 @@ namespace EventManager.Core.Email
             try
             {
                 if (config == null)
+                {
                     config = _smtpConfig;
+                }
 
                 using (SmtpClient client = new SmtpClient())
                 {
                     if (!config.UseSSL)
+                    {
                         client.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) =>
                         {
                             bool retVal = true;
                             return retVal;
                         };
+                    }
 
                     await client.ConnectAsync(config.Host, config.Port, config.UseSSL).ConfigureAwait(false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
 
                     if (!string.IsNullOrWhiteSpace(config.Username))
+                    {
                         await client.AuthenticateAsync(config.Username, config.Password).ConfigureAwait(false);
+                    }
 
                     await client.SendAsync(message).ConfigureAwait(false);
                     await client.DisconnectAsync(true).ConfigureAwait(false);
@@ -103,7 +112,7 @@ namespace EventManager.Core.Email
             }
             catch (Exception ex)
             {
-                _logger.LogError(LoggingEvents.SendEmail, ex, new ResourceManager("Resource", this.GetType().Assembly).GetString("ERROR_SENDING_EMAIL", CultureInfo.CurrentCulture));
+                _logger.LogError(LoggingEvents.SendEmail, ex, new ResourceManager("Resource", GetType().Assembly).GetString("ERROR_SENDING_EMAIL", CultureInfo.CurrentCulture));
                 return (false, ex.Message);
                 throw;
             }

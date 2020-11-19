@@ -1,7 +1,4 @@
 ﻿using IdentityModel;
-using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 
@@ -9,7 +6,7 @@ namespace EventManager.Web.Helpers
 {
     public static class Utilities
     {
-          
+
 
         public static string GetUserId(this ClaimsPrincipal user)
         {

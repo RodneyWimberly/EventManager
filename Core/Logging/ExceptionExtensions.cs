@@ -9,13 +9,16 @@ namespace EventManager.Core.Logging
     {
         public static List<Item> ToDataList(this Exception exception)
         {
-            if (exception == null) return null;
+            if (exception == null)
+            {
+                return null;
+            }
 
-            var result = new List<Item>();
-            var e = exception;
+            List<Item> result = new List<Item>();
+            Exception e = exception;
             while (e != null)
             {
-                var data = e
+                List<Item> data = e
                     .Data
                     .Keys
                     .Cast<object>()
@@ -35,8 +38,12 @@ namespace EventManager.Core.Logging
 
         private static string Value(IDictionary data, object key)
         {
-            var value = data[key];
-            if (value == null) return string.Empty;
+            object value = data[key];
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
             return value.ToString();
         }
     }

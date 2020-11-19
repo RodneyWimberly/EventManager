@@ -1,9 +1,9 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
-using EventManager.DataAccess.Identity;
 using EventManager.DataAccess.Events;
 using EventManager.DataAccess.Events.Models;
+using EventManager.DataAccess.Identity;
 using EventManager.Web.Helpers;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -82,7 +82,9 @@ namespace EventManager.Web.Controllers
                 return Ok(pagedList.Items);
             }
             else
+            {
                 return NotFound(level);
+            }
         }
 
         [HttpGet("{id:int}")]

@@ -1,5 +1,5 @@
-﻿using EventManager.DataAccess.Identity.Models;
-using EventManager.DataAccess.Core.Constants;
+﻿using EventManager.DataAccess.Core.Constants;
+using EventManager.DataAccess.Identity.Models;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -32,13 +32,19 @@ namespace EventManager.DataAccess.Identity
             claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
 
             if (user.JobTitle != null)
+            {
                 claims.Add(new Claim(Properties.JobTitle, user.JobTitle));
+            }
 
             if (user.FriendlyName != null)
+            {
                 claims.Add(new Claim(Properties.FullName, user.FriendlyName));
+            }
 
             if (user.Configuration != null)
+            {
                 claims.Add(new Claim(Properties.Configuration, user.Configuration));
+            }
 
             context.IssuedClaims = claims;
         }

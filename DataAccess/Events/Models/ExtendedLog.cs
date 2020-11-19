@@ -36,7 +36,10 @@ namespace EventManager.DataAccess
                     // Browser
                     string browser = headers["User-Agent"];
                     if (!string.IsNullOrEmpty(browser) && (browser.Length > 255))
+                    {
                         browser = browser.Substring(0, 255);
+                    }
+
                     Browser = browser;
 
                     // User
@@ -45,13 +48,17 @@ namespace EventManager.DataAccess
                     {
                         string subject = context.User?.FindFirst(JwtClaimTypes.Subject)?.Value?.Trim();
                         if (!string.IsNullOrEmpty(subject))
+                        {
                             User = accountManager.GetUserByIdAsync(subject).Result.FriendlyName;
+                        }
                     }
 
                     // Host
                     Host = context.Connection?.RemoteIpAddress?.MapToIPv4().ToString();
                     if (Host == "0.0.0.1")
+                    {
                         Host = "127.0.0.1";
+                    }
 
                     // ServerVariables
                     ServerVariables = "";
@@ -107,11 +114,13 @@ namespace EventManager.DataAccess
                 set
                 {
                     if (!string.IsNullOrEmpty(value))
+                    {
                         try
                         {
                             Level = (int)Enum.Parse<LogLevel>(value);
                         }
                         catch { }
+                    }
                 }
             }
 
