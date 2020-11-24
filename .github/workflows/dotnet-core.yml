@@ -1,9 +1,9 @@
 name: Build and Deploy EventManager
 on:
   push:
-    branches: [ master ]
+    branches: [ AuthProviders ]
   pull_request:
-    branches:  [ master ]
+    branches:  [ AuthProviders ]
 jobs:
   create-and-deploy:
     name: DevOps Pipeline
@@ -50,5 +50,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with: 
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} 
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_AUTHPROVIDER  }} 
         package: './webapp'
