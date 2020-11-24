@@ -6,13 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManager.DataAccess
 {
-    public class HttpUnitOfWork<T> : UnitOfWork<T> where T : DbContext, IHttpDbContext
+    public class HttpUnitOfWork<T> : UnitOfWork<T> where T : DbContext, IAuditableDbContext
     {
         public HttpUnitOfWork(T context, IHttpContextAccessor httpAccessor) : base(context)
         {
             DbContext.CurrentUserId = httpAccessor.HttpContext.User.FindFirst(Claims.Subject)?.Value?.Trim();
-            //DbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            //DbContext.ChangeTracker.LazyLoadingEnabled = false;
         }
     }
 }

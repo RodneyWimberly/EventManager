@@ -10,7 +10,7 @@
 import { Subject, from, throwError } from 'rxjs';
 import { map, mergeMap, switchMap, catchError } from 'rxjs/operators';
 import { Router, NavigationExtras } from '@angular/router';
-import { JwksValidationHandler, LoginOptions, OAuthService } from 'angular-oauth2-oidc';
+import { AuthConfig, JwksValidationHandler, LoginOptions, OAuthService } from 'angular-oauth2-oidc';
 import { LocalStorageService } from './local-storage.service';
 import { ConfigurationService } from './configuration.service';
 import { DbKeys } from '../helpers/db-keys';
@@ -24,76 +24,43 @@ import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { AuthProviders } from '../models/user-login.model';
 import { error, exception } from 'console';
-import { AlertCommand, AlertMessage, MessageSeverity } from './alert.service';
+import { AlertCommand, AlertMessage, AlertService, MessageSeverity } from './alert.service';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable()
 export class AuthEndpointService {
-  private readonly _discoveryDocUrl: string = '/.well-known/openid-configuration';
-
-  private get discoveryDocUrl() { return this.configurations.tokenUrl + this._discoveryDocUrl; }
-  public get baseUrl() { return this.configurations.baseUrl; }
-  public get loginUrl() { return this.configurations.loginUrl; }
-  public get homeUrl() { return this.configurations.homeUrl; }
-
+  public get baseUrl(): string { return this.configurations.baseUrl; }
+  public get loginUrl(): string { return this.configurations.loginUrl; }
+  public get homeUrl(): string { return this.configurations.homeUrl; }
+  public get authProviderType(): AuthProviders { return this.configurations.authProviderType }
+  public set authProviderType(authProvider: AuthProviders) { this.configurations.authProviderType = authProvider; }
+  public get authProvider() { return this.configurations.authProvider; }
+  public get authConfig(): AuthConfig { return this.configurations.authConfig; }
   public loginRedirectUrl: string;
   public logoutRedirectUrl: string;
-
   public reLoginDelegate: () => void;
 
   private _previousIsLoggedInCheck = false;
   private _loginStatus = new Subject<boolean>();
-  private _alertCommand = new Subject<AlertCommand>();
 
   constructor(
     @Inject(Router) private router: Router,
     @Inject(OAuthService) public oAuthService: OAuthService,
     @Inject(ConfigurationService) private configurations: ConfigurationService,
-    @Inject(LocalStorageService) private localStorage: LocalStorageService) {
+      @Inject(LocalStorageService) private localStorage: LocalStorageService,
+      @Inject(AlertService)  private alertService: AlertService) {
 
     this.initializeLoginStatus();
   }
 
-  private initializeLoginStatus() {
-    this.localStorage.getInitEvent().subscribe(() => {
-      this.reevaluateLoginStatus();
-    });
-  }
-
-  private queueAlertCommand(queueCommand?: AlertCommand | string) {
-    var command: AlertCommand;
-    if (!queueCommand) {
-      command = this.getAlertCommand();
+    private initializeLoginStatus() {
+        this.localStorage.getInitEvent().subscribe(() => {
+            this.reevaluateLoginStatus();
+        });
     }
-    else if (queueCommand instanceof String) {
-      command = this.getAlertCommand(queueCommand as string);
-    }
-    else if (queueCommand instanceof AlertCommand) {
-      command = queueCommand as AlertCommand;
-    }
-    else {
-      command = this.getAlertCommand();
-    }
-    this._alertCommand.next(command);
-  }
-
-  private getAlertCommand(message?: string, severity?: MessageSeverity): AlertCommand {
-    var type: "add_sticky" | "clear" | "add";
-    if (severity == MessageSeverity.error) {
-      type = "add_sticky";
-    }
-    else if (!message) {
-      type = "clear";
-    }
-    else {
-      type = "add";
-    }
-    return new AlertCommand(type, new AlertMessage(severity ?? MessageSeverity.default, "Login", message));
-  }
 
   gotoPage(page: string, preserveParams = true) {
-
     const navigationExtras: NavigationExtras = {
       queryParamsHandling: preserveParams ? 'merge' : '', preserveFragment: preserveParams
     };
@@ -124,7 +91,6 @@ export class AuthEndpointService {
   redirectLogoutUser() {
     const redirect = this.logoutRedirectUrl ? this.logoutRedirectUrl : this.loginUrl;
     this.logoutRedirectUrl = null;
-
     this.router.navigate([redirect]);
   }
 
@@ -134,11 +100,10 @@ export class AuthEndpointService {
   }
 
   reLogin() {
-    if (this.reLoginDelegate) {
+    if (this.reLoginDelegate)
       this.reLoginDelegate();
-    } else {
+    else 
       this.redirectForLogin();
-    }
   }
 
   refreshLogin(): Observable<UserViewModel> {
@@ -146,73 +111,78 @@ export class AuthEndpointService {
       return from(this.refreshLoginAuthProvider()).pipe(
         map(() => this.processLoginResponse(this.oAuthService.getAccessToken(), this.rememberMe)));
     } else {
-      this.configureOauthService(this.rememberMe);
-      return from(this.oAuthService.loadDiscoveryDocument(this.discoveryDocUrl))
+      this.configureAuthService(this.rememberMe);
+      return from(this.oAuthService.loadDiscoveryDocument())
         .pipe(mergeMap(() => this.refreshLogin()));
     }
   }
 
   private refreshLoginAuthProvider() {
-    if (this.configurations.authProviderType == AuthProviders.IdentityServer) {
+    if (this.authProviderType == AuthProviders.IdentityServer)
       return this.oAuthService.refreshToken()
-    }
-    else {
+    else
       return this.oAuthService.silentRefresh();
-    }
   }
 
-  async login(authProvider: AuthProviders, userName?: string, password?: string, rememberMe?: boolean) {
-    if (this.isLoggedIn) {
-      this.logout();
-    }
-    this.queueAlertCommand(this.getAlertCommand("Attempting login..."));
-    this.configurations.authProviderType = authProvider;
-    this.configureOauthService(rememberMe);
-    try {
-      if (this.configurations.authProviderType == AuthProviders.IdentityServer) {
+    async login(authProviderType: AuthProviders, userName?: string, password?: string, rememberMe?: boolean) {
+        if (this.isLoggedIn) this.logout();
+        this.alertService.startLoadingMessage("Attempting login...");
+        
+        this.authProviderType = authProviderType;
+        this.configureAuthService(rememberMe);
         await this.oAuthService.loadDiscoveryDocument();
-        await this.oAuthService.fetchTokenUsingPasswordFlow(userName, password);
-        let user: UserViewModel = this.processLoginResponse(this.oAuthService.getAccessToken(), rememberMe);
-        this.queueAlertCommand(this.getAlertCommand(`Welcome ${user.userName}!`));
-        return user;
-      }
-      else {
-        await this.oAuthService.loadDiscoveryDocument();
-        await this.oAuthService.initImplicitFlow();
-        return null;
-      }
-     
+        if (this.authProviderType == AuthProviders.IdentityServer) {
+            await this.oAuthService.fetchTokenUsingPasswordFlow(userName, password);
+            this.processLoginResponse(this.oAuthService.getAccessToken(), rememberMe);
+        }
+        else 
+            await this.oAuthService.initImplicitFlow();
     }
-    catch (error) {
-      if (error instanceof Error) {
-        this.queueAlertCommand(this.getAlertCommand(error.message, MessageSeverity.error));
-      }
-      else {
-        this.queueAlertCommand(this.getAlertCommand(JSON.stringify(error), MessageSeverity.error));
-      }
-    }
-  }
 
-  private configureOauthService(rememberMe?: boolean) {
-    this.oAuthService.configure(this.configurations.authConfig);
+  public configureAuthService(rememberMe?: boolean) {
+    this.oAuthService.configure(this.authConfig);
     this.oAuthService.tokenValidationHandler = new JwksValidationHandler();
     AuthStorageService.RememberMe = rememberMe;
   }
 
-  processLoginResponse(accessToken: string, rememberMe: boolean) {
-
-    if (accessToken == null) {
-      throw new Error('accessToken cannot be null');
+  async processImplicitFlowResponse() {
+    try {
+      this.configureAuthService(true);
+      if (await this.oAuthService.loadDiscoveryDocumentAndLogin({ disableOAuth2StateCheck: true, preventClearHashAfterLogin: false })
+        && this.oAuthService.hasValidAccessToken) {
+        this.oAuthService.setupAutomaticSilentRefresh();
+        return this.processLoginResponse(this.oAuthService.getIdToken(), true);
+      }
+      else {
+        this.alertService.showStickyMessage("Login", "Error logging into Auth Provider", MessageSeverity.error);
+        this.gotoPage("login");
+        return null;
+      }
     }
+    catch (error) {
+      const errorsRequiringUserInteraction = [
+        'interaction_required',
+        'login_required',
+        'account_selection_required',
+        'consent_required',
+      ];
+      if (error && error.reason && errorsRequiringUserInteraction.indexOf(error.reason.error) >= 0) 
+        this.oAuthService.initImplicitFlow();
+      else
+        throwError(error);
+    }
+  }
+
+  processLoginResponse(accessToken: string, rememberMe: boolean) {
+    if (accessToken == null)
+      throw new Error('accessToken cannot be null');
 
     const jwtHelper = new JwtHelper();
     const decodedAccessToken = jwtHelper.decodeToken(accessToken) as AccessTokenModel;
-    
     const permissions: PermissionValues[] = Array.isArray(decodedAccessToken.permission) ? decodedAccessToken.permission : [decodedAccessToken.permission];
 
-    if (!this.isLoggedIn) {
+    if (!this.isLoggedIn)
       this.configurations.import(decodedAccessToken.configuration);
-    }
 
     const user = new UserViewModel();
     user.id = decodedAccessToken.sub;
@@ -225,8 +195,9 @@ export class AuthEndpointService {
     user.isEnabled = true;
 
     this.saveUserDetails(user, permissions, rememberMe);
-
     this.reevaluateLoginStatus(user);
+    this.alertService.stopLoadingMessage();
+    this.gotoHomePage();
 
     return user;
   }
@@ -255,7 +226,7 @@ export class AuthEndpointService {
 
   private reevaluateLoginStatus(currentUser?: UserViewModel) {
     const user = currentUser || this.localStorage.getDataObject<UserViewModel>(DbKeys.CURRENT_USER);
-    const isLoggedIn = user != null;// && this.oAuthService.hasValidAccessToken();
+    const isLoggedIn = user != null && this.oAuthService.hasValidAccessToken();
     
     if (this._previousIsLoggedInCheck != isLoggedIn) {
       setTimeout(() => {
@@ -268,10 +239,6 @@ export class AuthEndpointService {
 
   getLoginStatusEvent(): Observable<boolean> {
     return this._loginStatus.asObservable();
-  }
-
-  getAlertStatusEvent(): Observable<AlertCommand> {
-    return this._alertCommand.asObservable();
   }
 
   get currentUser(): UserViewModel {
@@ -287,7 +254,9 @@ export class AuthEndpointService {
   }
 
   get accessToken(): string {
-    return this.oAuthService.getAccessToken();
+    return this.authProviderType == AuthProviders.IdentityServer ?
+      this.oAuthService.getAccessToken() :
+      this.oAuthService.getIdToken();
   }
 
   get accessTokenExpiryDate(): Date {
@@ -307,7 +276,7 @@ export class AuthEndpointService {
   }
 
   get isLoggedIn(): boolean {
-    return this.currentUser != null;// && this.oAuthService.hasValidAccessToken();
+    return this.currentUser != null && this.oAuthService.hasValidAccessToken();
   }
 
   get rememberMe(): boolean {
@@ -329,7 +298,7 @@ export class BaseEndpointService {
 
   protected transformOptions(options: any): Promise<any> {
     options.headers = new HttpHeaders({
-      Authorization: 'Bearer ' + this.authEndpointService.accessToken,
+      Authorization: (this.authEndpointService.authProviderType == AuthProviders.IdentityServer ? 'Bearer ' : 'Bearer ') + this.authEndpointService.accessToken,
       'Content-Type': 'application/json',
       Accept: 'application/json, text/plain, */*'
     });

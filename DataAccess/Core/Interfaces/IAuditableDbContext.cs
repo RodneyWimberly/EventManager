@@ -1,6 +1,6 @@
 ﻿namespace EventManager.DataAccess.Core.Interfaces
 {
-    public interface IHttpDbContext
+    public interface IAuditableDbContext
     {
         string CurrentUserId { get; set; }
     }

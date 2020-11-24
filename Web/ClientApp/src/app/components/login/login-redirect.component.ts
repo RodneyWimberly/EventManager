@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { fadeInOut } from '../../helpers/animations';
-import { AuthProviders } from '../../models/user-login.model';
-import { AlertService, MessageSeverity } from '../../services/alert.service';
+import { AccountService } from '../../services/account.service';
 import { ConfigurationService } from '../../services/configuration.service';
 import { AuthEndpointService, UserViewModel } from '../../services/endpoint.services';
 
@@ -13,27 +12,19 @@ import { AuthEndpointService, UserViewModel } from '../../services/endpoint.serv
 })
 
 export class LoginRedirectComponent implements OnInit, OnDestroy {
-  constructor(private alertService: AlertService, private authService: AuthEndpointService, public configurations: ConfigurationService) {
-
+  constructor(private authService: AuthEndpointService, private accountService: AccountService, private configurations: ConfigurationService) {
   }
+
   ngOnInit(): void {
-    this.authService.oAuthService.configure(this.configurations.authConfig);
-    this.authService.oAuthService.loadDiscoveryDocumentAndLogin({ disableOAuth2StateCheck: true, preventClearHashAfterLogin: false }).then(success => {
-      if (success && this.authService.oAuthService.hasValidAccessToken) {
-        this.authService.oAuthService.setupAutomaticSilentRefresh();
-        let user: UserViewModel = this.authService.processLoginResponse(this.authService.oAuthService.getIdToken(), true);
-        this.alertService.showMessage(`Welcome ${user.userName}!`);
-        this.authService.gotoHomePage();
-      }
-      else {
-        this.alertService.showStickyMessage("Error logging into Auth Provider")
-        this.authService.gotoPage("login");
-      }
+    this.authService.processImplicitFlowResponse().then((user: UserViewModel) => {
+      //if (user)
+        //this.accountService.getUser(user.id).subscribe((dbUser: UserViewModel) => {
+         // if (!dbUser)
+            //this.accountService.newUser(user);
+        //});
     });
   }
 
   ngOnDestroy(): void {
   }
-
-
 }

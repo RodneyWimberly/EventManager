@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment';
 import { UserConfigurationModel } from '../models/user-configuration.model';
 import { AuthProviders } from '../models/user-login.model';
 import { AuthConfig } from 'angular-oauth2-oidc';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ConfigurationService {
@@ -16,7 +17,8 @@ export class ConfigurationService {
     constructor(
         private localStorageService: LocalStorageService,
         private appTranslationService: AppTranslationService,
-        private appThemeService: AppThemeService) {
+      private appThemeService: AppThemeService,
+      private router: Router) {
 
         this.loadLocalChanges();
     }
@@ -119,28 +121,25 @@ export class ConfigurationService {
 
     public get authConfig(): AuthConfig {
       const config = new AuthConfig();
-      config.skipSubjectCheck = true;
-      config.skipIssuerCheck = true;
-      //config.responseType = 'token';
-      config.strictDiscoveryDocumentValidation = false;
-      config.showDebugInformation = true;
-      config.clearHashAfterLogin = false;
-      config.nonceStateSeparator = ";";
-      config.requestAccessToken = true;
       config.oidc = true;
+      config.requestAccessToken = true;
+      config.showDebugInformation = true;
+      config.strictDiscoveryDocumentValidation = false;
 
       let provider = this.authProvider;
       if (!provider)
         throwError('Unable to locate the Auth provider configuration');
       config.issuer = provider.baseUrl;
       config.redirectUri = provider.redirectUrl;
+      if (provider.responseType)
+        config.responseType = provider.responseType;
 
-      let client = provider.clients.find(c => c.name == 'Event Manager Web')
+      let client = provider.clients.find(c => c.key == 'spa')
       if (!client)
         throwError('Unable to locate the client in Auth provider configuration');
       config.clientId = client.clientId;
       config.scope = client.scopes.join(' ');
-      //config.dummyClientSecret = client.clientSecret;
+      config.dummyClientSecret = client.clientSecret;
       return config;
     }
 

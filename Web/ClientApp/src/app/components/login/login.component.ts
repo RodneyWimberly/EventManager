@@ -5,6 +5,7 @@ import { ConfigurationService } from '../../services/configuration.service';
 import { Utilities } from '../../helpers/utilities';
 import { AuthProviders, UserLoginModel } from '../../models/user-login.model';
 import { Observable, Subject } from 'rxjs';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 export type LoginDialogOperations = "show" | "hide";
 
@@ -14,14 +15,13 @@ export type LoginDialogOperations = "show" | "hide";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-
+  get authProviderType(): AuthProviders { return this.configurations.authProviderType; }
   userLogin = new UserLoginModel();
   isLoading = false;
   formResetToggle = true;
-  modalClosedCallback: () => void;
+  modalHideCallback: () => void;
   loginStatusSubscription: any;
   loginDialogOperations = new Subject<LoginDialogOperations>();
-
   @Input() isModal = false;
 
   constructor(private alertService: AlertService, private authEndpointService: generated.AuthEndpointService, private configurations: ConfigurationService) {
@@ -31,11 +31,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userLogin.rememberMe = this.authEndpointService.rememberMe;
     
-    if (!this.isAuthRedirect && this.shouldRedirect) {
+    if (!this.shouldRedirect) {
       this.authEndpointService.redirectLoginUser();
     } else {
       this.loginStatusSubscription = this.authEndpointService.getLoginStatusEvent().subscribe(isLoggedIn => {
-        if (!this.isAuthRedirect && this.shouldRedirect) {
+        if (!this.shouldRedirect) {
           this.authEndpointService.redirectLoginUser();
         }
       });
@@ -47,10 +47,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.loginStatusSubscription) {
       this.loginStatusSubscription.unsubscribe();
     }
-  }
-
-  get isAuthRedirect() {
-    return window.location.pathname.toLowerCase().indexOf("auth") > -1;
   }
 
   get loginDialogOperationsEvent(): Observable<LoginDialogOperations> {
@@ -66,17 +62,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.alertService.showMessage(caption, message, MessageSeverity.error);
   }
 
-  showModal() {
-    this.loginDialogOperations.next("show");
-  }
-
   hideModal() {
-    this.loginDialogOperations.next("hide");
-  }
-
-  closeModal() {
-    if (this.modalClosedCallback) {
-      this.modalClosedCallback();
+    if (this.modalHideCallback) {
+      this.modalHideCallback();
     }
   }
 
@@ -84,9 +72,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.hideModal();
     try {
-      if (authProvider != AuthProviders.IdentityServer) {
-        //await this.authEndpointService.logout();
-      }
       await this.authEndpointService.login(authProvider, this.userLogin.userName, this.userLogin.password, this.userLogin.rememberMe)
     }
     catch (error) {
@@ -106,7 +91,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       setTimeout(() => {
         this.isLoading = false;
-        this.showModal();
       }, 500);
     }
   }

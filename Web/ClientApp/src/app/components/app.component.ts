@@ -22,37 +22,24 @@ const alertify: any = require('../assets/scripts/alertify.js');
 export class AppComponent implements OnInit, AfterViewInit {
 
   isAppLoaded: boolean;
-  get IsAppLoaded() {
-    return this.isAppLoaded || this.isAuthRedirect;
-  }
   isUserLoggedIn: boolean;
   shouldShowLoginModal: boolean;
-  get ShowLoginModal() {
-    return !this.isAuthRedirect && this.shouldShowLoginModal;
-  }
   removePrebootScreen: boolean;
-  get ShowPrebootScreen() {
-    return !(this.removePrebootScreen || this.isAuthRedirect);
-  }
   newNotificationCount = 0;
   appTitle = 'Event Manager';
-  //appLogo = require('../assets/images/logocalendar.png');
 
   stickyToasties: number[] = [];
 
   dataLoadingConsecutiveFailures = 0;
   notificationsLoadingSubscription: any;
-  loginDialogOperationsSubscription: any;
   dialogSubscription: any;
   messageSubscription: any;
   alertStatusSubscription: any;
   loginStatusSubscription: any;
 
-  @ViewChildren('loginModal,loginControl')
-  modalLoginControls: QueryList<any>;
-
-  loginModal: ModalDirective;
-  loginControl: LoginComponent;
+  @ViewChildren('loginModal,loginControl') modalLoginControls: QueryList<any>;
+  @ViewChildren('loginModal') loginModal: ModalDirective;
+  @ViewChildren('loginControl') loginControl: LoginComponent;
 
   gT = (key: string | Array<string>, interpolateParams?: Object) => this.translationService.getTranslation(key, interpolateParams);
 
@@ -95,22 +82,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (control) {
           if (control instanceof LoginComponent) {
             this.loginControl = control;
-            this.loginControl.modalClosedCallback = () => this.loginModal.hide();
-            this.loginDialogOperationsSubscription = this.loginControl.loginDialogOperationsEvent.subscribe(command => {
-              switch (command) {
-                case "show":
-                  this.shouldShowLoginModal = true;
-                  this.loginModal.show();
-                  break;
-                case "hide":
-                  this.shouldShowLoginModal = false;
-                  this.loginModal.hide();
-                  break;
-              }
-            });
+            this.loginControl.modalHideCallback = () => this.loginModal.hide();
+           
           } else {
             this.loginModal = control;
-            this.loginControl.showModal();
+            this.loginModal.show();
           }
         }
       });
@@ -139,40 +115,31 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.isUserLoggedIn = this.authEndpointService.isLoggedIn;
 
-    // 0.5 extra sec to display preboot/loader information. Preboot screen is removed 0.5 sec later
-    if (true) {//!this.IsAppLoaded) {
-      setTimeout(() => {
-        this.isAppLoaded = true;
-      }, 250);
-    }
-    if (true) {//this.ShowPrebootScreen) {
-      setTimeout(() => this.removePrebootScreen = true, 500);
-    }
+    setTimeout(() => {
+      this.isAppLoaded = true;
+    }, 100);
+    setTimeout(() => this.removePrebootScreen = true, 500);
     setTimeout(() => {
       if (this.isUserLoggedIn) {
         this.alertService.resetStickyMessage();
 
-        // if (!this.authService.isSessionExpired)
-        this.alertService.showMessage('Login', `Welcome back ${this.userName}!`, MessageSeverity.default);
-        // else
-        //    this.alertService.showStickyMessage("Session Expired", "Your Session has expired. Please log in again", MessageSeverity.warn);
+        if (!this.authEndpointService.isSessionExpired)
+          this.alertService.showMessage('Login', `Welcome back ${this.userName}!`, MessageSeverity.default);
+        else
+            this.alertService.showStickyMessage("Session Expired", "Your Session has expired. Please log in again", MessageSeverity.warn);
       }
     }, 2000);
 
     this.dialogSubscription = this.alertService.getDialogEvent().subscribe(alert => this.showDialog(alert));
     this.messageSubscription = this.alertService.getMessageEvent().subscribe(message => this.showToast(message));
-    this.alertStatusSubscription = this.authEndpointService.getAlertStatusEvent().subscribe(message => this.showToast(message))
     this.loginStatusSubscription = this.authEndpointService.getLoginStatusEvent().subscribe(isLoggedIn => {
       this.authEndpointService.reLoginDelegate = () => this.shouldShowLoginModal = true;
       this.isUserLoggedIn = isLoggedIn;
-
-
       if (this.isUserLoggedIn) {
         this.initNotificationsLoading();
       } else {
         this.unsubscribeNotifications();
       }
-
       setTimeout(() => {
         if (!this.isUserLoggedIn) {
           this.alertService.showMessage('Session Ended!', '', MessageSeverity.default);
@@ -189,14 +156,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
     }
-    if (this.alertStatusSubscription) {
-      this.alertStatusSubscription.unsubscribe();
-    }
     if (this.loginStatusSubscription) {
       this.loginStatusSubscription.unsubscribe();
-    }
-    if (this.loginDialogOperationsSubscription) {
-      this.loginDialogOperationsSubscription.unsubscribe();
     }
   }
 
@@ -362,10 +323,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   get canViewLogs() {
     return this.accountService.userHasPermission(generated.PermissionValues.ViewLogs);
-  }
-
-  get   isAuthRedirect() {
-    return window.location.pathname.toLowerCase().indexOf("auth") > -1;
   }
 
 }

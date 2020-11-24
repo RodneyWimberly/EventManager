@@ -9,8 +9,9 @@ using EventManager.Web.Authorization;
 using EventManager.Web.ViewModels;
 using EventManager.Web.ViewModels.Mappers;
 using FluentValidation;
+using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,12 +22,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NSwag.AspNetCore;
 using System;
 using System.Reflection;
-using System.Text;
 
 namespace EventManager.Web
 {
@@ -83,11 +82,11 @@ namespace EventManager.Web
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
-            if (Configuration["Authentication:UseIdentityServer4"] == "False")
-            {
-                //JWT API authentication service
-                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+
+            // Set authentication to use identity server and set identity server authentication options
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                // JWT tokens
+                /*.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -99,21 +98,63 @@ namespace EventManager.Web
                         ValidAudience = Configuration["Jwt:Issuer"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                     };
-                }
-                 );
-            }
-            else
-            {
-                // Set authentication to use identity server and set identity server authentication options
-                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
+                })*/
+
+                // Reference tokens
+                /*.AddOAuth2Introspection(OAuth2IntrospectionDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = "";
+                    options.ClientId = "resource1";
+                    options.ClientSecret = "secret";
+                })*/
+
+                // Google
+                //.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+                //{
+     
+                //    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                //    options.ClientId = Configuration["Authentication:GoogleClientId"];
+                //    options.ClientSecret = Configuration["Authentication:GoogleClientSecret"];
+                //    options.AccessType = "offline";
+                //})
+
+                // Microsoft Account
+                /*.AddMicrosoftAccount(MicrosoftAccountDefaults.AuthenticationScheme, options =>
+                {
+
+                })*/
+
+                // OIDC
+                /*.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+                    options.SaveTokens = true;
+
+                    options.Authority = "https://demo.identityserver.io/";
+                    options.ClientId = "interactive.confidential";
+                    options.ClientSecret = "secret";
+                    options.ResponseType = "code";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = "name",
+                        RoleClaimType = "role"
+                    };
+                })*/
+
+                // Identity Server
+                .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
                 {
                     options.Authority = Configuration["Authentication:IdentityServer4IP"].TrimEnd('/');
                     options.SupportedTokens = SupportedTokens.Jwt;
                     options.RequireHttpsMetadata = !WebHostEnvironment.IsDevelopment();
-                    options.ApiName = IdentityServerValues.ApiId;
+                    options.ApiName = IdentityServerValues.GetClient(AuthClientTypes.Api).Id;
+                    options.ApiSecret = IdentityServerValues.AppSecret;
+
+                    //options.ForwardDefault = GoogleDefaults.AuthenticationScheme;
+
                 });
-            }
 
             // Set authorization policies
             services.AddAuthorizationCore(options =>
@@ -207,7 +248,8 @@ namespace EventManager.Web
 
             app.UseSwaggerUi3(settings =>
             {
-                settings.OAuth2Client = new OAuth2ClientSettings { ClientId = IdentityServerValues.DocumentationClientId, ClientSecret = IdentityServerValues.DocumentationClientSecret };
+                AuthClient client = IdentityServerValues.GetClient(AuthClientTypes.ApiDocumentation);
+                settings.OAuth2Client = new OAuth2ClientSettings { ClientId = client.Id, ClientSecret = IdentityServerValues.AppSecret };
                 settings.Path = "/docs";
                 settings.DocumentPath = "/docs/api-specification.json";
             });

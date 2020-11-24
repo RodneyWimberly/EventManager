@@ -15,7 +15,7 @@ namespace EventManager.DataAccess.Identity
                                                         UserRole,
                                                         UserLogin,
                                                         RoleClaim,
-                                                        UserToken>, IHttpDbContext
+                                                        UserToken>, IAuditableDbContext
     {
         private string _currentUserId;
         public string CurrentUserId

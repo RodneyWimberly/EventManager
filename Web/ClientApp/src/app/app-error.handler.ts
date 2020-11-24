@@ -5,36 +5,30 @@ import { ExtendedLogService } from './services/extended-log.service';
 
 @Injectable()
 export class AppErrorHandler extends ErrorHandler {
+  private alertService: AlertService;
+  private extendedLogService: ExtendedLogService
 
-    // private alertService: AlertService;
-    private extendedLogService: ExtendedLogService
-    constructor(private injector: Injector) {
-        super();
-    }
+  constructor(private injector: Injector) {
+    super();
+  }
 
+  handleError(error: Error) {
+    let message: string = error.message + '\r\n\r\nStack:\r\n' + error.stack;
 
-    handleError(error: Error) {
-        if (this.extendedLogService == null)
-            this.extendedLogService = this.injector.get(ExtendedLogService);
-        // if (this.alertService == null) {
-        //    this.alertService = this.injector.get(AlertService);
-        // }
+    let extendedLog = new generated.ExtendedLogViewModel();
+    extendedLog.eventId = 0;
+    extendedLog.message = message;
+    extendedLog.level = 4;
+    extendedLog.name = error.name;
+    extendedLog.timeStamp = new Date(Date.now());
+    if (!this.extendedLogService)
+      this.extendedLogService = this.injector.get(ExtendedLogService);
+    this.extendedLogService.addExtendedLog(extendedLog);
 
-        // this.alertService.showStickyMessage("Fatal Error!", "An unresolved error has occured. Please reload the page to correct this error", MessageSeverity.warn);
-        // this.alertService.showStickyMessage("Unhandled Error", error.message || error, MessageSeverity.error, error);
-        
-        var extendedLog = new generated.ExtendedLogViewModel();
-        extendedLog.eventId = 0;
-        extendedLog.message = error.message + '\r\n\r\nStack:\r\n' + error.stack;
-        extendedLog.level = 4;
-        extendedLog.name = error.name;
-        extendedLog.timeStamp = new Date(Date.now());
-        this.extendedLogService.addExtendedLog(extendedLog);
+    if (!this.alertService)
+      this.alertService = this.injector.get(AlertService);
+    this.alertService.showStickyMessage(error.name + " - Error", message, MessageSeverity.error, error);
 
-        if (confirm('Fatal Error!\nAn unresolved error has occured. Do you want to reload the page to correct this?\n\nError: ' + error.message)) {
-            window.location.reload(true);
-        }
-        
-        super.handleError(error);
-    }
+    super.handleError(error);
+  }
 }

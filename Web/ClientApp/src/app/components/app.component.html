@@ -63,14 +63,11 @@
     </div>
   </nav>
 
-  <div id="pre-bootstrap" *ngIf="ShowPrebootScreen" [class.prebootShow.app-component]="!IsAppLoaded" class="app-component prebootStep">
+  <div id="pre-bootstrap" *ngIf="!removePrebootScreen" [class.prebootShow.app-component]="!isAppLoaded" class="app-component prebootStep">
     <div class="messaging">
       <h1>
         Application Loaded!
       </h1>
-      <p>
-         <span style="font-style:italic">Event Manager</span> App &copy; <a href="https://www.wimberlytech.com">www.wimberlytech.com</a>
-      </p>
 
     </div>
   </div>
@@ -90,7 +87,7 @@
     </div>
   </footer>
 
-  <div *ngIf="ShowLoginModal" class="modal fade login-control" bsModal #loginModal="bs-modal" (onShown)="onLoginModalShown()" (onHidden)="onLoginModalHidden()" (onHide)="onLoginModalHide()"
+  <div *ngIf="shouldShowLoginModal" class="modal fade login-control" bsModal #loginModal="bs-modal" (onShown)="onLoginModalShown()" (onHidden)="onLoginModalHidden()" (onHide)="onLoginModalHide()"
        [config]="{backdrop: 'static'}" tabindex="-1">
     <div class="modal-dialog modal-lg h-75 d-flex flex-column justify-content-center my-0">
       <div class="modal-content">

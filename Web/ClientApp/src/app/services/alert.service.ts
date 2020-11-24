@@ -102,6 +102,10 @@ export class AlertService {
     }
   }
 
+  showErrorMessage(error: any) {
+    this.showStickyMessage("Application Error", "An application error has occurred!", MessageSeverity.error, error);
+  }
+
   private showMessageHelper(summary: string, detail: string, severity: MessageSeverity, isSticky: boolean, onRemove?: () => any) {
 
     const alertCommand: AlertCommand = {

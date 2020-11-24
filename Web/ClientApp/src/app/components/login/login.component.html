@@ -3,19 +3,39 @@
     <div class="card boxshadow">
       <div class="card-header bg-primary dark text-white clearfix">
         <i class="fa fa-lock" aria-hidden="true"></i> Login
-        <button *ngIf="isModal" type="button" class="close float-right text-light" aria-label="Close" (click)="closeModal()">
+        <button *ngIf="isModal" type="button" class="close float-right text-light" aria-label="Close" (click)="hideModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="card-body">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-12">
+      
           <form *ngIf="formResetToggle" class="login" name="loginForm" #f="ngForm" novalidate
                 (ngSubmit)="f.form.valid ? login(0) :
                           (!username.valid && showErrorAlert('Username is required', 'Please enter a valid username'));
                           (!password.valid && showErrorAlert('Password is required', 'Please enter a valid password'))">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <button style="width: 100%" class="btn btn-primary" [disabled]="isLoading" (click)="login(1)">
+                  <i *ngIf="isLoading && authProviderType == 1" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProviderType == 1 ? 'Logging in with Google...' : 'Continue with Google'}}
+                </button>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <button style="width:100%;" class="btn btn-primary" [disabled]="isLoading" (click)="login(2)">
+                  <i *ngIf="isLoading && authProviderType == 2" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProviderType == 2 ? 'Logging in with Microsoft...' : 'Continue with Microsoft'}}
+                </button>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <h5>------------------ OR -------------------</h5>
+              </div>
+            </div>
             <div class="form-group row has-feedback-icon">
-              <label class="col-form-label col-md-3" for="login-username">Username:</label>
-              <div class="col-md-9">
+             
+              <div class="col-md-12">
                 <input type="text" id="login-username" name="username" placeholder="Enter username" autocomplete="username" class="form-control" [ngClass]="{'is-valid': f.submitted && username.valid, 'is-invalid' : f.submitted && !username.valid}"
                        [(ngModel)]="userLogin.userName" #username="ngModel" required />
                 <i *ngIf="f.submitted" class="fa form-control-feedback" [ngClass]="{'fa-check': username.valid, 'fa-times' : !username.valid}" aria-hidden="true"></i>
@@ -25,8 +45,7 @@
               </div>
             </div>
             <div class="form-group row has-feedback-icon">
-              <label class="col-form-label col-md-3" for="login-password">Password:</label>
-              <div class="col-md-9">
+               <div class="col-md-12">
                 <input type="password" id="login-password" name="password" placeholder="Enter password" autocomplete="current-password" class="form-control" [ngClass]="{'is-valid': f.submitted && password.valid, 'is-invalid' : f.submitted && !password.valid}"
                        [(ngModel)]="userLogin.password" #password="ngModel" required />
                 <i *ngIf="f.submitted" class="fa form-control-feedback" [ngClass]="{'fa-check': password.valid, 'fa-times' : !password.valid}" aria-hidden="true"></i>
@@ -35,29 +54,21 @@
                 </span>
               </div>
             </div>
+
             <div class="form-group row">
-              <div class="offset-md-3 col-md-9">
+              <div class="col-md-12">
+                <button style="width:100%" type="submit" class="btn btn-primary" [disabled]="isLoading">
+                  <i *ngIf="isLoading && authProviderType == 0" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProviderType == 0 ? 'Logging in with email...' : 'Continue with email'}}
+                </button>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="offset-md-3 col-md-5">
                 <div class="form-check">
                   <input type="checkbox" class="form-check-input" id="login-rememberme" name="rememberMe" [(ngModel)]="userLogin.rememberMe">
                   <label class="form-check-label" for="login-rememberme">Remember me</label>
                 </div>
               </div>
-            </div>
-            <div  ngPreserveWhitespaces class="form-group row">
-              <div class="offset-md-3 col-md-9">    
-                <span>
-                  <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-                    <i *ngIf="isLoading" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading ? 'Logging in...' : 'Login'}}
-                  </button>
-                </span>
-                <span>
-                  <a class="nav-link" class.disabled-link="isLoading" href="javascript:;" [hidden]="isLoading" (click)="login(1)">
-                    <i *ngIf="isLoading" class='fa fa-circle-o-notch fa-spin'></i>
-                    <i *ngIf="!isLoading" class="icon-google"></i>
-                  </a>
-                </span>
-              </div>
-            
             </div>
           </form>
         </div>

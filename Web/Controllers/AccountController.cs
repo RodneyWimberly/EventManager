@@ -9,6 +9,7 @@ using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -22,23 +23,28 @@ namespace EventManager.Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
+
     {
-        private readonly IMapper _mapper;
-        private readonly IIdentityManager _accountManager;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly ILogger<AccountController> _logger;
+        private readonly IIdentityManager _identityManager;
+        protected readonly IConfiguration _configuration;
+        protected readonly IMapper _mapper;
+        protected readonly IAuthorizationService _authorizationService;
+        protected readonly ILogger _logger;
         private const string GetUserByIdActionName = "GetUserById";
         private const string GetRoleByIdActionName = "GetRoleById";
 
-        public AccountController(IMapper mapper, IIdentityManager accountManager, IAuthorizationService authorizationService,
-            ILogger<AccountController> logger)
+        public AccountController(IMapper mapper,
+            IAuthorizationService authorizationService,
+            ILogger<AccountController> logger,
+            IConfiguration configuration,
+            IIdentityManager identityManager)
         {
             _mapper = mapper;
-            _accountManager = accountManager;
             _authorizationService = authorizationService;
             _logger = logger;
+            _configuration = configuration;
+            _identityManager = identityManager;
         }
-
 
         [HttpGet("users/me")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
@@ -78,7 +84,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetUserByUserName(string userName)
         {
-            User appUser = await _accountManager.GetUserByUserNameAsync(userName);
+            User appUser = await _identityManager.GetUserByUserNameAsync(userName);
 
             if (!(await _authorizationService.AuthorizeAsync(User, appUser?.Id ?? "", AccountManagementOperations.Read)).Succeeded)
             {
@@ -108,7 +114,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public async Task<IActionResult> GetUsers(int pageNumber, int pageSize)
         {
-            List<(User User, string[] Roles)> usersAndRoles = await _accountManager.GetUsersAndRolesAsync(pageNumber, pageSize);
+            List<(User User, string[] Roles)> usersAndRoles = await _identityManager.GetUsersAndRolesAsync(pageNumber, pageSize);
 
             List<UserViewModel> usersVM = new List<UserViewModel>();
 
@@ -141,8 +147,8 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserEditViewModel user)
         {
-            User appUser = await _accountManager.GetUserByIdAsync(id);
-            string[] currentRoles = appUser != null ? (await _accountManager.GetUserRolesAsync(appUser)).ToArray() : null;
+            User appUser = await _identityManager.GetUserByIdAsync(id);
+            string[] currentRoles = appUser != null ? (await _identityManager.GetUserRolesAsync(appUser)).ToArray() : null;
 
             Task<AuthorizationResult> manageUsersPolicy = _authorizationService.AuthorizeAsync(User, id, AccountManagementOperations.Update);
             Task<AuthorizationResult> assignRolePolicy = _authorizationService.AuthorizeAsync(User, (user.Roles, currentRoles), Authorization.Policies.AssignAllowedRolesPolicy);
@@ -189,7 +195,7 @@ namespace EventManager.Web.Controllers
                     }
                     else if (isPasswordChanged || isUserNameChanged)
                     {
-                        if (!await _accountManager.CheckPasswordAsync(appUser, user.CurrentPassword))
+                        if (!await _identityManager.CheckPasswordAsync(appUser, user.CurrentPassword))
                         {
                             AddError("The username/password couple is invalid.");
                         }
@@ -200,18 +206,18 @@ namespace EventManager.Web.Controllers
                 {
                     _mapper.Map<UserEditViewModel, User>(user, appUser);
 
-                    (bool Succeeded, string[] Errors) result = await _accountManager.UpdateUserAsync(appUser, user.Roles);
+                    (bool Succeeded, string[] Errors) result = await _identityManager.UpdateUserAsync(appUser, user.Roles);
                     if (result.Succeeded)
                     {
                         if (isPasswordChanged)
                         {
                             if (!string.IsNullOrWhiteSpace(user.CurrentPassword))
                             {
-                                result = await _accountManager.UpdatePasswordAsync(appUser, user.CurrentPassword, user.NewPassword);
+                                result = await _identityManager.UpdatePasswordAsync(appUser, user.CurrentPassword, user.NewPassword);
                             }
                             else
                             {
-                                result = await _accountManager.ResetPasswordAsync(appUser, user.NewPassword);
+                                result = await _identityManager.ResetPasswordAsync(appUser, user.NewPassword);
                             }
                         }
 
@@ -257,7 +263,7 @@ namespace EventManager.Web.Controllers
                     return BadRequest($"{nameof(patch)} cannot be null");
                 }
 
-                User appUser = await _accountManager.GetUserByIdAsync(id);
+                User appUser = await _identityManager.GetUserByIdAsync(id);
 
                 if (appUser == null)
                 {
@@ -271,7 +277,7 @@ namespace EventManager.Web.Controllers
                 {
                     _mapper.Map<UserPatchViewModel, User>(userPVM, appUser);
 
-                    (bool Succeeded, string[] Errors) result = await _accountManager.UpdateUserAsync(appUser);
+                    (bool Succeeded, string[] Errors) result = await _identityManager.UpdateUserAsync(appUser);
                     if (result.Succeeded)
                     {
                         return NoContent();
@@ -306,7 +312,7 @@ namespace EventManager.Web.Controllers
 
                 User appUser = _mapper.Map<User>(user);
 
-                (bool Succeeded, string[] Errors) result = await _accountManager.CreateUserAsync(appUser, user.Roles, user.NewPassword);
+                (bool Succeeded, string[] Errors) result = await _identityManager.CreateUserAsync(appUser, user.Roles, user.NewPassword);
                 if (result.Succeeded)
                 {
                     UserViewModel userVM = await GetUserViewModelHelper(appUser.Id);
@@ -332,21 +338,21 @@ namespace EventManager.Web.Controllers
                 return new ChallengeResult();
             }
 
-            User appUser = await _accountManager.GetUserByIdAsync(id);
+            User appUser = await _identityManager.GetUserByIdAsync(id);
 
             if (appUser == null)
             {
                 return NotFound(id);
             }
 
-            if (!await _accountManager.TestCanDeleteUserAsync(id))
+            if (!await _identityManager.TestCanDeleteUserAsync(id))
             {
                 return BadRequest("User cannot be deleted. Delete all orders associated with this user and try again");
             }
 
             UserViewModel userVM = await GetUserViewModelHelper(appUser.Id);
 
-            (bool Succeeded, string[] Errors) result = await _accountManager.DeleteUserAsync(appUser);
+            (bool Succeeded, string[] Errors) result = await _identityManager.DeleteUserAsync(appUser);
             if (!result.Succeeded)
             {
                 throw new Exception("The following errors occurred whilst deleting user: " + string.Join(", ", result.Errors));
@@ -362,7 +368,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> UnblockUser(string id)
         {
-            User appUser = await _accountManager.GetUserByIdAsync(id);
+            User appUser = await _identityManager.GetUserByIdAsync(id);
 
             if (appUser == null)
             {
@@ -370,7 +376,7 @@ namespace EventManager.Web.Controllers
             }
 
             appUser.LockoutEnd = null;
-            (bool Succeeded, string[] Errors) result = await _accountManager.UpdateUserAsync(appUser);
+            (bool Succeeded, string[] Errors) result = await _identityManager.UpdateUserAsync(appUser);
             if (!result.Succeeded)
             {
                 throw new Exception("The following errors occurred whilst unblocking user: " + string.Join(", ", result.Errors));
@@ -385,7 +391,7 @@ namespace EventManager.Web.Controllers
         public async Task<IActionResult> UserPreferences()
         {
             string userId = Utilities.GetUserId(User);
-            User appUser = await _accountManager.GetUserByIdAsync(userId);
+            User appUser = await _identityManager.GetUserByIdAsync(userId);
 
             return Ok(appUser.Configuration);
         }
@@ -396,11 +402,11 @@ namespace EventManager.Web.Controllers
         public async Task<IActionResult> UserPreferences([FromBody] string data)
         {
             string userId = Utilities.GetUserId(User);
-            User appUser = await _accountManager.GetUserByIdAsync(userId);
+            User appUser = await _identityManager.GetUserByIdAsync(userId);
 
             appUser.Configuration = data;
 
-            (bool Succeeded, string[] Errors) result = await _accountManager.UpdateUserAsync(appUser);
+            (bool Succeeded, string[] Errors) result = await _identityManager.UpdateUserAsync(appUser);
             if (!result.Succeeded)
             {
                 throw new Exception("The following errors occurred whilst updating User Configurations: " + string.Join(", ", result.Errors));
@@ -419,7 +425,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetRoleById(string id)
         {
-            Role appRole = await _accountManager.GetRoleByIdAsync(id);
+            Role appRole = await _identityManager.GetRoleByIdAsync(id);
 
             if (!(await _authorizationService.AuthorizeAsync(User, appRole?.Name ?? "", Authorization.Policies.ViewRoleByRoleNamePolicy)).Succeeded)
             {
@@ -471,7 +477,7 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
         public async Task<IActionResult> GetRoles(int pageNumber, int pageSize)
         {
-            List<Role> roles = await _accountManager.GetRolesLoadRelatedAsync(pageNumber, pageSize);
+            List<Role> roles = await _identityManager.GetRolesLoadRelatedAsync(pageNumber, pageSize);
             return Ok(_mapper.Map<List<RoleViewModel>>(roles));
         }
 
@@ -495,7 +501,7 @@ namespace EventManager.Web.Controllers
                     return BadRequest("Conflicting role id in parameter and model data");
                 }
 
-                Role appRole = await _accountManager.GetRoleByIdAsync(id);
+                Role appRole = await _identityManager.GetRoleByIdAsync(id);
 
                 if (appRole == null)
                 {
@@ -504,7 +510,7 @@ namespace EventManager.Web.Controllers
 
                 _mapper.Map<RoleViewModel, Role>(role, appRole);
 
-                (bool Succeeded, string[] Errors) result = await _accountManager.UpdateRoleAsync(appRole, role.Permissions?.Select(p => p.Value).ToArray());
+                (bool Succeeded, string[] Errors) result = await _identityManager.UpdateRoleAsync(appRole, role.Permissions?.Select(p => p.Value).ToArray());
                 if (result.Succeeded)
                 {
                     return NoContent();
@@ -533,7 +539,7 @@ namespace EventManager.Web.Controllers
 
                 Role appRole = _mapper.Map<Role>(role);
 
-                (bool Succeeded, string[] Errors) result = await _accountManager.CreateRoleAsync(appRole, role.Permissions?.Select(p => p.Value).ToArray());
+                (bool Succeeded, string[] Errors) result = await _identityManager.CreateRoleAsync(appRole, role.Permissions?.Select(p => p.Value).ToArray());
                 if (result.Succeeded)
                 {
                     RoleViewModel roleVM = await GetRoleViewModelHelper(appRole.Name);
@@ -554,21 +560,21 @@ namespace EventManager.Web.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteRole(string id)
         {
-            Role appRole = await _accountManager.GetRoleByIdAsync(id);
+            Role appRole = await _identityManager.GetRoleByIdAsync(id);
 
             if (appRole == null)
             {
                 return NotFound(id);
             }
 
-            if (!await _accountManager.TestCanDeleteRoleAsync(id))
+            if (!await _identityManager.TestCanDeleteRoleAsync(id))
             {
                 return BadRequest("Role cannot be deleted. Remove all users from this role and try again");
             }
 
             RoleViewModel roleVM = await GetRoleViewModelHelper(appRole.Name);
 
-            (bool Succeeded, string[] Errors) result = await _accountManager.DeleteRoleAsync(appRole);
+            (bool Succeeded, string[] Errors) result = await _identityManager.DeleteRoleAsync(appRole);
             if (!result.Succeeded)
             {
                 throw new Exception("The following errors occurred whilst deleting role: " + string.Join(", ", result.Errors));
@@ -590,7 +596,7 @@ namespace EventManager.Web.Controllers
 
         private async Task<UserViewModel> GetUserViewModelHelper(string userId)
         {
-            (User User, string[] Roles)? userAndRoles = await _accountManager.GetUserAndRolesAsync(userId);
+            (User User, string[] Roles)? userAndRoles = await _identityManager.GetUserAndRolesAsync(userId);
             if (userAndRoles == null)
             {
                 return null;
@@ -605,7 +611,7 @@ namespace EventManager.Web.Controllers
 
         private async Task<RoleViewModel> GetRoleViewModelHelper(string roleName)
         {
-            Role role = await _accountManager.GetRoleLoadRelatedAsync(roleName);
+            Role role = await _identityManager.GetRoleLoadRelatedAsync(roleName);
             if (role != null)
             {
                 return _mapper.Map<RoleViewModel>(role);

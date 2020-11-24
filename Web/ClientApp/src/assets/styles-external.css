@@ -1,5 +1,4 @@
 #pre-bootstrap {
-  background-color: #262626;
   bottom: 0px;
   left: 0px;
   position: fixed;
@@ -9,7 +8,6 @@
 }
 
   #pre-bootstrap div.messaging {
-    color: #FFFFFF;
     font-family: monospace;
     left: 0px;
     margin-top: -107px;

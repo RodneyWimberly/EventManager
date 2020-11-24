@@ -1,6 +1,5 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using EventManager.Core;
-using EventManager.DataAccess.Core.Constants;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Events;
 using EventManager.DataAccess.Events.Models;
@@ -20,7 +19,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.IdentityModel.Logging;
 using Newtonsoft.Json;
 using System;
@@ -29,7 +27,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace EventManager.DataAccess
@@ -135,18 +132,20 @@ namespace EventManager.DataAccess
                 .AddProfileService<ProfileService>()
                 .AddDeveloperSigningCredential();
 
-            // Setup InMemort DB
+            
             if (configuration["ConnectionStrings:UseInMemoryDatabase"] == "True")
             {
+                // Setup InMemory DB
                 identityServerBuilder.UseIdentityServerInMemoryStore();
                 services.AddDbContext<IdentityDbContext>(opt => opt.UseInMemoryDatabase("IdentityDb-" + Guid.NewGuid().ToString()));
             }
             else
             {
+                // Setup DB connections and migrations
                 string migrationsAssembly = typeof(DatabaseExtensions).Assembly.FullName,
                     identityDbConnection = configuration["ConnectionStrings:IdentityDb"];
 
-                // EF AccountManager DB for users and roles
+                // EF Identity DB for users and roles
                 services.AddDbContext<IdentityDbContext>(c =>
                 {
                     c.UseSqlServer(identityDbConnection, providerOptions =>
@@ -158,7 +157,7 @@ namespace EventManager.DataAccess
                     c.UseLazyLoadingProxies(useLazyLoadingProxies);
                 });
 
-                // EF IdentityServer ConfigurationStore DB
+                // EF IdentityServer Configuration DB
                 services.AddConfigurationDbContext<ConfigurationDbContext>(cso =>
                 {
                     cso.ConfigureDbContext = c =>
@@ -173,11 +172,11 @@ namespace EventManager.DataAccess
                     };
                 });
 
-                // EF IdentityServer PersistedGrant DB
+                // EF IdentityServer Persisted Grants DB
                 services.AddOperationalDbContext<PersistedGrantDbContext>(oso =>
                 {
                     oso.EnableTokenCleanup = true;
-                    oso.TokenCleanupInterval = 300;
+                    oso.TokenCleanupInterval = 3600;
                     oso.ConfigureDbContext = c =>
                     {
                         c.UseSqlServer(identityDbConnection, providerOptions =>
@@ -217,11 +216,12 @@ namespace EventManager.DataAccess
             string seedFile = Path.Combine(AppContext.BaseDirectory, "Seed", "EventDB", $"{typeof(T).Name}.json");
             if (File.Exists(seedFile) && !(await entities.ToListAsync()).Any())
             {
-                logger?.LogInformation($"Seeding {context.GetType().Name}::{typeof(T).Name} with {seedFile}");
+                string name = $"{context.GetType().Name}::{typeof(T).Name}";
+                logger?.LogInformation($"Seeding {name} with {seedFile}");
                 List<T> seedEntities = JsonConvert.DeserializeObject<List<T>>(await File.ReadAllTextAsync(seedFile));
                 await context.AddRangeAsync(seedEntities);
                 await context.SaveChangesAsync();
-                logger?.LogInformation($"Seeding of {context.GetType().Name}::{typeof(T).Name} has completed!");
+                logger?.LogInformation($"Seeding of {name} has completed!");
             }
         }
 
@@ -263,7 +263,7 @@ namespace EventManager.DataAccess
             return builder;
         }
 
-        public static void UpdateAuditableEntities<T>(this T dbContext) where T : DbContext, IHttpDbContext
+        public static void UpdateAuditableEntities<T>(this T dbContext) where T : DbContext, IAuditableDbContext
         {
             IEnumerable<EntityEntry> modifiedEntries = dbContext.ChangeTracker.Entries()
                 .Where(x => x.Entity is IAuditableEntity &&
@@ -291,6 +291,6 @@ namespace EventManager.DataAccess
             }
         }
 
-       
+
     }
 }

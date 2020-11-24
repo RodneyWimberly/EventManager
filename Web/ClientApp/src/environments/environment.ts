@@ -17,39 +17,45 @@ export const environment = {
       enabled: true,
       baseUrl: 'https://localhost:5001',
       redirectUrl: 'https://localhost:5001/auth',
+      responseType: null,
       clients: [{
-        name: 'Event Manager Web',
-        clientId: '3e165187-600d-4666-a483-51badf3040b3',
-        clientSecret: 'not_used',
-        scopes: ['openid', 'email', 'phone', 'profile', 'offline_access', 'roles', 'api://eventmanager.org']
+        key: 'spa',
+        name: 'Event Manager JS Resource Owner Password Client',
+        clientId: 'urn:eventmanager:client:js:resourceowner',
+        clientSecret: 'eventmanagersecret',
+        scopes: ['openid', 'email', 'phone', 'profile', 'offline_access', 'roles', 'urn:eventmanager:api:gateway']
       }, {
+        key: 'apidoc',
         name: 'Event Manager API Documentation',
-        clientId: '2795884e-cff1-4a73-823f-0120373ac584',
-        clientSecret: 'not_used',
+        clientId: 'urn:eventmanager:client:apidoc',
+        clientSecret: 'eventmanagersecret',
         scopes: ['openid']
       }],
-      apiUri: 'api://eventmanager.org'
+      apiKey: 'eventmanagersecret'
     },
     {
       name: 'Google',
       enabled: true,
       baseUrl: 'https://accounts.google.com',
       redirectUrl: 'https://localhost:5001/auth',
+      responseType: 'id_token token',
       clients: [{
-        name: 'Event Manager Web',
+        key: 'spa',
+        name: 'Event Manager JS Implicit Client',
         clientId: '120435867455-8f37jhdhjbakph7qgvabporq6vmn0d98.apps.googleusercontent.com',
         clientSecret: 'wEbRb42VRLz10rDPnOYvrUtA',
         scopes: ['profile',
           'email',
           'openid',
           'phone']
-     }, {
+      }, {
+        key: 'apidoc',
         name: 'Event Manager API Documentation',
-        clientId: '2795884e-cff1-4a73-823f-0120373ac584',
-        clientSecret: 'not_used',
-          scopes: ['openid'],
+        clientId: 'em-apidoc@event-manager-295807.iam.gserviceaccount.com',
+        clientSecret: 'a741458f8005c4ed19112518658ad19f607bceab',
+        scopes: ['openid'],
       }],
-      apiUri: 'api://eventmanager.org'
+      apiKey: 'AIzaSyCYRgp-musYNVasda3WvECPKKnAW6XcCgg'
     }
   ]
 };

@@ -724,17 +724,19 @@ namespace EventManager.DataAccess
 
         public static IEnumerable<ApiScope> GetApiScopes()
         {
+            AuthClient apiClient = IdentityServerValues.GetClient(AuthClientTypes.Api);
             return new List<ApiScope>
             {
-                new ApiScope(name: IdentityServerValues.ApiId,   displayName: IdentityServerValues.ApiName),
+                new ApiScope(name: apiClient.Id,   displayName: apiClient.Name),
             };
         }
 
         public static IEnumerable<ApiResource> GetApiResources()
         {
+            AuthClient apiClient = IdentityServerValues.GetClient(AuthClientTypes.Api);
             return new List<ApiResource>
             {
-                new ApiResource(IdentityServerValues.ApiId, IdentityServerValues.ApiName) {
+                new ApiResource(apiClient.Id, apiClient.Name) {
                     UserClaims = {
                         JwtClaimTypes.Name,
                         JwtClaimTypes.Email,
@@ -742,52 +744,112 @@ namespace EventManager.DataAccess
                         JwtClaimTypes.Role,
                         Claims.Permission
                     },
-                    Scopes = { IdentityServerValues.ApiId }
+                    ApiSecrets = apiClient.Secrets,
+                    Scopes = { apiClient.Id }
                 }
             };
         }
 
         public static IEnumerable<Client> GetClients()
         {
+            AuthClient authClient = IdentityServerValues.GetClient(AuthClientTypes.NgExternalAuthentication);
+            AuthClient webClient = IdentityServerValues.GetClient(AuthClientTypes.Web);
+            AuthClient svcClient = IdentityServerValues.GetClient(AuthClientTypes.Service);
+            AuthClient apiClient = IdentityServerValues.GetClient(AuthClientTypes.Api);
+            AuthClient apiDocClient = IdentityServerValues.GetClient(AuthClientTypes.ApiDocumentation);
+            AuthClient ngClient = IdentityServerValues.GetClient(AuthClientTypes.NgInternalAuthentication);
             // Clients credentials.
             return new List<Client>
             {
-                // http://docs.identityserver.io/en/release/reference/client.html.
+                // Angular User/Password Login
                 new Client
                 {
-                    ClientId = IdentityServerValues.ApplicationClientId,
-                    ClientName = IdentityServerValues.ApplicationClientName,
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // Resource Owner Password Credential grant.
-                    AllowAccessTokensViaBrowser = true,
-                    RequireClientSecret = false, // This client does not need a secret to request tokens from the token endpoint.
-                    
-                    AllowedScopes = {
-                        IdentityServerConstants.StandardScopes.OpenId, // For UserInfo endpoint.
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Phone,
-                        IdentityServerConstants.StandardScopes.Email,
-                        Scopes.Roles,
-                        IdentityServerValues.ApiId
-                    },
-                    AllowOfflineAccess = true, // For refresh token.
-                    RefreshTokenExpiration = TokenExpiration.Sliding,
-                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
-                    //AccessTokenLifetime = 900, // Lifetime of access token in seconds.
-                    //AbsoluteRefreshTokenLifetime = 7200,
-                    //SlidingRefreshTokenLifetime = 900,
-                },
-
-                new Client
-                {
-                    ClientId = IdentityServerValues.DocumentationClientId,
-                    ClientName = IdentityServerValues.DocumentationClientName,
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    ClientId = ngClient.Id,
+                    ClientName = ngClient.Name,
+                    ClientSecrets = ngClient.Secrets,
+                    ClientClaimsPrefix = ngClient.Id + ":",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // , "refresh_token"
                     AllowAccessTokensViaBrowser = true,
                     RequireClientSecret = false,
 
                     AllowedScopes = {
-                        IdentityServerValues.ApiId
-                    }
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Phone,
+                        IdentityServerConstants.StandardScopes.Email,
+                        Scopes.Roles,
+                        apiClient.Id
+                    },
+                    AllowOfflineAccess = true,
+                    RefreshTokenExpiration = TokenExpiration.Sliding,
+                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                    SlidingRefreshTokenLifetime = 3600,
+                },
+                // Documentation
+                new Client
+                {
+                    ClientId = apiDocClient.Id,
+                    ClientName = apiDocClient.Name,
+                    ClientSecrets = apiDocClient.Secrets,
+                    ClientClaimsPrefix = apiDocClient.Id + ":",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowAccessTokensViaBrowser = true,
+                    RequireClientSecret = false,
+                    AllowedScopes = { apiClient.Id }
+                },
+                // Service client
+                new Client
+                {
+                    ClientId = svcClient.Id,
+                    ClientName = svcClient.Name,
+                    ClientSecrets = svcClient.Secrets,
+                    ClientClaimsPrefix = svcClient.Id + ":",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = { apiClient.Id }
+                },
+                // Web Client
+                new Client
+                {
+                    ClientId = webClient.Id,
+                    ClientName = webClient.Name,
+                    ClientSecrets = webClient.Secrets,
+                    ClientClaimsPrefix = webClient.Id + ":",
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    RedirectUris = {"https://localhost:5001/auth", "https://em-web-azurewebsites.net/auth" },
+                    PostLogoutRedirectUris = {"https://localhost:5001/login", "https://em-web-azurewebsites.net/login"},
+                    RequirePkce = false,
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Phone,
+                        IdentityServerConstants.StandardScopes.Email,
+                        Scopes.Roles,
+                        apiClient.Id
+                    },
+                    AllowOfflineAccess = true,
+                    RequireConsent = false
+                },
+                // Angular external (Googla, Microsoft) provider
+                new Client
+                {
+                    ClientId = authClient.Id,
+                    ClientName = authClient.Name,
+                    ClientSecrets = authClient.Secrets,
+                    ClientClaimsPrefix = authClient.Id + ":",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    RedirectUris = {"https://localhost:5001/auth", "https://em-web-azurewebsites.net/auth" },
+                    PostLogoutRedirectUris = {"https://localhost:5001/login", "https://em-web-azurewebsites.net/login"},
+                    AllowedCorsOrigins = {"https://localhost:5001", "https://em-web-azurewebsites.net"},
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Phone,
+                        IdentityServerConstants.StandardScopes.Email,
+                        Scopes.Roles,
+                        apiClient.Id
+                    },
                 }
             };
         }

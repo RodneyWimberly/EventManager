@@ -1,4 +1,5 @@
-﻿using EventManager.Web.ViewModels;
+﻿using AutoMapper;
+using EventManager.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace EventManager.Web.Controllers
 {
@@ -113,7 +113,7 @@ namespace EventManager.Web.Controllers
             }
         }
     }
-    
+
     namespace v1_1
     {
         [ApiVersion("1.1")]
@@ -122,22 +122,36 @@ namespace EventManager.Web.Controllers
         [ApiController]
         public class ApiInfoController : ControllerBase
         {
-            public IConfiguration Configuration { get; }
-            public ApiInfoController(IConfiguration configuration)
+            protected readonly IConfiguration _configuration;
+            protected readonly IMapper _mapper;
+            protected readonly IAuthorizationService _authorizationService;
+            public ApiInfoController(IMapper mapper, IAuthorizationService authorizationService,
+             IConfiguration configuration)
             {
-                Configuration = configuration;
+                _mapper = mapper;
+                _authorizationService = authorizationService;
+                _configuration = configuration;
             }
 
             [AllowAnonymous]
-            [HttpGet]
+            [HttpGet("/ping")]
+            [Produces("application/json")]
+            [ProducesResponseType(StatusCodes.Status200OK)]
+            public IActionResult Ping()
+            {
+                return Ok();
+            }
+
+            [AllowAnonymous]
+            [HttpGet("/info")]
             [Produces("application/json")]
             [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiInfoViewModel))]
             [ProducesResponseType(StatusCodes.Status404NotFound)]
-            public async Task<IActionResult> ApiInfo()
+            public IActionResult ApiInfo()
             {
                 ApiInfoViewModel apiInfo = new ApiInfoViewModel
                 {
-                    Configuration = Configuration.AsEnumerable(),
+                    Configuration = _configuration.AsEnumerable(),
                     Controllers = GetType().Assembly.GetTypes()
                         .Where(type => type.IsSubclassOf(typeof(ControllerBase)))
                             .Select(ct => new ControllerInfoViewModel
@@ -149,7 +163,7 @@ namespace EventManager.Web.Controllers
                             }
                         )
                 };
-               
+
                 return Ok(JsonConvert.SerializeObject(apiInfo));
             }
 

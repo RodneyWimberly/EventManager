@@ -9,7 +9,7 @@ using ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
 namespace EventManager.DataAccess.Events
 {
-    public class EventDbContext : DbContext, IHttpDbContext
+    public class EventDbContext : DbContext, IAuditableDbContext
     {
         private string _currentUserId;
         public string CurrentUserId
