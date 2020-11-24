@@ -11,6 +11,7 @@ export const environment = {
       enabled: true,
       baseUrl: 'https://em-web.azurewebsites.net',
       redirectUrl: 'https://em-web.azurewebsites.net/auth',
+      responseType: null,
       clients: [{
         key: 'spa',
         name: 'Event Manager JS Resource Owner Password Client',
@@ -31,6 +32,7 @@ export const environment = {
       enabled: true,
       baseUrl: 'https://accounts.google.com',
       redirectUrl: 'https://em-web.azurewebsites.net/auth',
+      responseType: 'id_token token',
       clients: [{
         key: 'spa',
         name: 'Event Manager JS Implicit Client',

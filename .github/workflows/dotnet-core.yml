@@ -6,7 +6,7 @@ on:
     branches:  [ AuthProviders ]
 jobs:
   create-and-deploy:
-    name: DevOps Pipeline
+    name: Azure DevOps Pipeline
     runs-on: windows-latest
     env:
         AZURE_WEBAPP_NAME: em-web

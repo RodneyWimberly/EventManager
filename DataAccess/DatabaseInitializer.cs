@@ -768,7 +768,7 @@ namespace EventManager.DataAccess
                     ClientName = ngClient.Name,
                     ClientSecrets = ngClient.Secrets,
                     ClientClaimsPrefix = ngClient.Id + ":",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword, // , "refresh_token"
+                    AllowedGrantTypes = { GrantType.ResourceOwnerPassword , "refresh_token" },
                     AllowAccessTokensViaBrowser = true,
                     RequireClientSecret = false,
 
