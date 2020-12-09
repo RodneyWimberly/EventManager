@@ -2,6 +2,7 @@
 using EventManager.DataAccess.Core.Enums;
 using EventManager.DataAccess.Core.Interfaces;
 using EventManager.DataAccess.Events.Models;
+using EventManager.DataAccess.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;

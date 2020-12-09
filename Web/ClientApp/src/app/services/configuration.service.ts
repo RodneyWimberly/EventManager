@@ -10,6 +10,7 @@ import { UserConfigurationModel } from '../models/user-configuration.model';
 import { AuthProviders } from '../models/user-login.model';
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
+import { AuthProvidersModel } from '../models/enum.models';
 
 @Injectable()
 export class ConfigurationService {
@@ -48,8 +49,7 @@ export class ConfigurationService {
     }
     get homeUrl() {
         return this._homeUrl || ConfigurationService.defaultHomeUrl;
-    }
-
+  }
     set showDashboardStatistics(value: boolean) {
         this._showDashboardStatistics = value;
         this.saveToLocalStore(value, DbKeys.SHOW_DASHBOARD_STATISTICS);
@@ -81,6 +81,17 @@ export class ConfigurationService {
     get showDashboardBanner() {
         return this._showDashboardBanner != null ? this._showDashboardBanner : ConfigurationService.defaultShowDashboardBanner;
     }
+    private _authProvider: AuthProvidersModel = 'none';
+    get authProvider(): AuthProvidersModel {
+      if (this._authProvider == 'none')
+        this._authProvider = this.localStorageService.getDataObject<AuthProvidersModel>(DbKeys.AUTH_PROVIDER) || 'idsvr';
+      return this._authProvider;
+    }
+    set authProvider(value: AuthProvidersModel) {
+      this._authProvider = value;
+      this.saveToLocalStore(DbKeys.AUTH_PROVIDER, value);
+    }
+
 
     public static readonly appVersion: string = '3.0.0';
 
@@ -93,18 +104,14 @@ export class ConfigurationService {
     public static readonly defaultShowDashboardTodo: boolean = false;
     public static readonly defaultShowDashboardBanner: boolean = true;
 
-    public baseUrl = environment.baseUrl || Utilities.baseUrl();
-    public get tokenUrl() { return this.authProvider.baseUrl || environment.baseUrl || Utilities.baseUrl(); }
+    public webBaseUrl = environment.webBaseUrl || Utilities.baseUrl();
+  public get authorityBaseUrl() { return environment.authorityBaseUrl || environment.webBaseUrl || Utilities.baseUrl(); }
     public loginUrl = environment.loginUrl;
+    public authCallbackUrl = environment.authCallbackUrl; 
+
+    public apiBaseUrl = environment.apiBaseUrl || this.webBaseUrl + '/api';
+    public apiVersion = environment.apiVersion.replace('.', '_') || '1_0';
     public fallbackBaseUrl = 'http://www.wimberlytech.com';
-  public get authProviderType(): AuthProviders {
-    return this.localStorageService.getData("AuthProvider");
-  }
-  public set authProviderType(value: AuthProviders) {
-    this.localStorageService.saveSyncedSessionData(value, "AuthProvider");
-  }
-    public get authProvider() { return environment.authProviders.find(ap => ap.name == AuthProviders[this.authProviderType]); }
-  
 
     // ***End of defaults***
 
@@ -121,25 +128,17 @@ export class ConfigurationService {
 
     public get authConfig(): AuthConfig {
       const config = new AuthConfig();
+      const rootNamespace = 'urn:em';
       config.oidc = true;
       config.requestAccessToken = true;
       config.showDebugInformation = true;
       config.strictDiscoveryDocumentValidation = false;
-
-      let provider = this.authProvider;
-      if (!provider)
-        throwError('Unable to locate the Auth provider configuration');
-      config.issuer = provider.baseUrl;
-      config.redirectUri = provider.redirectUrl;
-      if (provider.responseType)
-        config.responseType = provider.responseType;
-
-      let client = provider.clients.find(c => c.key == 'spa')
-      if (!client)
-        throwError('Unable to locate the client in Auth provider configuration');
-      config.clientId = client.clientId;
-      config.scope = client.scopes.join(' ');
-      config.dummyClientSecret = client.clientSecret;
+      config.clientId = rootNamespace + ':client:' + this.authProvider;
+      config.scope = 'openid email phone profile offline_access ' + rootNamespace + ':roles ' + rootNamespace + ':api';
+      config.dummyClientSecret = 'eventmanagersecret';
+      if (this.authProvider == 'idsvr') config.responseType = 'id_token token';
+      config.issuer = this.authorityBaseUrl;
+      config.redirectUri = this.authCallbackUrl;
       return config;
     }
 

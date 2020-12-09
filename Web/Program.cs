@@ -1,83 +1,92 @@
-using EventManager.Logging.ServiceClient.Extensions;
+using EventManager.Core;
+using EventManager.DataAccess.Core.Constants;
+using EventManager.DataAccess.Events;
+using EventManager.DataAccess.Extensions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.CommandLineUtils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 
 namespace EventManager.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        private static string title = $"{ApplicationValues.Title} API Gateway";
+        public static int Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+            ConsoleLoadingAnimation loadingAnimation = new ConsoleLoadingAnimation(title);
+            Console.Title = title;
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+            IHost host =
+            Host
+            .CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.ConfigureLogging((hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
+                webBuilder.UseStartup<Startup>();
+                webBuilder.UseUrls("http://*:5002/", "https://*:6002/");
+            })
+            .Build();
+            using IServiceScope scope = host.Services.CreateScope();
+
+            CommandLineApplication cmdLineApp = new CommandLineApplication();
+            cmdLineApp.FullName = title;
+            cmdLineApp.HelpOption("--help");
+            cmdLineApp.OnExecute(async () =>
+            {
+                try
                 {
-                    webBuilder.ConfigureLogging((hostingContext, logging) =>
-                    {
-                        logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                        if (hostingContext.Configuration["EnabledLoggers:AzureDiagnostics"] == "True")
-                        {
-                            logging.AddAzureWebAppDiagnostics();
-                        }
+                    ILogger logger = scope.ServiceProvider.GetService<ILogger<Program>>();
+                    logger.LogInformation("Starting host");
 
-                        if (hostingContext.Configuration["EnabledLoggers:EntityFramework"] == "True")
-                        {
-                            logging.AddServiceClient(configure =>
-                                configure.Url = hostingContext.Configuration["ConnectionStrings:ServiceClientLoggerUrl"]);
-                        }
+                    await host.StartAsync();
+                    await host.RunEventDbUpdatesAsync();
+                    logger.LogInformation("Host started");
+                    loadingAnimation.ShowAnimation = false;
+                    await host.WaitForShutdownAsync();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Fatal Exception!");
+                    Console.WriteLine("--------------------------------------------------------");
+                    Console.WriteLine(ex);
+                    Console.WriteLine("Application terminated unexpectedly.");
+                    Console.WriteLine("Press enter to exit...");
+                    Console.ReadLine();
+                    return 1;
+                }
+            });
+            cmdLineApp.Command("seeddb", cmd =>
+            {
+                cmd.Description = "Seed DB";
+                cmd.HelpOption("--help");
 
-                        if (hostingContext.Configuration["EnabledLoggers:EventLog"] == "True")
-                        {
-                            logging.AddEventLog(configure =>
-                            {
-                                configure.LogName = "EventManager";
-                                configure.SourceName = "EventManager";
-                                configure.Filter = (string category, LogLevel level) =>
-                                {
-                                    if (category.Contains("EventManager") ||
-                                        category.Contains("Controller") ||
-                                        category.Contains("Repository"))
-                                    {
-                                        return true;
-                                    }
-
-                                    if (level > LogLevel.Information)
-                                    {
-                                        return true;
-                                    }
-                                    else
-                                    {
-                                        return false;
-                                    }
-                                };
-                            });
-                        }
-
-                        if (hostingContext.Configuration["EnabledLoggers:EventSource"] == "True")
-                        {
-                            logging.AddEventSourceLogger();
-                        }
-
-                        if (hostingContext.Configuration["EnabledLoggers:TraceSource"] == "True")
-                        {
-                            logging.AddTraceSource(
-                                new SourceSwitch("EventManager", "EventManager Event Trace Log")
-                                {
-                                    Level = SourceLevels.All
-                                },
-                                new XmlWriterTraceListener("EventTraceLog.xml"));
-                        }
-                    }
-                    );
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://*:5000/", "https://*:5001/");
+                cmd.OnExecute(async () =>
+                {
+                    EventDbSeeder dbSeeder = scope.ServiceProvider.GetService<EventDbSeeder>();
+                    await dbSeeder.EnsureEventDbSeededAsync();
+                    return 0;
                 });
+            });
+            cmdLineApp.Command("migratedb", cmd =>
+            {
+                cmd.Description = "Migrate DB";
+                cmd.HelpOption("--help");
+
+                cmd.OnExecute(async () =>
+                {
+                    EventDbSeeder dbSeeder = scope.ServiceProvider.GetService<EventDbSeeder>();
+                    await dbSeeder.MigrateEventDBAsync();
+                    return 0;
+                });
+            });
+            return cmdLineApp.Execute(args);
         }
     }
 }

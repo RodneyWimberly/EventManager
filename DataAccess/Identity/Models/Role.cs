@@ -1,4 +1,5 @@
-﻿using EventManager.DataAccess.Core.Interfaces;
+﻿using EventManager.DataAccess.Core.Constants;
+using EventManager.DataAccess.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,11 @@ namespace EventManager.DataAccess
 {
     public static partial class Permissions
     {
-        public const string RolesPermissionGroupName = "Role Permissions";
-        public static Permission ViewRoles = new Permission("View Roles", "roles.view", RolesPermissionGroupName, "Permission to view available roles");
-        public static Permission ManageRoles = new Permission("Manage Roles", "roles.manage", RolesPermissionGroupName, "Permission to create, delete and modify roles");
-        public static Permission AssignRoles = new Permission("Assign Roles", "roles.assign", RolesPermissionGroupName, "Permission to assign roles to users");
+        public static string RolesNamespace = $"{ApplicationValues.RootNamespace}:roles";
+        public static Permission ViewRoles = new Permission("View Roles", $"{RolesNamespace}:{PermissionType.View}", RolesNamespace, "Permission to view available roles");
+        public static Permission ManageRoles = new Permission("Manage Roles", $"{RolesNamespace}:{PermissionType.Manage}", RolesNamespace, "Permission to create, delete and modify roles");
+        public static Permission AssignRoles = new Permission("Assign Roles", $"{RolesNamespace}:{PermissionType.Assign}", RolesNamespace, "Permission to assign roles to users");
+        public static List<Permission> RolesPermissions = new List<Permission> { ViewRoles, ManageRoles, AssignRoles };
     }
 
     namespace Identity.Models

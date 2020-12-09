@@ -10,3 +10,12 @@ export enum ViewModelStates {
   View,
   Delete
 }
+
+export type AuthProvidersModel =
+  'none' |
+  'idsvr' |
+  'implict' |
+  'google' |
+  'microsoft' |
+  'facebook' |
+  'twitter'

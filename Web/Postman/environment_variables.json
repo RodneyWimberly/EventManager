@@ -1,0 +1,39 @@
+{
+	"id": "ad026423-2578-4464-aa43-99dc62e2c48e",
+	"name": "Azure (rodney.wimberly@outlook.com)",
+	"values": [
+		{
+			"key": "emUrl",
+			"value": "https://em-web.azurewebsites.net",
+			"enabled": true
+		},
+		{
+			"key": "emApiVersion",
+			"value": "1.0",
+			"enabled": true
+		},
+		{
+			"key": "emAuthProvider",
+			"value": "Google",
+			"enabled": true
+		},
+		{
+			"key": "emInternalAuth",
+			"value": "{\n  \"auth_provider\": \"Internal\",\n  \"user\": \"admin\",\n  \"password\": \"P@55w0rd\",\n  \"issuer\": \"https://localhost:5001\",\n  \"grant_type\": \"password\",\n  \"scope\": \"openid email phone profile offline_access roles urn:eventmanager:api:gateway\",\n  \"client_id\": \"urn:eventmanager:client:js:resourceowner\",\n  \"client_secret\":\"eventmanagersecret\"\n}",
+			"enabled": true
+		},
+		{
+			"key": "emGoogleAuth",
+			"value": "{\n  \"auth_provider\": \"Google\",\n  \"grant_type\": \"urn:ietf:params:oauth:grant-type:jwt-bearer\",\n  \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnzLvQX+8iLJnZ\\nTa+9WtzRkaCW/O2jYKNAdLfcyyHH8a7u8FmzXGh3CmnnJZJqdkZKuKxjETlq5VsG\\npONGe2wuPDAxae3hzgzKhy6Yy/KGEYmeQ7jUwwLpiQ2hD1Bs+i0BNjFErV7HxyWB\\nJdTZUwweJpLpEc8Vum36V8tGCVIt9T7lRIz9RzY5eQyu8DSIwy9aipTcEfYGyzUr\\nSi/67vtgPV/+0UY/slIb5ySBysO/UC2NlWcXVzAj8csf5bzBG+fnfsiKkCZgXp2m\\nRxMpOBcSETTnKqVJoXCwoHUEVzx/ns+Qs8FRfkUp0pb5nt0G8TWbc/1eMozYOeCi\\nxGMmrFxjAgMBAAECggEAEKEyr9kCGxHugWG4m/yIS+Cx2KTibEGkjDvFCQW8qFMk\\nchux2Bu9YqbOjhDkLNbh6n/Y3cyUMyrd1Y+70n1i4EYoxIzp/WntTJkPHieANpdA\\nW0X86GEXRcvGZQLehp5YnXkgctz3urba2azFJnCbj9Vk0+Jm8pFSWvAefidoVJOD\\ncn0mlvJ1c8BRmaLTkaMJNZ2QR41Rw9oim0aMA8/cZPa+DWEx1lWbF3sZh1YjEQ23\\nji6z+v6BbaRb/um7K23l10ihaqymB179rt3PlOIpGKruGZlBVmmcfAYWeV3fFMm3\\nT3JDrv/33qwSSFpWiW0Ea6pqJmWQ5LwcJKRwJ7jZWQKBgQDZWzUPxtN0EhBUzLJE\\nUJKqxlknL7Gr05lZ8bvc9Sl85YNLIQBS/Zx9e9wSB/NgjGAoFaOzqKm/W9QWhEH9\\ncSaSKJZJja8YzmpNvfuwgaGmwFLaFvsyIQJjx8Fldr2qqUlzEmXziRVvaokLeYZv\\ntxVfcOM4zbyBNmxvkZq7uXpD7wKBgQDFogBPr0HNz/7qLdKup3k0gGBWGUGIoGDI\\nDZAWJthxy3F6g0U3OmHEL4uksCsWxBJoFrKDKTWQJnHAnmjRmDQIkGtdjUr4/qjy\\n2rddWH32fpjDFZS/rRjOpgBElnRiPMflsLt9kCOCXADdlb/Jg0X8r+mn4K6D/k8p\\nOS90u41qzQKBgGYklIT7fLdZHc+b+lJcQvB6Eb92jFohMDmyfgRSOdL10INn2M0n\\nXXki0cKvddHzZeSwdqOhKVRCBSMnuBMwL14UMLwUFyrjJdWu6C6EXMEONGFE13sx\\nQ/w8DUhvSqZ+s4OeK8cMrsQTHqAD1gd91E9rr3wsQt++AatUk5CQk0KFAoGBALHI\\nwPTt2IlXoZ5yKEN7XnpPPdpWD/DjLQzpvoNe4HjFpcirC/nZqBc/GiTFYY2yRkii\\nmmWJDakmHFBFcE+T1sMZf6wBrb79/2ewPyFWuMGkMrHT2SLwiQ9kn3sTyZCR0tUa\\nPh9/KaJcN18eFhAl6jCc4tllMjiE7htMWRdunJHFAoGBAKyxk12qPGObyWmo8+Qo\\nAyH9PZxQ7BmCE2TQvIs9+bRrRlwHdm4N6pYcSE7wK3Gu0s4Jwbcrhx8zymk+49ZH\\ntPO5+VSnqsKqnyDac6nih4ItgUpFjKPLTSydPY/G56MUjWeyW2Ky29FwxPjuwM8T\\nyq0Xu4XpT5lTGx2ZtgugbgU5\\n-----END PRIVATE KEY-----\\n\",\n  \"client_email\": \"em-postman@event-manager-295807.iam.gserviceaccount.com\",\n  \"issuer\": \"https://accounts.google.com\",\n  \"token_uri\": \"https://oauth2.googleapis.com/token\",\n  \"scope\": \"profile email openid phone\"\n}\n",
+			"enabled": true
+		},
+		{
+			"key": "oidcUrl",
+			"value": "https://em-web.azurewebsites.net",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2020-11-28T02:44:32.679Z",
+	"_postman_exported_using": "Postman/7.36.0"
+}

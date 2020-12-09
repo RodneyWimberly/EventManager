@@ -1,4 +1,5 @@
-﻿using EventManager.DataAccess.Core.Interfaces;
+﻿using EventManager.DataAccess.Core.Constants;
+using EventManager.DataAccess.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,10 @@ namespace EventManager.DataAccess
 {
     public static partial class Permissions
     {
-        public const string UsersPermissionGroupName = "User Permissions";
-        public static Permission ViewUsers = new Permission("View Users", "users.view", UsersPermissionGroupName, "Permission to view other users account details");
-        public static Permission ManageUsers = new Permission("Manage Users", "users.manage", UsersPermissionGroupName, "Permission to create, delete and modify other users account details");
-
+        public static string UsersNamespace = $"{ApplicationValues.RootNamespace}:users";
+        public static Permission ViewUsers = new Permission("View Users", $"{UsersNamespace}:{PermissionType.View}", UsersNamespace, "Permission to view other users account details");
+        public static Permission ManageUsers = new Permission("Manage Users", $"{UsersNamespace}:{PermissionType.Manage}", UsersNamespace, "Permission to create, delete and modify other users account details");
+        public static List<Permission> UsersPermissions = new List<Permission> { ViewUsers, ManageUsers };
     }
 
     namespace Identity.Models

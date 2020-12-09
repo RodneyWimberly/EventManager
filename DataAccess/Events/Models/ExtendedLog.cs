@@ -1,6 +1,6 @@
-﻿using EventManager.DataAccess.Core.Enums;
+﻿using EventManager.DataAccess.Core.Constants;
+using EventManager.DataAccess.Core.Enums;
 using EventManager.DataAccess.Core.Interfaces;
-using EventManager.DataAccess.Identity;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -15,9 +15,10 @@ namespace EventManager.DataAccess
 {
     public static partial class Permissions
     {
-        public const string LogsPermissionGroupName = "Log Permissions";
-        public static Permission ViewLogs = new Permission("View Events", "logs.view", LogsPermissionGroupName, "Permission to view log details");
-        public static Permission ManageLogs = new Permission("Manage Events", "logs.manage", LogsPermissionGroupName, "Permission to create, delete and modify log details");
+        public static string LogsNamespace = $"{ApplicationValues.RootNamespace}:logs";
+        public static Permission ViewLogs = new Permission("View Logs", $"{LogsNamespace}:{PermissionType.View}", LogsNamespace, "Permission to view log details");
+        public static Permission ManageLogs = new Permission("Manage Logs", $"{LogsNamespace}:manage", LogsNamespace, "Permission to create, delete and modify log details");
+        public static List<Permission> LogsPermissions = new List<Permission> { ViewLogs, ManageLogs };
     }
 
     namespace Events.Models
@@ -25,7 +26,7 @@ namespace EventManager.DataAccess
         public class ExtendedLog : Log<string>, IPrimaryKeyEntity<string>, IAuditableEntity,
             IPermissionEntity
         {
-            public ExtendedLog(IHttpContextAccessor accessor, IIdentityManager accountManager)
+            public ExtendedLog(IHttpContextAccessor accessor)
             {
                 if (accessor != null && accessor.HttpContext != null)
                 {
@@ -46,11 +47,7 @@ namespace EventManager.DataAccess
                     User = context.User?.Identity?.Name;
                     if (string.IsNullOrEmpty(User))
                     {
-                        string subject = context.User?.FindFirst(JwtClaimTypes.Subject)?.Value?.Trim();
-                        if (!string.IsNullOrEmpty(subject))
-                        {
-                            User = accountManager.GetUserByIdAsync(subject).Result.FriendlyName;
-                        }
+                        User = context.User?.FindFirst(JwtClaimTypes.GivenName)?.Value?.Trim();
                     }
 
                     // Host

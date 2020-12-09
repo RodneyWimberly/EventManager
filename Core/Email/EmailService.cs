@@ -1,5 +1,4 @@
-﻿using EventManager.Core.Logging;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;

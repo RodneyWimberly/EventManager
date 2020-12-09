@@ -1,0 +1,10 @@
+{
+  "auth_provider": "Internal",
+  "user": "admin",
+  "password": "P@55w0rd",
+  "issuer": "https://localhost:5001",
+  "grant_type": "password",
+  "scope": "openid email phone profile offline_access roles urn:eventmanager:api:gateway",
+  "client_id": "urn:eventmanager:client:js:resourceowner",
+  "client_secret":"eventmanagersecret"
+}

@@ -9,7 +9,6 @@ namespace EventManager.DataAccess
         public static ReadOnlyCollection<Permission> AllPermissions;
         public static ReadOnlyCollection<Permission> AdminPermissions;
 
-
         static Permissions()
         {
             /*
@@ -31,23 +30,11 @@ namespace EventManager.DataAccess
             }
             AllPermissions = allPermissions.AsReadOnly();
             AdminPermissions = adminPermissions.AsReadOnly();*/
-            List<Permission> allPermissions = new List<Permission>()
-            {
-                ViewLogs,
-                ManageLogs,
-
-                ViewEvents,
-                ManageEvents,
-                ExecuteEvents,
-
-                ViewUsers,
-                ManageUsers,
-
-                ViewRoles,
-                ManageRoles,
-                AssignRoles
-            };
-
+            List<Permission> allPermissions = new List<Permission>();
+            allPermissions.AddRange(LogsPermissions);
+            allPermissions.AddRange(EventsPermissions);
+            allPermissions.AddRange(UsersPermissions);
+            allPermissions.AddRange(RolesPermissions);
             AllPermissions = allPermissions.AsReadOnly();
         }
 

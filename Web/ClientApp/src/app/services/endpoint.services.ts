@@ -25,18 +25,20 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 import { AuthProviders } from '../models/user-login.model';
 import { error, exception } from 'console';
 import { AlertCommand, AlertMessage, AlertService, MessageSeverity } from './alert.service';
+import { AuthProvidersModel } from '../models/enum.models';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable()
 export class AuthEndpointService {
-  public get baseUrl(): string { return this.configurations.baseUrl; }
-  public get loginUrl(): string { return this.configurations.loginUrl; }
-  public get homeUrl(): string { return this.configurations.homeUrl; }
-  public get authProviderType(): AuthProviders { return this.configurations.authProviderType }
-  public set authProviderType(authProvider: AuthProviders) { this.configurations.authProviderType = authProvider; }
-  public get authProvider() { return this.configurations.authProvider; }
-  public get authConfig(): AuthConfig { return this.configurations.authConfig; }
+  public get webBaseUrl(): string { return this.configService.webBaseUrl; }
+  public get loginUrl(): string { return this.configService.loginUrl; }
+  public get homeUrl(): string { return this.configService.homeUrl; }
+  public get apiBaseUrl(): string { return this.configService.apiBaseUrl + '/v' + this.apiVersion; }
+  public get apiVersion(): string { return this.configService.apiVersion; }
+  public get authConfig(): AuthConfig { return this.configService.authConfig; }
+  public get authProvider(): AuthProvidersModel { return this.configService.authProvider; }
+  public set authProvider(value: AuthProvidersModel) { this.configService.authProvider = value; }
   public loginRedirectUrl: string;
   public logoutRedirectUrl: string;
   public reLoginDelegate: () => void;
@@ -47,18 +49,18 @@ export class AuthEndpointService {
   constructor(
     @Inject(Router) private router: Router,
     @Inject(OAuthService) public oAuthService: OAuthService,
-    @Inject(ConfigurationService) private configurations: ConfigurationService,
-      @Inject(LocalStorageService) private localStorage: LocalStorageService,
-      @Inject(AlertService)  private alertService: AlertService) {
+    @Inject(ConfigurationService) private configService: ConfigurationService,
+    @Inject(LocalStorageService) private storageService: LocalStorageService,
+    @Inject(AlertService) private alertService: AlertService) {
 
     this.initializeLoginStatus();
   }
 
-    private initializeLoginStatus() {
-        this.localStorage.getInitEvent().subscribe(() => {
-            this.reevaluateLoginStatus();
-        });
-    }
+  private initializeLoginStatus() {
+    this.storageService.getInitEvent().subscribe(() => {
+      this.reevaluateLoginStatus();
+    });
+  }
 
   gotoPage(page: string, preserveParams = true) {
     const navigationExtras: NavigationExtras = {
@@ -102,7 +104,7 @@ export class AuthEndpointService {
   reLogin() {
     if (this.reLoginDelegate)
       this.reLoginDelegate();
-    else 
+    else
       this.redirectForLogin();
   }
 
@@ -111,43 +113,43 @@ export class AuthEndpointService {
       return from(this.refreshLoginAuthProvider()).pipe(
         map(() => this.processLoginResponse(this.oAuthService.getAccessToken(), this.rememberMe)));
     } else {
-      this.configureAuthService(this.rememberMe);
+      this.configureAuthService();
       return from(this.oAuthService.loadDiscoveryDocument())
         .pipe(mergeMap(() => this.refreshLogin()));
     }
   }
 
   private refreshLoginAuthProvider() {
-    if (this.authProviderType == AuthProviders.IdentityServer)
+    if (this.authProvider == 'idsvr')
       return this.oAuthService.refreshToken()
     else
       return this.oAuthService.silentRefresh();
   }
 
-    async login(authProviderType: AuthProviders, userName?: string, password?: string, rememberMe?: boolean) {
-        if (this.isLoggedIn) this.logout();
-        this.alertService.startLoadingMessage("Attempting login...");
-        
-        this.authProviderType = authProviderType;
-        this.configureAuthService(rememberMe);
-        await this.oAuthService.loadDiscoveryDocument();
-        if (this.authProviderType == AuthProviders.IdentityServer) {
-            await this.oAuthService.fetchTokenUsingPasswordFlow(userName, password);
-            this.processLoginResponse(this.oAuthService.getAccessToken(), rememberMe);
-        }
-        else 
-            await this.oAuthService.initImplicitFlow();
-    }
+  async login(authProvider: AuthProvidersModel, userName?: string, password?: string, rememberMe?: boolean) {
+    if (this.isLoggedIn) this.logout();
+    this.alertService.startLoadingMessage("Attempting login...");
 
-  public configureAuthService(rememberMe?: boolean) {
+    this.authProvider = authProvider;
+    this.configureAuthService();
+    AuthStorageService.RememberMe = rememberMe;
+    await this.oAuthService.loadDiscoveryDocument();
+    if (this.authProvider == 'idsvr') {
+      await this.oAuthService.fetchTokenUsingPasswordFlow(userName, password);
+      this.processLoginResponse(this.oAuthService.getAccessToken(), rememberMe);
+    }
+    else
+      await this.oAuthService.initImplicitFlow();
+  }
+
+  public configureAuthService() {
     this.oAuthService.configure(this.authConfig);
     this.oAuthService.tokenValidationHandler = new JwksValidationHandler();
-    AuthStorageService.RememberMe = rememberMe;
   }
 
   async processImplicitFlowResponse() {
     try {
-      this.configureAuthService(true);
+      this.configureAuthService();
       if (await this.oAuthService.loadDiscoveryDocumentAndLogin({ disableOAuth2StateCheck: true, preventClearHashAfterLogin: false })
         && this.oAuthService.hasValidAccessToken) {
         this.oAuthService.setupAutomaticSilentRefresh();
@@ -166,7 +168,7 @@ export class AuthEndpointService {
         'account_selection_required',
         'consent_required',
       ];
-      if (error && error.reason && errorsRequiringUserInteraction.indexOf(error.reason.error) >= 0) 
+      if (error && error.reason && errorsRequiringUserInteraction.indexOf(error.reason.error) >= 0)
         this.oAuthService.initImplicitFlow();
       else
         throwError(error);
@@ -182,7 +184,7 @@ export class AuthEndpointService {
     const permissions: PermissionValues[] = Array.isArray(decodedAccessToken.permission) ? decodedAccessToken.permission : [decodedAccessToken.permission];
 
     if (!this.isLoggedIn)
-      this.configurations.import(decodedAccessToken.configuration);
+      this.configService.import(decodedAccessToken.configuration);
 
     const user = new UserViewModel();
     user.id = decodedAccessToken.sub;
@@ -204,30 +206,30 @@ export class AuthEndpointService {
 
   private saveUserDetails(user: UserViewModel, permissions: PermissionValues[], rememberMe: boolean) {
     if (rememberMe) {
-      this.localStorage.savePermanentData(permissions, DbKeys.USER_PERMISSIONS);
-      this.localStorage.savePermanentData(user, DbKeys.CURRENT_USER);
+      this.storageService.savePermanentData(permissions, DbKeys.USER_PERMISSIONS);
+      this.storageService.savePermanentData(user, DbKeys.CURRENT_USER);
     } else {
-      this.localStorage.saveSyncedSessionData(permissions, DbKeys.USER_PERMISSIONS);
-      this.localStorage.saveSyncedSessionData(user, DbKeys.CURRENT_USER);
+      this.storageService.saveSyncedSessionData(permissions, DbKeys.USER_PERMISSIONS);
+      this.storageService.saveSyncedSessionData(user, DbKeys.CURRENT_USER);
     }
 
-    this.localStorage.savePermanentData(rememberMe, DbKeys.REMEMBER_ME);
+    this.storageService.savePermanentData(rememberMe, DbKeys.REMEMBER_ME);
   }
 
   logout(): void {
-    this.localStorage.deleteData(DbKeys.USER_PERMISSIONS);
-    this.localStorage.deleteData(DbKeys.CURRENT_USER);
+    this.storageService.deleteData(DbKeys.USER_PERMISSIONS);
+    this.storageService.deleteData(DbKeys.CURRENT_USER);
 
-    this.configurations.clearLocalChanges();
+    this.configService.clearLocalChanges();
     this.oAuthService.logOut(true);
 
     this.reevaluateLoginStatus();
   }
 
   private reevaluateLoginStatus(currentUser?: UserViewModel) {
-    const user = currentUser || this.localStorage.getDataObject<UserViewModel>(DbKeys.CURRENT_USER);
+    const user = currentUser || this.storageService.getDataObject<UserViewModel>(DbKeys.CURRENT_USER);
     const isLoggedIn = user != null && this.oAuthService.hasValidAccessToken();
-    
+
     if (this._previousIsLoggedInCheck != isLoggedIn) {
       setTimeout(() => {
         this._loginStatus.next(isLoggedIn);
@@ -243,18 +245,18 @@ export class AuthEndpointService {
 
   get currentUser(): UserViewModel {
 
-    const user = this.localStorage.getDataObject<UserViewModel>(DbKeys.CURRENT_USER);
+    const user = this.storageService.getDataObject<UserViewModel>(DbKeys.CURRENT_USER);
     this.reevaluateLoginStatus(user);
 
     return user;
   }
 
   get userPermissions(): PermissionValue[] {
-    return this.localStorage.getDataObject<PermissionValue[]>(DbKeys.USER_PERMISSIONS) || [];
+    return this.storageService.getDataObject<PermissionValue[]>(DbKeys.USER_PERMISSIONS) || [];
   }
 
   get accessToken(): string {
-    return this.authProviderType == AuthProviders.IdentityServer ?
+    return this.authProvider == 'idsvr' ?
       this.oAuthService.getAccessToken() :
       this.oAuthService.getIdToken();
   }
@@ -280,7 +282,7 @@ export class AuthEndpointService {
   }
 
   get rememberMe(): boolean {
-    return this.localStorage.getDataObject<boolean>(DbKeys.REMEMBER_ME) == true;
+    return this.storageService.getDataObject<boolean>(DbKeys.REMEMBER_ME) == true;
   }
 }
 
@@ -288,17 +290,16 @@ export class BaseEndpointService {
 
   private taskPauser: Subject<any>;
   private isRefreshingLogin: boolean;
+  protected get apiBaseUrl(): string { return this.configService.apiBaseUrl + '/v' + this.apiVersion; }
+  protected get apiVersion(): string { return this.configService.apiVersion; }
 
-  constructor(private authEndpointService: AuthEndpointService) {
-  }
-
-  protected getBaseUrl(defaultUrl: string): string {
-    return this.authEndpointService.baseUrl;
+  constructor(protected configService: ConfigurationService,
+    protected authService: AuthEndpointService) {
   }
 
   protected transformOptions(options: any): Promise<any> {
     options.headers = new HttpHeaders({
-      Authorization: (this.authEndpointService.authProviderType == AuthProviders.IdentityServer ? 'Bearer ' : 'Bearer ') + this.authEndpointService.accessToken,
+      Authorization: 'Bearer ' + this.authService.accessToken,
       'Content-Type': 'application/json',
       Accept: 'application/json, text/plain, */*'
     });
@@ -312,7 +313,7 @@ export class BaseEndpointService {
   }
 
   public refreshLogin(): Observable<any> {
-    return this.authEndpointService.refreshLogin().pipe(
+    return this.authService.refreshLogin().pipe(
       catchError(error => {
         return this.handleError(error, () => this.refreshLogin());
       }));
@@ -326,7 +327,7 @@ export class BaseEndpointService {
 
       this.isRefreshingLogin = true;
 
-      return from(this.authEndpointService.refreshLogin()).pipe(
+      return from(this.authService.refreshLogin()).pipe(
         mergeMap(() => {
           this.isRefreshingLogin = false;
           this.resumeTasks(true);
@@ -336,7 +337,7 @@ export class BaseEndpointService {
         catchError(refreshLoginError => {
           this.isRefreshingLogin = false;
           this.resumeTasks(false);
-          this.authEndpointService.reLogin();
+          this.authService.reLogin();
 
           if (refreshLoginError.status == 401 || (refreshLoginError.error && refreshLoginError.error.error == 'invalid_grant')) {
             return throwError('session expired');
@@ -347,7 +348,7 @@ export class BaseEndpointService {
     }
 
     if (error.error && error.error.error == 'invalid_grant') {
-      this.authEndpointService.reLogin();
+      this.authService.reLogin();
 
       return throwError((error.error && error.error.error_description) ? `session expired (${error.error.error_description})` : 'session expired');
     } else {
@@ -382,14 +383,14 @@ export class AccountEndpointService extends BaseEndpointService {
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(@Inject(AuthEndpointService) configuration: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-    super(configuration);
+  constructor(@Inject(ConfigurationService) configService: ConfigurationService, @Inject(AuthEndpointService) authService: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    super(configService, authService);
     this.http = http;
-    this.baseUrl = baseUrl ? baseUrl : this.getBaseUrl("");
+    this.baseUrl = baseUrl ? baseUrl : this.apiBaseUrl;
   }
 
   getCurrentUser(): Observable<UserViewModel> {
-    let url_ = this.baseUrl + "/api/Account/users/me";
+    let url_ = this.baseUrl + "/Account/users/me";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -439,7 +440,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   updateCurrentUser(user: UserEditViewModel): Observable<void> {
-    let url_ = this.baseUrl + "/api/Account/users/me";
+    let url_ = this.baseUrl + "/Account/users/me";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(user);
@@ -503,7 +504,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   updateCurrentUser2(patch: Operation[]): Observable<void> {
-    let url_ = this.baseUrl + "/api/Account/users/me";
+    let url_ = this.baseUrl + "/Account/users/me";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(patch);
@@ -560,7 +561,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getUserById(id: string | null): Observable<UserViewModel> {
-    let url_ = this.baseUrl + "/api/Account/users/{id}";
+    let url_ = this.baseUrl + "/Account/users/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -627,7 +628,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   updateUser(id: string | null, user: UserEditViewModel): Observable<void> {
-    let url_ = this.baseUrl + "/api/Account/users/{id}";
+    let url_ = this.baseUrl + "/Account/users/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -701,7 +702,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   updateUser2(id: string | null, patch: Operation[]): Observable<void> {
-    let url_ = this.baseUrl + "/api/Account/users/{id}";
+    let url_ = this.baseUrl + "/Account/users/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -775,7 +776,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   deleteUser(id: string | null): Observable<UserViewModel> {
-    let url_ = this.baseUrl + "/api/Account/users/{id}";
+    let url_ = this.baseUrl + "/Account/users/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -849,7 +850,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getUserByUserName(userName: string | null): Observable<UserViewModel> {
-    let url_ = this.baseUrl + "/api/Account/users/username/{userName}";
+    let url_ = this.baseUrl + "/Account/users/username/{userName}";
     if (userName === undefined || userName === null)
       throw new Error("The parameter 'userName' must be defined.");
     url_ = url_.replace("{userName}", encodeURIComponent("" + userName));
@@ -916,7 +917,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getUsersAll(): Observable<UserViewModel[]> {
-    let url_ = this.baseUrl + "/api/Account/users";
+    let url_ = this.baseUrl + "/Account/users";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -970,7 +971,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   register(user: UserEditViewModel): Observable<UserViewModel> {
-    let url_ = this.baseUrl + "/api/Account/users";
+    let url_ = this.baseUrl + "/Account/users";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(user);
@@ -1038,7 +1039,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getUsers(pageNumber: number, pageSize: number): Observable<UserViewModel[]> {
-    let url_ = this.baseUrl + "/api/Account/users/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/Account/users/{pageNumber}/{pageSize}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -1098,7 +1099,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   unblockUser(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/Account/users/unblock/{id}";
+    let url_ = this.baseUrl + "/Account/users/unblock/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1154,7 +1155,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   userPreferences(): Observable<string> {
-    let url_ = this.baseUrl + "/api/Account/users/me/preferences";
+    let url_ = this.baseUrl + "/Account/users/me/preferences";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -1204,7 +1205,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   userPreferences2(data: string): Observable<void> {
-    let url_ = this.baseUrl + "/api/Account/users/me/preferences";
+    let url_ = this.baseUrl + "/Account/users/me/preferences";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(data);
@@ -1254,7 +1255,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getRoleById(id: string | null): Observable<RoleViewModel> {
-    let url_ = this.baseUrl + "/api/Account/roles/{id}";
+    let url_ = this.baseUrl + "/Account/roles/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1321,7 +1322,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   updateRole(id: string | null, role: RoleViewModel): Observable<void> {
-    let url_ = this.baseUrl + "/api/Account/roles/{id}";
+    let url_ = this.baseUrl + "/Account/roles/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1388,7 +1389,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   deleteRole(id: string | null): Observable<RoleViewModel> {
-    let url_ = this.baseUrl + "/api/Account/roles/{id}";
+    let url_ = this.baseUrl + "/Account/roles/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1455,7 +1456,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getRoleByName(name: string | null): Observable<RoleViewModel> {
-    let url_ = this.baseUrl + "/api/Account/roles/name/{name}";
+    let url_ = this.baseUrl + "/Account/roles/name/{name}";
     if (name === undefined || name === null)
       throw new Error("The parameter 'name' must be defined.");
     url_ = url_.replace("{name}", encodeURIComponent("" + name));
@@ -1522,7 +1523,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getRolesAll(): Observable<RoleViewModel[]> {
-    let url_ = this.baseUrl + "/api/Account/roles";
+    let url_ = this.baseUrl + "/Account/roles";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -1576,7 +1577,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   createRole(role: RoleViewModel): Observable<RoleViewModel> {
-    let url_ = this.baseUrl + "/api/Account/roles";
+    let url_ = this.baseUrl + "/Account/roles";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(role);
@@ -1637,7 +1638,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getRoles(pageNumber: number, pageSize: number): Observable<RoleViewModel[]> {
-    let url_ = this.baseUrl + "/api/Account/roles/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/Account/roles/{pageNumber}/{pageSize}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -1697,7 +1698,7 @@ export class AccountEndpointService extends BaseEndpointService {
   }
 
   getAllPermissions(): Observable<PermissionViewModel[]> {
-    let url_ = this.baseUrl + "/api/Account/permissions";
+    let url_ = this.baseUrl + "/Account/permissions";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -1757,14 +1758,14 @@ export class EventEndpointService extends BaseEndpointService {
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(@Inject(AuthEndpointService) configuration: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-    super(configuration);
+  constructor(@Inject(ConfigurationService) configService: ConfigurationService, @Inject(AuthEndpointService) authService: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    super(configService, authService);
     this.http = http;
-    this.baseUrl = baseUrl ? baseUrl : this.getBaseUrl("");
+    this.baseUrl = baseUrl ? baseUrl : this.apiBaseUrl;
   }
 
   getAllEvents(includePropertyPaths: string | null): Observable<Event[]> {
-    let url_ = this.baseUrl + "/api/Event/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{includePropertyPaths}";
     if (includePropertyPaths === undefined || includePropertyPaths === null)
       throw new Error("The parameter 'includePropertyPaths' must be defined.");
     url_ = url_.replace("{includePropertyPaths}", encodeURIComponent("" + includePropertyPaths));
@@ -1821,7 +1822,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventsPaged(pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<Event[]> {
-    let url_ = this.baseUrl + "/api/Event/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -1884,7 +1885,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getEvent(id: string | null, includePropertyPaths: string | null): Observable<Event> {
-    let url_ = this.baseUrl + "/api/Event/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1947,7 +1948,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   putEvent(id: string | null, includePropertyPaths: string | null, entity: Event): Observable<Event> {
-    let url_ = this.baseUrl + "/api/Event/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2014,7 +2015,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   patchEvent(id: string | null, includePropertyPaths: string | null, patch: Operation[]): Observable<Event> {
-    let url_ = this.baseUrl + "/api/Event/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2081,7 +2082,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   deleteEvent(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/Event/{id}";
+    let url_ = this.baseUrl + "/Event/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2137,7 +2138,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   postEvent(entity: Event): Observable<Event> {
-    let url_ = this.baseUrl + "/api/Event";
+    let url_ = this.baseUrl + "/Event";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(entity);
@@ -2198,7 +2199,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventLocations(includePropertyPaths: string | null): Observable<EventLocation[]> {
-    let url_ = this.baseUrl + "/api/Event/Location/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Location/{includePropertyPaths}";
     if (includePropertyPaths === undefined || includePropertyPaths === null)
       throw new Error("The parameter 'includePropertyPaths' must be defined.");
     url_ = url_.replace("{includePropertyPaths}", encodeURIComponent("" + includePropertyPaths));
@@ -2255,7 +2256,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventLocationsPaged(pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventLocation[]> {
-    let url_ = this.baseUrl + "/api/Event/Location/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Location/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -2318,7 +2319,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventLocationsByEvent(eventId: string | null, includePropertyPaths: string | null): Observable<EventLocation[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Location/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Location/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -2378,7 +2379,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventLocationsByEventPaged(eventId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventLocation[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Location/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Location/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -2444,7 +2445,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventLocationsByEventSchedule(eventScheduleId: string | null, includePropertyPaths: string | null): Observable<EventLocation[]> {
-    let url_ = this.baseUrl + "/api/Event/Location/Schedule/{eventScheduleId}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Location/Schedule/{eventScheduleId}/{includePropertyPaths}";
     if (eventScheduleId === undefined || eventScheduleId === null)
       throw new Error("The parameter 'eventScheduleId' must be defined.");
     url_ = url_.replace("{eventScheduleId}", encodeURIComponent("" + eventScheduleId));
@@ -2504,7 +2505,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventLocationsByEventSchedulePaged(eventScheduleId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventLocation[]> {
-    let url_ = this.baseUrl + "/api/Event/Location/Schedule/{eventScheduleId}/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Location/Schedule/{eventScheduleId}/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventScheduleId === undefined || eventScheduleId === null)
       throw new Error("The parameter 'eventScheduleId' must be defined.");
     url_ = url_.replace("{eventScheduleId}", encodeURIComponent("" + eventScheduleId));
@@ -2570,7 +2571,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getEventLocation(id: string | null, includePropertyPaths: string | null): Observable<EventLocation> {
-    let url_ = this.baseUrl + "/api/Event/Location/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Location/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2633,7 +2634,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   putEventLocation(id: string | null, includePropertyPaths: string | null, entity: EventLocation): Observable<EventLocation> {
-    let url_ = this.baseUrl + "/api/Event/Location/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Location/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2700,7 +2701,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   patchEventLocation(id: string | null, includePropertyPaths: string | null, patch: Operation[]): Observable<EventLocation> {
-    let url_ = this.baseUrl + "/api/Event/Location/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Location/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2767,7 +2768,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   deleteEventLocation(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/Event/Location/{id}";
+    let url_ = this.baseUrl + "/Event/Location/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2823,7 +2824,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   postEventLocation(entity: EventLocation): Observable<EventLocation> {
-    let url_ = this.baseUrl + "/api/Event/Location";
+    let url_ = this.baseUrl + "/Event/Location";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(entity);
@@ -2884,7 +2885,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventSchedules(includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Schedule/{includePropertyPaths}";
     if (includePropertyPaths === undefined || includePropertyPaths === null)
       throw new Error("The parameter 'includePropertyPaths' must be defined.");
     url_ = url_.replace("{includePropertyPaths}", encodeURIComponent("" + includePropertyPaths));
@@ -2941,7 +2942,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventSchedulesPaged(pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Schedule/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -3004,7 +3005,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventSchedulesByEvent(eventId: string | null, includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Schedule/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Schedule/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -3064,7 +3065,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventSchedulesByEventPaged(eventId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Schedule/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Schedule/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -3130,7 +3131,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventSchedulesByEventLocation(eventLocationId: string | null, includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/Location/{eventLocationId}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Schedule/Location/{eventLocationId}/{includePropertyPaths}";
     if (eventLocationId === undefined || eventLocationId === null)
       throw new Error("The parameter 'eventLocationId' must be defined.");
     url_ = url_.replace("{eventLocationId}", encodeURIComponent("" + eventLocationId));
@@ -3190,7 +3191,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventSchedulesByEventLocationPaged(eventLocationId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/Location/{eventLocationId}/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Schedule/Location/{eventLocationId}/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventLocationId === undefined || eventLocationId === null)
       throw new Error("The parameter 'eventLocationId' must be defined.");
     url_ = url_.replace("{eventLocationId}", encodeURIComponent("" + eventLocationId));
@@ -3256,7 +3257,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getEventSchedule(id: string | null, includePropertyPaths: string | null): Observable<EventSchedule> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Schedule/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -3319,7 +3320,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   putEventSchedule(id: string | null, includePropertyPaths: string | null, entity: EventSchedule): Observable<EventSchedule> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Schedule/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -3386,7 +3387,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   patchEventSchedule(id: string | null, includePropertyPaths: string | null, patch: Operation[]): Observable<EventSchedule> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Schedule/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -3453,7 +3454,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   deleteEventSchedule(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/Event/Schedule/{id}";
+    let url_ = this.baseUrl + "/Event/Schedule/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -3509,7 +3510,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   postEventSchedule(entity: EventSchedule): Observable<EventSchedule> {
-    let url_ = this.baseUrl + "/api/Event/Schedule";
+    let url_ = this.baseUrl + "/Event/Schedule";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(entity);
@@ -3570,7 +3571,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrences(includePropertyPaths: string | null): Observable<EventOccurance[]> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/{includePropertyPaths}";
     if (includePropertyPaths === undefined || includePropertyPaths === null)
       throw new Error("The parameter 'includePropertyPaths' must be defined.");
     url_ = url_.replace("{includePropertyPaths}", encodeURIComponent("" + includePropertyPaths));
@@ -3627,7 +3628,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrencesPaged(pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventOccurance[]> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -3690,7 +3691,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrencesByEvent(eventId: string | null, includePropertyPaths: string | null): Observable<EventOccurance[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Occurrence/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Occurrence/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -3750,7 +3751,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrencesByEventPaged(eventId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventOccurance[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Occurrence/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Occurrence/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -3816,7 +3817,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrencesByEventLocation(eventLocationId: string | null, includePropertyPaths: string | null): Observable<EventOccurance[]> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/Location/{eventLocationid}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/Location/{eventLocationid}/{includePropertyPaths}";
     if (eventLocationId === undefined || eventLocationId === null)
       throw new Error("The parameter 'eventLocationId' must be defined.");
     url_ = url_.replace("{eventLocationId}", encodeURIComponent("" + eventLocationId));
@@ -3876,7 +3877,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrencesByEventLocationPaged(eventLocationId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/Location/{eventLocationid}/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/Location/{eventLocationid}/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventLocationId === undefined || eventLocationId === null)
       throw new Error("The parameter 'eventLocationId' must be defined.");
     url_ = url_.replace("{eventLocationId}", encodeURIComponent("" + eventLocationId));
@@ -3942,7 +3943,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrencesByEventSchedule(eventScheduleId: string | null, includePropertyPaths: string | null): Observable<EventOccurance[]> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/Schedule/{eventScheduleid}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/Schedule/{eventScheduleid}/{includePropertyPaths}";
     if (eventScheduleId === undefined || eventScheduleId === null)
       throw new Error("The parameter 'eventScheduleId' must be defined.");
     url_ = url_.replace("{eventScheduleId}", encodeURIComponent("" + eventScheduleId));
@@ -4002,7 +4003,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventOccurrencesByEventSchedulePaged(eventScheduleid: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventSchedule[]> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/Schedule/{eventScheduleid}/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/Schedule/{eventScheduleid}/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventScheduleid === undefined || eventScheduleid === null)
       throw new Error("The parameter 'eventScheduleid' must be defined.");
     url_ = url_.replace("{eventScheduleid}", encodeURIComponent("" + eventScheduleid));
@@ -4068,7 +4069,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getEventOccurrence(id: string | null, includePropertyPaths: string | null): Observable<EventOccurance> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -4131,7 +4132,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   putEventOccurrence(id: string | null, includePropertyPaths: string | null, entity: EventOccurance): Observable<EventOccurance> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -4198,7 +4199,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   patchEventOccurrence(id: string | null, includePropertyPaths: string | null, patch: Operation[]): Observable<EventOccurance> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Occurrence/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -4265,7 +4266,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   deleteEventOccurrence(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence/{id}";
+    let url_ = this.baseUrl + "/Event/Occurrence/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -4321,7 +4322,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   postEventOccurrence(entity: EventOccurance): Observable<EventOccurance> {
-    let url_ = this.baseUrl + "/api/Event/Occurrence";
+    let url_ = this.baseUrl + "/Event/Occurrence";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(entity);
@@ -4382,7 +4383,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventServices(includePropertyPaths: string | null): Observable<EventService[]> {
-    let url_ = this.baseUrl + "/api/Event/Service/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Service/{includePropertyPaths}";
     if (includePropertyPaths === undefined || includePropertyPaths === null)
       throw new Error("The parameter 'includePropertyPaths' must be defined.");
     url_ = url_.replace("{includePropertyPaths}", encodeURIComponent("" + includePropertyPaths));
@@ -4439,7 +4440,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventServicesPaged(pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventService[]> {
-    let url_ = this.baseUrl + "/api/Event/Service/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Service/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -4502,7 +4503,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventServicesByEvent(eventId: string | null, includePropertyPaths: string | null): Observable<EventService[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Service/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Service/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -4562,7 +4563,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventServicesByEventPaged(eventId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventService[]> {
-    let url_ = this.baseUrl + "/api/Event/{eventId}/Service/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/{eventId}/Service/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (eventId === undefined || eventId === null)
       throw new Error("The parameter 'eventId' must be defined.");
     url_ = url_.replace("{eventId}", encodeURIComponent("" + eventId));
@@ -4628,7 +4629,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventServicesByService(serviceId: string | null, includePropertyPaths: string | null): Observable<EventService[]> {
-    let url_ = this.baseUrl + "/api/Event/Service/Service/{serviceId}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Service/Service/{serviceId}/{includePropertyPaths}";
     if (serviceId === undefined || serviceId === null)
       throw new Error("The parameter 'serviceId' must be defined.");
     url_ = url_.replace("{serviceId}", encodeURIComponent("" + serviceId));
@@ -4688,7 +4689,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getAllEventServicesByServicePaged(serviceId: string | null, pageNumber: number, pageSize: number, includePropertyPaths: string | null): Observable<EventService[]> {
-    let url_ = this.baseUrl + "/api/Event/Service/Service/{serviceId}/{pageNumber}/{pageSize}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Service/Service/{serviceId}/{pageNumber}/{pageSize}/{includePropertyPaths}";
     if (serviceId === undefined || serviceId === null)
       throw new Error("The parameter 'serviceId' must be defined.");
     url_ = url_.replace("{serviceId}", encodeURIComponent("" + serviceId));
@@ -4754,7 +4755,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   getEventService(id: string | null, includePropertyPaths: string | null): Observable<EventService> {
-    let url_ = this.baseUrl + "/api/Event/Service/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Service/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -4817,7 +4818,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   putEventService(id: string | null, includePropertyPaths: string | null, entity: EventService): Observable<EventService> {
-    let url_ = this.baseUrl + "/api/Event/Service/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Service/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -4884,7 +4885,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   patchEventService(id: string | null, includePropertyPaths: string | null, patch: Operation[]): Observable<EventService> {
-    let url_ = this.baseUrl + "/api/Event/Service/{id}/{includePropertyPaths}";
+    let url_ = this.baseUrl + "/Event/Service/{id}/{includePropertyPaths}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -4951,7 +4952,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   deleteEventService(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/Event/Service/{id}";
+    let url_ = this.baseUrl + "/Event/Service/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -5007,7 +5008,7 @@ export class EventEndpointService extends BaseEndpointService {
   }
 
   postEventService(entity: EventService): Observable<EventService> {
-    let url_ = this.baseUrl + "/api/Event/Service";
+    let url_ = this.baseUrl + "/Event/Service";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(entity);
@@ -5074,14 +5075,14 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(@Inject(AuthEndpointService) configuration: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-    super(configuration);
+  constructor(@Inject(ConfigurationService) configService: ConfigurationService, @Inject(AuthEndpointService) authService: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    super(configService, authService);
     this.http = http;
-    this.baseUrl = baseUrl ? baseUrl : this.getBaseUrl("");
+    this.baseUrl = baseUrl ? baseUrl : this.apiBaseUrl;
   }
 
   getAll(): Observable<ExtendedLogViewModel[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLog";
+    let url_ = this.baseUrl + "/ExtendedLog";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -5135,7 +5136,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   deleteAll(): Observable<void> {
-    let url_ = this.baseUrl + "/api/ExtendedLog";
+    let url_ = this.baseUrl + "/ExtendedLog";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -5181,7 +5182,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   post(extendedLogVM: ExtendedLogViewModel): Observable<ExtendedLogViewModel> {
-    let url_ = this.baseUrl + "/api/ExtendedLog";
+    let url_ = this.baseUrl + "/ExtendedLog";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(extendedLogVM);
@@ -5242,7 +5243,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   getAllPaged(pageNumber: number, pageSize: number): Observable<ExtendedLogViewModel[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLog/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/ExtendedLog/{pageNumber}/{pageSize}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -5302,7 +5303,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   getByLevel(level: number): Observable<ExtendedLogViewModel[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLog/level/{level}";
+    let url_ = this.baseUrl + "/ExtendedLog/level/{level}";
     if (level === undefined || level === null)
       throw new Error("The parameter 'level' must be defined.");
     url_ = url_.replace("{level}", encodeURIComponent("" + level));
@@ -5366,7 +5367,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   getByLevelPaged(level: number, pageNumber: number, pageSize: number): Observable<ExtendedLogViewModel[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLog/level/{level}/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/ExtendedLog/level/{level}/{pageNumber}/{pageSize}";
     if (level === undefined || level === null)
       throw new Error("The parameter 'level' must be defined.");
     url_ = url_.replace("{level}", encodeURIComponent("" + level));
@@ -5436,7 +5437,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   get(id: string | null): Observable<ExtendedLogViewModel> {
-    let url_ = this.baseUrl + "/api/ExtendedLog/{id}";
+    let url_ = this.baseUrl + "/ExtendedLog/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -5496,7 +5497,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   delete(id: string | null): Observable<ExtendedLogViewModel> {
-    let url_ = this.baseUrl + "/api/ExtendedLog/{id}";
+    let url_ = this.baseUrl + "/ExtendedLog/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -5556,7 +5557,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   put(id: string | null, extendedLogVM: ExtendedLogViewModel): Observable<void> {
-    let url_ = this.baseUrl + "/api/ExtendedLog/{id}";
+    let url_ = this.baseUrl + "/ExtendedLog/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -5616,7 +5617,7 @@ export class ExtendedLogEndpointService extends BaseEndpointService {
   }
 
   patch(id: string | null, patch: Operation[]): Observable<void> {
-    let url_ = this.baseUrl + "/api/ExtendedLog/{id}";
+    let url_ = this.baseUrl + "/ExtendedLog/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -5682,14 +5683,14 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(@Inject(AuthEndpointService) configuration: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-    super(configuration);
+  constructor(@Inject(ConfigurationService) configService: ConfigurationService, @Inject(AuthEndpointService) authService: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    super(configService, authService);
     this.http = http;
-    this.baseUrl = baseUrl ? baseUrl : this.getBaseUrl("");
+    this.baseUrl = baseUrl ? baseUrl : this.apiBaseUrl;
   }
 
   getAllExtendedLogs(): Observable<ExtendedLog[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -5743,7 +5744,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   deleteAllExtendedLogs(): Observable<void> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -5789,7 +5790,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   postExtendedLog(entity: ExtendedLog): Observable<ExtendedLog> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(entity);
@@ -5850,7 +5851,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   getAllExtendedLogsPaged(pageNumber: number, pageSize: number): Observable<ExtendedLog[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew/{pageNumber}/{pageSize}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -5910,7 +5911,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   getExtendedLogsByLevel(level: number): Observable<ExtendedLog[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew/level/{level}";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew/level/{level}";
     if (level === undefined || level === null)
       throw new Error("The parameter 'level' must be defined.");
     url_ = url_.replace("{level}", encodeURIComponent("" + level));
@@ -5974,7 +5975,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   getExtendedLogsByLevelPaged(level: number, pageNumber: number, pageSize: number): Observable<ExtendedLog[]> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew/level/{level}/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew/level/{level}/{pageNumber}/{pageSize}";
     if (level === undefined || level === null)
       throw new Error("The parameter 'level' must be defined.");
     url_ = url_.replace("{level}", encodeURIComponent("" + level));
@@ -6044,7 +6045,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   getExtendedLog(id: string | null): Observable<ExtendedLog> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew/{id}";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6104,7 +6105,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   deleteExtendedLog(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew/{id}";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6160,7 +6161,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   putExtendedLog(id: string | null, entity: ExtendedLog): Observable<void> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew/{id}";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6220,7 +6221,7 @@ export class ExtendedLogControllerNewEndpointService extends BaseEndpointService
   }
 
   patchExtendedLog(id: string | null, patch: Operation[]): Observable<void> {
-    let url_ = this.baseUrl + "/api/ExtendedLogControllerNew/{id}";
+    let url_ = this.baseUrl + "/ExtendedLogControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6286,14 +6287,14 @@ export class NotificationEndpointService extends BaseEndpointService {
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(@Inject(AuthEndpointService) configuration: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-    super(configuration);
+  constructor(@Inject(ConfigurationService) configService: ConfigurationService, @Inject(AuthEndpointService) authService: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    super(configService, authService);
     this.http = http;
-    this.baseUrl = baseUrl ? baseUrl : this.getBaseUrl("");
+    this.baseUrl = baseUrl ? baseUrl : this.apiBaseUrl;
   }
 
   getAll(): Observable<NotificationViewModel[]> {
-    let url_ = this.baseUrl + "/api/Notification";
+    let url_ = this.baseUrl + "/Notification";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -6347,7 +6348,7 @@ export class NotificationEndpointService extends BaseEndpointService {
   }
 
   post(notificationVM: NotificationViewModel): Observable<NotificationViewModel> {
-    let url_ = this.baseUrl + "/api/Notification";
+    let url_ = this.baseUrl + "/Notification";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(notificationVM);
@@ -6408,7 +6409,7 @@ export class NotificationEndpointService extends BaseEndpointService {
   }
 
   getAllPaged(pageNumber: number, pageSize: number): Observable<NotificationViewModel[]> {
-    let url_ = this.baseUrl + "/api/Notification/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/Notification/{pageNumber}/{pageSize}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -6468,7 +6469,7 @@ export class NotificationEndpointService extends BaseEndpointService {
   }
 
   get(id: string | null): Observable<NotificationViewModel> {
-    let url_ = this.baseUrl + "/api/Notification/{id}";
+    let url_ = this.baseUrl + "/Notification/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6528,7 +6529,7 @@ export class NotificationEndpointService extends BaseEndpointService {
   }
 
   delete(id: string | null): Observable<NotificationViewModel> {
-    let url_ = this.baseUrl + "/api/Notification/{id}";
+    let url_ = this.baseUrl + "/Notification/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6588,7 +6589,7 @@ export class NotificationEndpointService extends BaseEndpointService {
   }
 
   put(id: string | null, notificationVM: NotificationViewModel): Observable<void> {
-    let url_ = this.baseUrl + "/api/Notification/{id}";
+    let url_ = this.baseUrl + "/Notification/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6648,7 +6649,7 @@ export class NotificationEndpointService extends BaseEndpointService {
   }
 
   patch(id: string | null, patch: Operation[]): Observable<void> {
-    let url_ = this.baseUrl + "/api/Notification/{id}";
+    let url_ = this.baseUrl + "/Notification/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6714,14 +6715,14 @@ export class NotificationControllerNewEndpointService extends BaseEndpointServic
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(@Inject(AuthEndpointService) configuration: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-    super(configuration);
+  constructor(@Inject(ConfigurationService) configService: ConfigurationService, @Inject(AuthEndpointService) authService: AuthEndpointService, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    super(configService, authService);
     this.http = http;
-    this.baseUrl = baseUrl ? baseUrl : this.getBaseUrl("");
+    this.baseUrl = baseUrl ? baseUrl : this.apiBaseUrl;
   }
 
   getAllNotifications(): Observable<Notification[]> {
-    let url_ = this.baseUrl + "/api/NotificationControllerNew";
+    let url_ = this.baseUrl + "/NotificationControllerNew";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: any = {
@@ -6775,7 +6776,7 @@ export class NotificationControllerNewEndpointService extends BaseEndpointServic
   }
 
   postNotification(entity: Notification): Observable<Notification> {
-    let url_ = this.baseUrl + "/api/NotificationControllerNew";
+    let url_ = this.baseUrl + "/NotificationControllerNew";
     url_ = url_.replace(/[?&]$/, "");
 
     const content_ = JSON.stringify(entity);
@@ -6836,7 +6837,7 @@ export class NotificationControllerNewEndpointService extends BaseEndpointServic
   }
 
   getAllNotificationsPaged(pageNumber: number, pageSize: number): Observable<Notification[]> {
-    let url_ = this.baseUrl + "/api/NotificationControllerNew/{pageNumber}/{pageSize}";
+    let url_ = this.baseUrl + "/NotificationControllerNew/{pageNumber}/{pageSize}";
     if (pageNumber === undefined || pageNumber === null)
       throw new Error("The parameter 'pageNumber' must be defined.");
     url_ = url_.replace("{pageNumber}", encodeURIComponent("" + pageNumber));
@@ -6896,7 +6897,7 @@ export class NotificationControllerNewEndpointService extends BaseEndpointServic
   }
 
   getNotification(id: string | null): Observable<Notification> {
-    let url_ = this.baseUrl + "/api/NotificationControllerNew/{id}";
+    let url_ = this.baseUrl + "/NotificationControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -6956,7 +6957,7 @@ export class NotificationControllerNewEndpointService extends BaseEndpointServic
   }
 
   deleteNotification(id: string | null): Observable<void> {
-    let url_ = this.baseUrl + "/api/NotificationControllerNew/{id}";
+    let url_ = this.baseUrl + "/NotificationControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -7012,7 +7013,7 @@ export class NotificationControllerNewEndpointService extends BaseEndpointServic
   }
 
   putNotification(id: string | null, entity: Notification): Observable<void> {
-    let url_ = this.baseUrl + "/api/NotificationControllerNew/{id}";
+    let url_ = this.baseUrl + "/NotificationControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -7072,7 +7073,7 @@ export class NotificationControllerNewEndpointService extends BaseEndpointServic
   }
 
   patchNotification(id: string | null, patch: Operation[]): Observable<void> {
-    let url_ = this.baseUrl + "/api/NotificationControllerNew/{id}";
+    let url_ = this.baseUrl + "/NotificationControllerNew/{id}";
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
     url_ = url_.replace("{id}", encodeURIComponent("" + id));

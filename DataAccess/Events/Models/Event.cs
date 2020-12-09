@@ -1,3 +1,4 @@
+using EventManager.DataAccess.Core.Constants;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -5,10 +6,11 @@ namespace EventManager.DataAccess
 {
     public static partial class Permissions
     {
-        public const string EventsPermissionGroupName = "Event Permissions";
-        public static Permission ViewEvents = new Permission("View Events", "events.view", EventsPermissionGroupName, "Permission to view event details");
-        public static Permission ManageEvents = new Permission("Manage Events", "events.manage", EventsPermissionGroupName, "Permission to create, delete and modify event details");
-        public static Permission ExecuteEvents = new Permission("Execute Events", "events.execute", EventsPermissionGroupName, "Permission to execute events");
+        public static string EventsNamespace = $"{ApplicationValues.RootNamespace}:events";
+        public static Permission ViewEvents = new Permission("View Events", $"{EventsNamespace}:{PermissionType.View}", EventsNamespace, "Permission to view event details");
+        public static Permission ManageEvents = new Permission("Manage Events", $"{EventsNamespace}:{PermissionType.Manage}", EventsNamespace, "Permission to create, delete and modify event details");
+        public static Permission ExecuteEvents = new Permission("Execute Events", $"{EventsNamespace}:{PermissionType.Execute}", EventsNamespace, "Permission to execute events");
+        public static List<Permission> EventsPermissions = new List<Permission> { ViewEvents, ManageEvents, ExecuteEvents };
     }
 
     namespace Events.Models

@@ -11,20 +11,27 @@
         <div class="col-md-12">
       
           <form *ngIf="formResetToggle" class="login" name="loginForm" #f="ngForm" novalidate
-                (ngSubmit)="f.form.valid ? login(0) :
+                (ngSubmit)="f.form.valid ? login('idsvr') :
                           (!username.valid && showErrorAlert('Username is required', 'Please enter a valid username'));
                           (!password.valid && showErrorAlert('Password is required', 'Please enter a valid password'))">
             <div class="form-group row">
               <div class="col-md-12">
-                <button style="width: 100%" class="btn btn-primary" [disabled]="isLoading" (click)="login(1)">
-                  <i *ngIf="isLoading && authProviderType == 1" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProviderType == 1 ? 'Logging in with Google...' : 'Continue with Google'}}
+                <button style="width: 100%" class="btn btn-primary" [disabled]="isLoading" (click)="login('google')">
+                  <i *ngIf="isLoading && authProvider == 'google'" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProvider == 'google' ? 'Logging in with Google...' : 'Continue with Google'}}
                 </button>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <button style="width:100%;" class="btn btn-primary" [disabled]="isLoading" (click)="login(2)">
-                  <i *ngIf="isLoading && authProviderType == 2" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProviderType == 2 ? 'Logging in with Microsoft...' : 'Continue with Microsoft'}}
+                <button style="width:100%;" class="btn btn-primary" [disabled]="isLoading" (click)="login('microsoft')">
+                  <i *ngIf="isLoading && authProvider == 'microsoft'" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProvider == 'microsoft' ? 'Logging in with Microsoft...' : 'Continue with Microsoft'}}
+                </button>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <button style="width:100%;" class="btn btn-primary" [disabled]="isLoading" (click)="login('implict')">
+                  <i *ngIf="isLoading && authProvider == 'implict'" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProvider == 'implict' ? 'Logging in with Identity Server...' : 'Continue with Identity Server'}}
                 </button>
               </div>
             </div>
@@ -34,7 +41,7 @@
               </div>
             </div>
             <div class="form-group row has-feedback-icon">
-             
+
               <div class="col-md-12">
                 <input type="text" id="login-username" name="username" placeholder="Enter username" autocomplete="username" class="form-control" [ngClass]="{'is-valid': f.submitted && username.valid, 'is-invalid' : f.submitted && !username.valid}"
                        [(ngModel)]="userLogin.userName" #username="ngModel" required />
@@ -45,7 +52,7 @@
               </div>
             </div>
             <div class="form-group row has-feedback-icon">
-               <div class="col-md-12">
+              <div class="col-md-12">
                 <input type="password" id="login-password" name="password" placeholder="Enter password" autocomplete="current-password" class="form-control" [ngClass]="{'is-valid': f.submitted && password.valid, 'is-invalid' : f.submitted && !password.valid}"
                        [(ngModel)]="userLogin.password" #password="ngModel" required />
                 <i *ngIf="f.submitted" class="fa form-control-feedback" [ngClass]="{'fa-check': password.valid, 'fa-times' : !password.valid}" aria-hidden="true"></i>
@@ -58,7 +65,7 @@
             <div class="form-group row">
               <div class="col-md-12">
                 <button style="width:100%" type="submit" class="btn btn-primary" [disabled]="isLoading">
-                  <i *ngIf="isLoading && authProviderType == 0" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProviderType == 0 ? 'Logging in with email...' : 'Continue with email'}}
+                  <i *ngIf="isLoading && authProvider == 'idsvr'" class='fa fa-circle-o-notch fa-spin'></i> {{isLoading && authProvider == 'idsvr' ? 'Logging in with Identity Server...' : 'Continue with Identity Server'}}
                 </button>
               </div>
             </div>

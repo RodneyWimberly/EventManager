@@ -19,13 +19,14 @@
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0" />
-    <PackageReference Include="IdentityModel.AspNetCore" Version="2.0.0" />
-    <PackageReference Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="4.0.1" />
+    <PackageReference Include="IdentityModel.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="4.1.0" />
     <PackageReference Include="IdentityServer4" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.1" />
-    <PackageReference Include="MailKit" Version="2.9.0" />
+    <PackageReference Include="MailKit" Version="2.10.0" />
+    <PackageReference Include="Microsoft.AspNetCore.ApplicationInsights.HostingStartup" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
@@ -35,6 +36,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.2.0" />
@@ -43,6 +46,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
@@ -53,12 +57,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" Version="5.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.9.2">
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.9.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="13.9.2" />
-    <PackageReference Include="NSwag.MSBuild" Version="13.9.2">
+    <PackageReference Include="NSwag.AspNetCore" Version="13.9.4" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.9.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -73,13 +77,16 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\directives\input-ref.directive.ts" />
+    <None Remove="EventTraceLog.xml" />
     <None Remove="GuestManager.db" />
+    <None Remove="StyleCop.Cache" />
+    <None Remove="tempkey.jwk" />
+    <None Remove="tempkey.rsa" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\EventManager.Core.csproj" />
     <ProjectReference Include="..\DataAccess\EventManager.DataAccess.csproj" />
-    <ProjectReference Include="..\Logging\EventManager.Logging.ServiceClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>

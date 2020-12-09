@@ -6,6 +6,7 @@ import { Utilities } from '../../helpers/utilities';
 import { AuthProviders, UserLoginModel } from '../../models/user-login.model';
 import { Observable, Subject } from 'rxjs';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { AuthProvidersModel } from '../../models/enum.models';
 
 export type LoginDialogOperations = "show" | "hide";
 
@@ -15,7 +16,7 @@ export type LoginDialogOperations = "show" | "hide";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  get authProviderType(): AuthProviders { return this.configurations.authProviderType; }
+  get authProvider(): AuthProvidersModel { return this.configurations.authProvider; }
   userLogin = new UserLoginModel();
   isLoading = false;
   formResetToggle = true;
@@ -68,7 +69,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  async login(authProvider: AuthProviders) {
+  async login(authProvider: AuthProvidersModel) {
     this.isLoading = true;
     this.hideModal();
     try {
@@ -97,12 +98,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   offerAlternateHost() {
 
-      if (Utilities.checkIsLocalHost(location.origin) && Utilities.checkIsLocalHost(this.configurations.baseUrl)) {
+      if (Utilities.checkIsLocalHost(location.origin) && Utilities.checkIsLocalHost(this.configurations.webBaseUrl)) {
       this.alertService.showDialog('Dear Developer!\nIt appears your backend Web API service is not running...\n' +
         'Would you want to temporarily switch to the online Demo API below?(Or specify another)',
         DialogType.prompt,
         (value: string) => {
-          this.configurations.baseUrl = value;
+          this.configurations.webBaseUrl = value;
           this.alertService.showStickyMessage('API Changed!', 'The target Web API has been changed to: ' + value, MessageSeverity.warn);
         },
         null,

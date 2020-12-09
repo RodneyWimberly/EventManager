@@ -7,6 +7,7 @@ export class DbKeys {
   public static readonly USER_PERMISSIONS = 'user_permissions';
   public static readonly USER_DATA = 'user_data';
   public static readonly SYNC_KEYS = 'sync_keys';
+  public static readonly AUTH_PROVIDER = 'auth_provider';
 
   public static readonly REMEMBER_ME = 'remember_me';
 

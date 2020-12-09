@@ -35,7 +35,7 @@ namespace EventManager.Web.Authorization
                 return false;
             }
 
-            return Utilities.GetUserId(user) == targetUserId;
+            return ClaimsPrincipalExtensions.GetUserId(user) == targetUserId;
         }
     }
 }

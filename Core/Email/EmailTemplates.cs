@@ -12,7 +12,7 @@ namespace EventManager.Core.Email
         {
             if (testEmailTemplate == null)
             {
-                testEmailTemplate = StoragePath.ReadPhysicalFile("Email/Templates/TestEmail.template");
+                testEmailTemplate = "";// StoragePath.ReadPhysicalFile("Email/Templates/TestEmail.template");
             }
 
             string emailMessage = testEmailTemplate
@@ -26,7 +26,7 @@ namespace EventManager.Core.Email
         {
             if (plainTextTestEmailTemplate == null)
             {
-                plainTextTestEmailTemplate = StoragePath.ReadPhysicalFile("Email/Templates/PlainTextTestEmail.template");
+                plainTextTestEmailTemplate = "";// StoragePath.ReadPhysicalFile("Email/Templates/PlainTextTestEmail.template");
             }
 
             string emailMessage = plainTextTestEmailTemplate

@@ -148,6 +148,7 @@
         /// </param>
         protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId)
         {
+            Console.WriteLine(message);
             using (IServiceScope scope = serviceProvider.CreateScope())
             {
                 ServiceProxy client = ActivatorUtilities.CreateInstance<ServiceProxy>(scope.ServiceProvider);
