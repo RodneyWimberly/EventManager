@@ -1,0 +1,16 @@
+{
+  "service": {
+    "name": "events",
+    "tags": [
+      "eventmanager"
+    ],
+    "port": 6003,
+    "check": {
+      "args": [
+        "curl",
+        "https://localhost:6003/api/events/health"
+      ],
+      "interval": "300s"
+    }
+  }
+} 

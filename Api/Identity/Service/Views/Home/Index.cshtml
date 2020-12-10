@@ -1,0 +1,31 @@
+﻿@using Microsoft.Extensions.Options
+@using EventManager.Identity.Service.Models
+@{
+    ViewData["Title"] = "EventManager.Identity.Service Home";
+}
+@inject IOptions<IdentityConfig> OptionsIdentityConfig
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h1>Hi @User.Identity.Name</h1>
+}
+else
+{
+    <br />
+}
+
+<a href="@OptionsIdentityConfig.Value.AngularClientUrl">
+    AngularClientUrl
+</a>
+
+<br />
+
+<a href="@OptionsIdentityConfig.Value.AngularClientIdTokenOnlyUrl">
+    AngularClientIdTokenOnlyUrl
+</a>
+
+<br />
+
+<a href="@OptionsIdentityConfig.Value.AngularCodeClientUrl">
+    AngularCodeClientUrl
+</a>

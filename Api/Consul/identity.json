@@ -1,0 +1,16 @@
+{
+  "service": {
+    "name": "identity",
+    "tags": [
+      "eventmanager"
+    ],
+    "port": 6001,
+    "check": {
+      "args": [
+        "curl",
+        "https://localhost:6001/.well-known/openid-configuration"
+      ],
+      "interval": "300s"
+    }
+  }
+} 
