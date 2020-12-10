@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventManager.Identity.Service.Models.AccountViewModels
+namespace EventManager.Identity.DataAccess.Models.AccountViewModels
 {
     public class AccountOptions
     {

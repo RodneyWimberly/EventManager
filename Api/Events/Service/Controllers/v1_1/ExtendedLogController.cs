@@ -1,11 +1,10 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
-using EventManager.Shared.Core.Extensions;
 using EventManager.Events.DataAccess;
 using EventManager.Events.DataAccess.Models;
-using EventManager.Events.DataAccess;
-using EventManager.Events.Service.Helpers;
+using EventManager.Shared.Service;
+using EventManager.Shared.Service.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EventManager.Identity.DataAccess;
 
 namespace EventManager.Events.Service.Controllers
 {
@@ -32,17 +30,15 @@ namespace EventManager.Events.Service.Controllers
             protected readonly IUnitOfWork<EventDbContext> _unitOfWork;
             protected readonly ILogger _logger;
             protected readonly HttpContext _httpContext;
-            protected readonly IIdentityManager _accountManager;
             protected readonly EntityControllerHelper<ExtendedLog> _extendedLogHelper;
 
-            public ExtendedLogController(IIdentityManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<ExtendedLogController> logger)
+            public ExtendedLogController(IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<ExtendedLogController> logger)
             {
-                _accountManager = accountManager;
                 _httpContext = httpAccessor.HttpContext;
                 _mapper = mapper;
                 _unitOfWork = unitOfWork;
                 _logger = logger;
-                _extendedLogHelper = new EntityControllerHelper<ExtendedLog>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+                _extendedLogHelper = new EntityControllerHelper<ExtendedLog>(httpAccessor, mapper, unitOfWork, logger);
                 //_extendedLogController.GetIncludeEvent += ExtendedLogController_GetIncludeEvent;
             }
 

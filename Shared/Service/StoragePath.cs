@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace EventManager.Shared.Core
+namespace EventManager.Shared.Service
 {
     public static class StoragePath
     {

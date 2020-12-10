@@ -3,8 +3,8 @@ using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using AutoMapper;
 using EventManager.Events.DataAccess;
 using EventManager.Events.DataAccess.Models;
-using EventManager.Identity.DataAccess;
-using EventManager.Shared.Core.Extensions;
+using EventManager.Shared.Service;
+using EventManager.Shared.Service.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -33,7 +33,6 @@ namespace EventManager.Events.Service.Controllers
             protected readonly IUnitOfWork<EventDbContext> _unitOfWork;
             protected readonly ILogger _logger;
             protected readonly HttpContext _httpContext;
-            protected readonly IIdentityManager _accountManager;
 
             protected readonly EntityControllerHelper<Event> _eventHelper;
             protected readonly EntityControllerHelper<EventLocation> _locationHelper;
@@ -41,27 +40,26 @@ namespace EventManager.Events.Service.Controllers
             protected readonly EntityControllerHelper<EventOccurance> _occurrenceHelper;
             protected readonly EntityControllerHelper<EventService> _serviceHelper;
 
-            public EventController(IIdentityManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<EventController> logger)
+            public EventController(IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<EventController> logger)
             {
-                _accountManager = accountManager;
                 _httpContext = httpAccessor.HttpContext;
                 _mapper = mapper;
                 _unitOfWork = unitOfWork;
                 _logger = logger;
 
-                _eventHelper = new EntityControllerHelper<Event>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+                _eventHelper = new EntityControllerHelper<Event>(httpAccessor, mapper, unitOfWork, logger);
                 _eventHelper.GetIncludeEvent += EventController_GetIncludeEvent;
 
-                _locationHelper = new EntityControllerHelper<EventLocation>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+                _locationHelper = new EntityControllerHelper<EventLocation>(httpAccessor, mapper, unitOfWork, logger);
                 _locationHelper.GetIncludeEvent += LocationHelper_GetIncludeEvent;
 
-                _scheduleHelper = new EntityControllerHelper<EventSchedule>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+                _scheduleHelper = new EntityControllerHelper<EventSchedule>(httpAccessor, mapper, unitOfWork, logger);
                 _scheduleHelper.GetIncludeEvent += ScheduleHelper_GetIncludeEvent;
 
-                _occurrenceHelper = new EntityControllerHelper<EventOccurance>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+                _occurrenceHelper = new EntityControllerHelper<EventOccurance>(httpAccessor, mapper, unitOfWork, logger);
                 _occurrenceHelper.GetIncludeEvent += OccurrenceHelper_GetIncludeEvent;
 
-                _serviceHelper = new EntityControllerHelper<EventService>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+                _serviceHelper = new EntityControllerHelper<EventService>(httpAccessor, mapper, unitOfWork, logger);
                 _serviceHelper.GetIncludeEvent += ServiceHelper_GetIncludeEvent;
             }
 

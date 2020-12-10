@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EventManager.Identity.Service.Models.AccountViewModels
+namespace EventManager.Identity.DataAccess.Models.AccountViewModels
 {
     public class ForgotPasswordViewModel
     {

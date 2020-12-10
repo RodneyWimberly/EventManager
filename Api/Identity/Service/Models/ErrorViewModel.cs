@@ -1,6 +1,6 @@
 ﻿using IdentityServer4.Models;
 
-namespace EventManager.Identity.Service.Models
+namespace EventManager.Identity.DataAccess.Models
 {
     public class ErrorViewModel
     {

@@ -1,11 +1,11 @@
 ﻿using EventManager.Identity.DataAccess;
 using EventManager.Identity.DataAccess.Extensions;
+using EventManager.Identity.DataAccess.Fido;
 using EventManager.Identity.DataAccess.Models;
 using EventManager.Identity.Service.Filters;
-using EventManager.Identity.DataAccess.Models;
 using EventManager.Identity.Service.Resources;
-using EventManager.Shared.Core.Certificate;
 using EventManager.Shared.Core.Email;
+using EventManager.Shared.Service.Certificate;
 using Fido2NetLib;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -153,7 +153,6 @@ namespace EventManager.Identity.Service
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {

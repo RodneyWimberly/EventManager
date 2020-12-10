@@ -1,4 +1,4 @@
-﻿namespace EventManager.Shared.Core.Certificate
+﻿namespace EventManager.Shared.Service.Certificate
 {
     public class CertificateConfiguration
     {

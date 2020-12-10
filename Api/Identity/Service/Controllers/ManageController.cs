@@ -1,6 +1,6 @@
-﻿using EventManager.Identity.DataAccess.Models;
+﻿using EventManager.Identity.DataAccess.Fido;
 using EventManager.Identity.DataAccess.Models;
-using EventManager.Identity.Service.Models.ManageViewModels;
+using EventManager.Identity.DataAccess.Models.ManageViewModels;
 using EventManager.Identity.Service.Resources;
 using EventManager.Shared.Core.Email;
 using Microsoft.AspNetCore.Authentication;

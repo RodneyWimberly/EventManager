@@ -1,4 +1,4 @@
-﻿namespace EventManager.Shared.Core
+﻿namespace EventManager.Shared.Service
 {
     public class PageHeader
     {

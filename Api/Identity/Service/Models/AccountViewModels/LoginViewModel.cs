@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventManager.Identity.Service.Models.AccountViewModels
+namespace EventManager.Identity.DataAccess.Models.AccountViewModels
 {
     public class LoginViewModel : LoginInputModel
     {

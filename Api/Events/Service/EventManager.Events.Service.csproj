@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
@@ -59,6 +59,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" Version="5.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
     <PackageReference Include="NSwag.ApiDescription.Client" Version="13.9.4">
       <PrivateAssets>all</PrivateAssets>
@@ -101,6 +105,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Core\EventManager.Shared.Core.csproj" />
+    <ProjectReference Include="..\..\..\Shared\DataAccess\EventManager.Shared.DataAccess.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Service\EventManager.Shared.Service.csproj" />
     <ProjectReference Include="..\..\Identity\DataAccess\EventManager.Identity.DataAccess.csproj" />
     <ProjectReference Include="..\DataAccess\EventManager.Events.DataAccess.csproj" />
   </ItemGroup>
@@ -144,5 +150,21 @@
   </Target>
 
   <ProjectExtensions><VisualStudio><UserProperties clientapp_4dist_4main-es2015_1js_1map__JsonSchema="https://json.schemastore.org/swagger-2.0" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 
 </Project>

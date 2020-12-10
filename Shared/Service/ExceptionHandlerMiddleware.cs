@@ -5,7 +5,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace EventManager.Web
+namespace EventManager.Shared.Service
 {
     public class ExceptionHandlerMiddleware
     {

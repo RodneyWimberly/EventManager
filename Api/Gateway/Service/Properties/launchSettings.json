@@ -20,7 +20,6 @@
     },
     "Gateway.Service": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "https://localhost:6002/WeatherForecast",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

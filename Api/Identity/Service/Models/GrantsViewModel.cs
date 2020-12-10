@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EventManager.Identity.Service.Models
+namespace EventManager.Identity.DataAccess.Models
 {
     public class GrantsViewModel
     {

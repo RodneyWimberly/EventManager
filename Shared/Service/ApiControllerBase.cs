@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace EventManager.Events.Service.Controllers.v1_0
+namespace EventManager.Shared.Service
 {
     [ApiVersion("1.0")]
     [ApiExplorerSettings(IgnoreApi = true)]

@@ -2,7 +2,7 @@
 using AutoMapper;
 using EventManager.Events.DataAccess;
 using EventManager.Events.DataAccess.Models;
-using EventManager.Events.DataAccess;
+using EventManager.Shared.Service;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EventManager.Identity.DataAccess;
 
 namespace EventManager.Events.Service.Controllers
 {
@@ -27,9 +26,9 @@ namespace EventManager.Events.Service.Controllers
         {
             protected readonly EntityControllerHelper<Notification> _notificationHelper;
 
-            public NotificationController(IIdentityManager accountManager, IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<NotificationController> logger)
+            public NotificationController(IHttpContextAccessor httpAccessor, IMapper mapper, IUnitOfWork<EventDbContext> unitOfWork, ILogger<NotificationController> logger)
             {
-                _notificationHelper = new EntityControllerHelper<Notification>(accountManager, httpAccessor, mapper, unitOfWork, logger);
+                _notificationHelper = new EntityControllerHelper<Notification>(httpAccessor, mapper, unitOfWork, logger);
                 _notificationHelper.GetIncludeEvent += NotificationController_GetIncludeEvent;
             }
 

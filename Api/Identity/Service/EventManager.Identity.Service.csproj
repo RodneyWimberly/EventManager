@@ -58,6 +58,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Core\EventManager.Shared.Core.csproj" />
     <ProjectReference Include="..\..\..\Shared\DataAccess\EventManager.Shared.DataAccess.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Service\EventManager.Shared.Service.csproj" />
     <ProjectReference Include="..\DataAccess\EventManager.Identity.DataAccess.csproj" />
   </ItemGroup>
    

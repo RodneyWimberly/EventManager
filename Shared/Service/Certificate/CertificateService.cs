@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace EventManager.Shared.Core.Certificate
+namespace EventManager.Shared.Service.Certificate
 {
     public static class CertificateService
     {

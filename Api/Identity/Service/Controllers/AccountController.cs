@@ -1,6 +1,6 @@
-﻿using EventManager.Identity.DataAccess.Models;
+﻿using EventManager.Identity.DataAccess.Fido;
 using EventManager.Identity.DataAccess.Models;
-using EventManager.Identity.Service.Models.AccountViewModels;
+using EventManager.Identity.DataAccess.Models.AccountViewModels;
 using EventManager.Identity.Service.Resources;
 using EventManager.Shared.Core.Email;
 using IdentityModel;

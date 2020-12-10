@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EventManager.Identity.Service.Models
+namespace EventManager.Identity.DataAccess.Models
 {
     public class ConsentViewModel : ConsentInputModel
     {

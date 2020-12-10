@@ -1,7 +1,7 @@
 using System;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
-using EventManager.Identity.Service.Models.AccountViewModels;
+using EventManager.Identity.DataAccess.Models.AccountViewModels;
 
 namespace EventManager.Identity.Service
 {

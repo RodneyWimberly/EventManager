@@ -17,7 +17,8 @@ namespace EventManager.Identity.DataAccess
                                                         UserRole,
                                                         UserLogin,
                                                         RoleClaim,
-                                                        UserToken>, IAuditableDbContext
+                                                        UserToken>,
+                                      IAuditableDbContext
     {
         public DbSet<FidoStoredCredential> FidoStoredCredential { get; set; }
         private string _currentUserId;
@@ -79,6 +80,7 @@ namespace EventManager.Identity.DataAccess
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // FidoStoredCredential
             builder.Entity<FidoStoredCredential>().HasKey(m => m.Id);
         }
 
