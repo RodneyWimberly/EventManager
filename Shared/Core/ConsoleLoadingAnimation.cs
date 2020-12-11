@@ -24,8 +24,7 @@ namespace EventManager.Shared.Core
         public static void Hide()
         {
             instance.ShowAnimation = false;
-            instance.Dispose();
-            instance = null;
+
         }
         public ConsoleLoadingAnimation(string title)
         {
@@ -46,7 +45,7 @@ namespace EventManager.Shared.Core
                 StringBuilder message = new StringBuilder();
                 if (show)
                 {
-                    message.Append($"{animation[animationIndex++]} Loading {title}, Please wait");
+                    message.Append($"Loading {title}, Please wait{animation[animationIndex++]}");
                     Console.Title = message.ToString();
                     message.Append($"{(progressCount++ == 1 ? "." + new string(' ', maxProgressCount) : new string('.', progressCount++))}");
                 }
@@ -61,7 +60,7 @@ namespace EventManager.Shared.Core
 
                 Console.SetCursorPosition(left, top);
                 if (show) ResetAnimationTimer();
-                else animationTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                else { animationTimer.Change(Timeout.Infinite, Timeout.Infinite); }
             }
         }
 

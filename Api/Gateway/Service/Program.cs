@@ -1,26 +1,14 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using EventManager.Shared.Core.Constants;
+using EventManager.Shared.Service;
 
 namespace Service
 {
-    public class Program
+    public class Program : ProgramBase<Startup>
     {
-        public static void Main(string[] args)
+        public static new int Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            title = $"{ApplicationValues.Title} API Gateway Service";
+            return ProgramBase<Startup>.Main(args);
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
     }
 }

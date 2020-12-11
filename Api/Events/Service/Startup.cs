@@ -1,9 +1,9 @@
 using EventManager.Events.DataAccess.Extensions;
+using EventManager.Events.Service.Helpers;
 using EventManager.Identity.DataAccess;
 using EventManager.Identity.DataAccess.Models;
 using EventManager.Shared.Core.Constants;
 using EventManager.Shared.Core.Extensions;
-using EventManager.Events.Service.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -60,7 +60,6 @@ namespace EventManager.Events.Service
             services.ConfigureMvcAsWebApi(thisAssembly);
             services.ConfigureAuthentication(Configuration, !isDevelopment);
             services.ConfigureAuthorization(Configuration);
-            services.AddSpaStaticFiles(options => options.RootPath = "ClientApp/dist");
             services.ConfigureAutoMapper(thisAssembly);
             services.ConfigureEmailService(Configuration);
             services.ConfigureHttpUnitOfWork();
@@ -82,7 +81,6 @@ namespace EventManager.Events.Service
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
                 app.UseStaticFiles();
-                app.UseSpaStaticFiles();
             }
             //app.UseLoggingScopeStateProvider();
             app.UseHttpsRedirection();
@@ -98,24 +96,13 @@ namespace EventManager.Events.Service
                 builder.MapControllerRoute("v1.0", "api/v1.0/{controller}/{action=Index}/{id?}");
                 builder.MapHealthChecks("api/{controller}/health");
             });
-            app.UseSpa(builder =>
-            {
-                builder.Options.SourcePath = "ClientApp";
-                if (env.IsDevelopment())
-                {
-                    builder.UseProxyToSpaDevelopmentServer("http://localhost:5000");
-                    //builder.UseAngularCliServer("serve");
-                    //builder.Options.StartupTimeout = TimeSpan.FromSeconds(120);
-                }
-            });
+
             app.UseSwaggerUi3(settings =>
             {
                 settings.OAuth2Client = new OAuth2ClientSettings { ClientId = ApplicationValues.ClientNamespace, ClientSecret = ApplicationValues.Secret };
                 settings.Path = "/docs";
                 settings.DocumentPath = "/docs/api-specification.json";
             });
-
-            logger.LogInformation("Host Started");
         }
     }
 }

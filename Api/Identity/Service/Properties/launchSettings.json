@@ -12,19 +12,13 @@
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "Identity.Service": {
       "commandName": "Project",
       "launchUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5001;https://localhost:6001"
+      "applicationUrl": "http://localhost:5002;https://localhost:6002"
     }
   }
 }

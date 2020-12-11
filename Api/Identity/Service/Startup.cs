@@ -51,9 +51,6 @@ namespace EventManager.Identity.Service
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
 
-            bool useLocalCertStore = Convert.ToBoolean(Configuration["UseLocalCertStore"]);
-            string certificateThumbprint = Configuration["CertificateThumbprint"];
-
             (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) x509Certificate2 = GetCertificates(Environment, Configuration).GetAwaiter().GetResult();
             AddLocalizationConfigurations(services);
 
@@ -167,26 +164,25 @@ namespace EventManager.Identity.Service
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
 
-            var identityConfig = Configuration.GetSection("IdentityConfig");
-            var angularClientIdTokenOnlyUrl = identityConfig["AngularClientIdTokenOnlyUrl"];
-            var angularClientUrl = identityConfig["AngularClientUrl"];
+            string allowedAncestors = Configuration.GetSection("IdentityConfig")["AllowedAncestors"];
 
-            app.UseCsp(opts => opts
-                .BlockAllMixedContent()
-                .StyleSources(s => s.Self())
-                .StyleSources(s => s.UnsafeInline())
-                .FontSources(s => s.Self())
-                .FrameAncestors(s => s.Self())
-                .FrameAncestors(s => s.CustomSources(
-                    angularClientUrl, angularClientIdTokenOnlyUrl, "https://localhost:44352", "https://localhost:4200")
-                 )
-                .ImageSources(imageSrc => imageSrc.Self())
-                .ImageSources(imageSrc => imageSrc.CustomSources("data:"))
-                .ScriptSources(s => s.Self())
-                .ScriptSources(s => s.UnsafeInline())
-            );
+            app.UseCsp(opts =>
+            {
+                opts
+                 .BlockAllMixedContent()
+                 .StyleSources(s => s.Self())
+                 .StyleSources(s => s.UnsafeInline())
+                 .FontSources(s => s.Self())
+                 .FrameAncestors(s => s.Self())
+                 .ImageSources(imageSrc => imageSrc.Self())
+                 .ImageSources(imageSrc => imageSrc.CustomSources("data:"))
+                 .ScriptSources(s => s.Self())
+                 .ScriptSources(s => s.UnsafeInline());
+                if (!string.IsNullOrEmpty(allowedAncestors))
+                    opts.FrameAncestors(s => s.CustomSources(allowedAncestors.Split(';', StringSplitOptions.RemoveEmptyEntries)));
+            });
 
-            var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            IOptions<RequestLocalizationOptions> locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);
 
             // https://nblumhardt.com/2019/10/serilog-in-aspnetcore-3/
@@ -226,24 +222,22 @@ namespace EventManager.Identity.Service
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseIdentityDbSeeder();
         }
 
         private static async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificates(IWebHostEnvironment environment, IConfiguration configuration)
         {
-            var certificateConfiguration = new CertificateConfiguration
+            CertificateConfiguration certificateConfiguration = new CertificateConfiguration
             {
                 // Use an Azure key vault
                 CertificateNameKeyVault = configuration["CertificateNameKeyVault"], //"IdentityCert",
                 KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"], // "https://damienbod.vault.azure.net"
 
                 // Use a local store with thumbprint
-                //UseLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]),
-                //CertificateThumbprint = configuration["CertificateThumbprint"],
+                UseLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]),
+                CertificateThumbprint = configuration["CertificateThumbprint"],
 
                 // development certificate
-                DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, "sts_dev_cert.pfx"),
+                DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, "identity_dev_cert.pfx"),
                 DevelopmentCertificatePassword = "1234" //configuration["DevelopmentCertificatePassword"] //"1234",
             };
 
@@ -261,7 +255,7 @@ namespace EventManager.Identity.Service
             services.Configure<RequestLocalizationOptions>(
                 options =>
                 {
-                    var supportedCultures = new List<CultureInfo>
+                    List<CultureInfo> supportedCultures = new List<CultureInfo>
                         {
                             new CultureInfo("en-US"),
                             new CultureInfo("de-CH"),
@@ -275,7 +269,7 @@ namespace EventManager.Identity.Service
                     options.SupportedCultures = supportedCultures;
                     options.SupportedUICultures = supportedCultures;
 
-                    var providerQuery = new LocalizationQueryProvider
+                    LocalizationQueryProvider providerQuery = new LocalizationQueryProvider
                     {
                         QueryParameterName = "ui_locales"
                     };
@@ -288,7 +282,7 @@ namespace EventManager.Identity.Service
         {
             if (options.SameSite == SameSiteMode.None)
             {
-                var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
+                string userAgent = httpContext.Request.Headers["User-Agent"].ToString();
                 if (DisallowsSameSiteNone(userAgent))
                 {
                     // For .NET Core < 3.1 set SameSite = (SameSiteMode)(-1)

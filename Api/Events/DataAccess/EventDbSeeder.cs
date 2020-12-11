@@ -38,7 +38,7 @@ namespace EventManager.Events.DataAccess
             }
             catch (Exception ex)
             {
-                string message = LoggingEvents.SeedingDatabase.Name + " em-eventdb";
+                string message = LoggingEvents.SeedingDatabase.Name + " EM-EventDB";
                 _logger.LogCritical(LoggingEvents.SeedingDatabase, ex, message);
                 throw new Exception(message, ex);
             }
@@ -48,12 +48,12 @@ namespace EventManager.Events.DataAccess
         {
             try
             {
-                _logger.LogInformation("Running EventDbContext Migration");
+                _logger.LogInformation("Ensuring EM-EventDB has been created.");
                 await _eventContext.Database.EnsureCreatedAsync();
             }
             catch (Exception ex)
             {
-                string message = LoggingEvents.MigratingDatabase.Name + " em-eventdb";
+                string message = LoggingEvents.MigratingDatabase.Name + " EM-EventDB";
                 _logger.LogCritical(LoggingEvents.MigratingDatabase, ex, message);
                 throw new Exception(message, ex);
             }

@@ -104,28 +104,29 @@ namespace EventManager.Identity.DataAccess
         {
             try
             {
+                _logger.LogInformation("Ensuring EM-IdentityDB migrations have run.");
                 if (!_persistedGrantContext.AllMigrationsApplied())
                 {
-                    _logger.LogInformation("Running PersistedGrantDbContext Migration");
+                    _logger.LogInformation("Running PersistedGrantContext (EM-IdentityDB) Migration");
                     await _persistedGrantContext.Database.MigrateAsync();
                     await _persistedGrantContext.SaveChangesAsync();
                 }
                 if (!_configurationContext.AllMigrationsApplied())
                 {
-                    _logger.LogInformation("Running ConfigurationDbContext Migration");
+                    _logger.LogInformation("Running ConfigurationDbContext (EM-IdentityDB) Migration");
                     await _configurationContext.Database.MigrateAsync();
                     await _configurationContext.SaveChangesAsync();
                 }
                 if (!_identityContext.AllMigrationsApplied())
                 {
-                    _logger.LogInformation("Running IdentityDbContext Migration");
+                    _logger.LogInformation("Running IdentityDbContext (EM-IdentityDB) Migration");
                     await _identityContext.Database.MigrateAsync();
                     await _identityContext.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
             {
-                string message = LoggingEvents.MigratingDatabase.Name + " em-identitydb";
+                string message = LoggingEvents.MigratingDatabase.Name + " EM-IdentityDB";
                 _logger.LogCritical(LoggingEvents.MigratingDatabase, ex, message);
                 throw new Exception(message, ex);
             }

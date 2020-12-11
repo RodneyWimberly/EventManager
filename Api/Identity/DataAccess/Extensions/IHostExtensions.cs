@@ -1,5 +1,4 @@
-﻿using EventManager.Identity.DataAccess;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ namespace EventManager.Identity.DataAccess.Extensions
 {
     public static class IHostExtensions
     {
-        public static void RunIdentityDbUpdates(this IHost app)
+        public static async Task RunIdentityDbUpdatesAsync(this IHost app)
         {
             using (IServiceScope serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -17,10 +16,10 @@ namespace EventManager.Identity.DataAccess.Extensions
                 if (dbOptions == null || dbSeeder == null)
                     return;
                 if (dbOptions.GetValue<bool>("UseMigrationService"))
-                    dbSeeder.MigrateDbAsync().Wait();
+                    await dbSeeder.MigrateDbAsync();
 
                 if (dbOptions.GetValue<bool>("UseSeedService"))
-                    dbSeeder.SeedDbAsync().Wait();
+                    await dbSeeder.SeedDbAsync();
             }
         }
 
