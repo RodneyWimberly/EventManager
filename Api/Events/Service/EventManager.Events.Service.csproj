@@ -104,7 +104,7 @@
     <RemoveDir Directories="$(OutDir)References" />
   </Target>
   
-  <ProjectExtensions><VisualStudio><UserProperties clientapp_4dist_4main-es2015_1js_1map__JsonSchema="https://json.schemastore.org/swagger-2.0" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>

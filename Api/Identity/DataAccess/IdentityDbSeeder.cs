@@ -10,7 +10,9 @@ using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -26,14 +28,16 @@ namespace EventManager.Identity.DataAccess
         private readonly ConfigurationDbContext _configurationContext;
         private readonly IdentityDbContext _identityContext;
         private readonly IIdentityManager _identityManager;
+        private readonly IWebHostEnvironment _environment;
 
-        public IdentityDbSeeder(ILogger<IdentityDbSeeder> logger, PersistedGrantDbContext persistedGrantContext, ConfigurationDbContext configurationContext, IdentityDbContext accountsContext, IIdentityManager accountManager)
+        public IdentityDbSeeder(IWebHostEnvironment environment, ILogger<IdentityDbSeeder> logger, PersistedGrantDbContext persistedGrantContext, ConfigurationDbContext configurationContext, IdentityDbContext accountsContext, IIdentityManager accountManager)
         {
             _logger = logger;
             _persistedGrantContext = persistedGrantContext;
             _configurationContext = configurationContext;
             _identityContext = accountsContext;
             _identityManager = accountManager;
+            _environment = environment;
         }
 
         public async Task SeedDbAsync()
@@ -171,7 +175,7 @@ namespace EventManager.Identity.DataAccess
         }
 
         #region Domain Helpers
-        public static IEnumerable<IdentityResource> GetIdentityResources()
+        public IEnumerable<IdentityResource> GetIdentityResources()
         {
             return new List<IdentityResource>
             {
@@ -183,7 +187,7 @@ namespace EventManager.Identity.DataAccess
             };
         }
 
-        public static IEnumerable<ApiScope> GetApiScopes()
+        public IEnumerable<ApiScope> GetApiScopes()
         {
             return new List<ApiScope>
             {
@@ -191,7 +195,7 @@ namespace EventManager.Identity.DataAccess
             };
         }
 
-        public static IEnumerable<ApiResource> GetApiResources()
+        public IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
             {
@@ -209,18 +213,17 @@ namespace EventManager.Identity.DataAccess
             };
         }
 
-        public static IEnumerable<Client> GetClients()
+        public IEnumerable<Client> GetClients()
         {
             IList<Client> clients = new List<Client>();
-            string localUrl = "http://localhost:5000",
-                azureUrl = "https://em-web.azurewebsites.net";
+            string url = _environment.IsDevelopment() ? "https://localhost:60000" : "https://em-web.azurewebsites.net";
 
-            Client client = GetClient("idsvr", localUrl, azureUrl);
+            Client client = GetClient("idsvr", url);
             client.EnableLocalLogin = true;
             client.IdentityProviderRestrictions = new List<string> { GoogleDefaults.AuthenticationScheme };
             clients.Add(client);
 
-            client = GetClient("google", localUrl, azureUrl);
+            client = GetClient("google", url);
             client.EnableLocalLogin = false;
             client.IdentityProviderRestrictions = new List<string>();
             client.AllowedGrantTypes = new string[] { GrantType.Implicit };
@@ -229,7 +232,7 @@ namespace EventManager.Identity.DataAccess
             return clients;
         }
 
-        private static Client GetClient(string suffix, string localUrl, string azureUrl)
+        private static Client GetClient(string suffix, string url)
         {
             return new Client
             {
@@ -244,17 +247,9 @@ namespace EventManager.Identity.DataAccess
                 RefreshTokenExpiration = TokenExpiration.Sliding,
                 RefreshTokenUsage = TokenUsage.OneTimeOnly,
                 SlidingRefreshTokenLifetime = 3600,
-                PostLogoutRedirectUris = {
-                    $"{localUrl}/login",
-                    $"{azureUrl}/login" },
-                AllowedCorsOrigins = {
-                    localUrl,
-                    azureUrl },
-                RedirectUris = {
-                    $"{localUrl}/auth",
-                    $"{localUrl}/callback.html",
-                    $"{azureUrl}/auth",
-                    $"{azureUrl}/callback.html" },
+                PostLogoutRedirectUris = { $"{url}/login" },
+                AllowedCorsOrigins = { url },
+                RedirectUris = { $"{url}/callback" },
                 AllowedGrantTypes = {
                     GrantType.ResourceOwnerPassword ,
                     GrantType.Implicit,

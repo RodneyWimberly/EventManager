@@ -4,11 +4,11 @@
     "tags": [
       "eventmanager"
     ],
-    "port": 6001,
+    "port": 6002,
     "check": {
       "args": [
         "curl",
-        "https://localhost:6001/.well-known/openid-configuration"
+        "https://localhost:6002/.well-known/openid-configuration"
       ],
       "interval": "300s"
     }

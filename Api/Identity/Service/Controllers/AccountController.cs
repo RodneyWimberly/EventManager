@@ -6,6 +6,7 @@ using EventManager.Shared.Core.Email;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Extensions;
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
@@ -13,13 +14,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace EventManager.Identity.Service.Controllers
 {
@@ -29,7 +34,9 @@ namespace EventManager.Identity.Service.Controllers
         private readonly Fido2Storage _fido2Storage;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailService _emailService;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
@@ -42,7 +49,9 @@ namespace EventManager.Identity.Service.Controllers
             UserManager<User> userManager,
             IPersistedGrantService persistedGrantService,
             SignInManager<User> signInManager,
+            IEmailService emailService,
             IEmailSender emailSender,
+            IConfiguration configuration,
             ILoggerFactory loggerFactory,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
@@ -56,15 +65,17 @@ namespace EventManager.Identity.Service.Controllers
             _userManager = userManager;
             _persistedGrantService = persistedGrantService;
             _signInManager = signInManager;
+            _emailService = emailService;
             _emailSender = emailSender;
+            _configuration = configuration;
             _logger = loggerFactory.CreateLogger<AccountController>();
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
 
-            var type = typeof(SharedResource);
-            var assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
+            Type type = typeof(SharedResource);
+            AssemblyName assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
             _sharedLocalizer = factory.Create("SharedResource", assemblyName.Name);
         }
 
@@ -73,7 +84,7 @@ namespace EventManager.Identity.Service.Controllers
         public async Task<IActionResult> Login(string returnUrl)
         {
             // build a model so we know what to show on the login page
-            var vm = await BuildLoginViewModelAsync(returnUrl);
+            LoginViewModel vm = await BuildLoginViewModelAsync(returnUrl);
 
             if (vm.IsExternalLoginOnly)
             {
@@ -91,11 +102,11 @@ namespace EventManager.Identity.Service.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model)
         {
-            var returnUrl = model.ReturnUrl;
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            var requires2Fa = context?.AcrValues.Count(t => t.Contains("mfa")) >= 1;
+            string returnUrl = model.ReturnUrl;
+            AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            bool requires2Fa = context?.AcrValues.Count(t => t.Contains("mfa")) >= 1;
 
-            var user = await _userManager.FindByNameAsync(model.Email);
+            User user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null && !user.TwoFactorEnabled && requires2Fa)
             {
                 return RedirectToAction(nameof(ErrorEnable2FA));
@@ -106,7 +117,7 @@ namespace EventManager.Identity.Service.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberLogin, lockoutOnFailure: false);
+                SignInResult result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberLogin, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -114,7 +125,7 @@ namespace EventManager.Identity.Service.Controllers
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    var fido2ItemExistsForUser = await _fido2Storage.GetCredentialsByUsername(model.Email);
+                    List<FidoStoredCredential> fido2ItemExistsForUser = await _fido2Storage.GetCredentialsByUsername(model.Email);
                     if (fido2ItemExistsForUser.Count > 0)
                     {
                         return RedirectToAction(nameof(LoginFido2Mfa), new { ReturnUrl = returnUrl, RememberMe = model.RememberLogin });
@@ -146,7 +157,7 @@ namespace EventManager.Identity.Service.Controllers
         public async Task<IActionResult> LoginFido2Mfa(string provider, bool rememberMe, string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            User user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 return View("Error");
@@ -171,7 +182,7 @@ namespace EventManager.Identity.Service.Controllers
         public async Task<IActionResult> Logout(string logoutId)
         {
             // build a model so the logout page knows what to display
-            var vm = await BuildLogoutViewModelAsync(logoutId);
+            LogoutViewModel vm = await BuildLogoutViewModelAsync(logoutId);
 
             if (vm.ShowLogoutPrompt == false)
             {
@@ -190,8 +201,8 @@ namespace EventManager.Identity.Service.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout(LogoutViewModel model)
         {
-            var idp = User?.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-            var subjectId = HttpContext.User.Identity.GetSubjectId();
+            string idp = User?.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
+            string subjectId = HttpContext.User.Identity.GetSubjectId();
 
             if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
             {
@@ -221,9 +232,9 @@ namespace EventManager.Identity.Service.Controllers
             HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
 
             // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(model.LogoutId);
+            LogoutRequest logout = await _interaction.GetLogoutContextAsync(model.LogoutId);
 
-            var vm = new LoggedOutViewModel
+            LoggedOutViewModel vm = new LoggedOutViewModel
             {
                 AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut,
                 PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
@@ -233,7 +244,7 @@ namespace EventManager.Identity.Service.Controllers
             };
 
 
-            await _persistedGrantService.RemoveAllGrantsAsync(subjectId, "angular2client");
+            await _persistedGrantService.RemoveAllGrantsAsync(subjectId);
 
             return View("LoggedOut", vm);
         }
@@ -258,13 +269,13 @@ namespace EventManager.Identity.Service.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new User
+                User user = new User
                 {
                     UserName = model.Email,
                     Email = model.Email,
                     IsAdmin = false
                 };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                IdentityResult result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -291,8 +302,8 @@ namespace EventManager.Identity.Service.Controllers
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            string redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+            AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return Challenge(properties, provider);
         }
 
@@ -302,26 +313,28 @@ namespace EventManager.Identity.Service.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            var requires2Fa = context?.AcrValues.Count(t => t.Contains("mfa")) >= 1;
+            AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+
+            bool requires2Fa = context?.AcrValues.Count(t => t.Contains("mfa")) >= 1;
 
             if (remoteError != null)
             {
                 ModelState.AddModelError(string.Empty, _sharedLocalizer["EXTERNAL_PROVIDER_ERROR", remoteError]);
                 return View(nameof(Login));
             }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            ExternalLoginInfo info = await GetExternalLoginInfoAsync();
 
             if (info == null)
             {
                 return RedirectToAction(nameof(Login));
             }
 
-            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            string email = info.Principal.FindFirstValue(ClaimTypes.Email);
 
             if (!string.IsNullOrEmpty(email))
             {
-                var user = await _userManager.FindByNameAsync(email);
+                User user = await _userManager.FindByEmailAsync(email);
                 if (user != null && !user.TwoFactorEnabled && requires2Fa)
                 {
                     return RedirectToAction(nameof(ErrorEnable2FA));
@@ -329,7 +342,7 @@ namespace EventManager.Identity.Service.Controllers
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
             {
                 _logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
@@ -337,7 +350,7 @@ namespace EventManager.Identity.Service.Controllers
             }
             if (result.RequiresTwoFactor)
             {
-                var fido2ItemExistsForUser = await _fido2Storage.GetCredentialsByUsername(email);
+                List<FidoStoredCredential> fido2ItemExistsForUser = await _fido2Storage.GetCredentialsByUsername(email);
                 if (fido2ItemExistsForUser.Count > 0)
                 {
                     return RedirectToAction(nameof(LoginFido2Mfa), new { ReturnUrl = returnUrl });
@@ -371,13 +384,11 @@ namespace EventManager.Identity.Service.Controllers
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
-                var info = await _signInManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                var user = new User { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user);
+                ExternalLoginInfo info;
+                try { info = await GetExternalLoginInfoAsync(); }
+                catch { return View("ExternalLoginFailure"); }
+                User user = new User { UserName = model.Email, Email = model.Email };
+                IdentityResult result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
@@ -405,12 +416,12 @@ namespace EventManager.Identity.Service.Controllers
             {
                 return View("Error");
             }
-            var user = await _userManager.FindByIdAsync(userId);
+            User user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return View("Error");
             }
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            IdentityResult result = await _userManager.ConfirmEmailAsync(user, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -432,7 +443,7 @@ namespace EventManager.Identity.Service.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
+                User user = await _userManager.FindByEmailAsync(model.Email);
                 // TODO add this is all users need to be validated
                 // if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 if (user == null)
@@ -443,13 +454,20 @@ namespace EventManager.Identity.Service.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 // Send an email with this link
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                await _emailSender.SendEmail(
-                   model.Email,
-                   "Reset Password",
-                   $"Please reset your password by clicking here: {callbackUrl}",
-                   "Hi Sir");
+                string code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                string callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                if (_configuration.GetValue<bool>("UseSmtpEmail"))
+                    await _emailService.SendEmailAsync(
+                        "Hi Sir",
+                        model.Email,
+                        "Reset Password",
+                       $"Please reset your password by clicking here: {callbackUrl}");
+                else
+                    await _emailSender.SendEmail(
+                       model.Email,
+                       "Reset Password",
+                       $"Please reset your password by clicking here: {callbackUrl}",
+                       "Hi Sir");
 
                 return View("ForgotPasswordConfirmation");
             }
@@ -487,13 +505,13 @@ namespace EventManager.Identity.Service.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByNameAsync(model.Email);
+            User user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
             }
-            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            IdentityResult result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
@@ -517,13 +535,13 @@ namespace EventManager.Identity.Service.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
         {
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            User user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 return View("Error");
             }
-            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
+            IList<string> userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            List<SelectListItem> factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
@@ -539,7 +557,7 @@ namespace EventManager.Identity.Service.Controllers
                 return View();
             }
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            User user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 return View("Error");
@@ -551,19 +569,31 @@ namespace EventManager.Identity.Service.Controllers
 
             // Email used
             // Generate the token and send it
-            var code = await _userManager.GenerateTwoFactorTokenAsync(user, model.SelectedProvider);
+            string code = await _userManager.GenerateTwoFactorTokenAsync(user, model.SelectedProvider);
             if (string.IsNullOrWhiteSpace(code))
             {
                 return View("Error");
             }
 
-            var message = "Your security code is: " + code;
+            string message = "Your security code is: " + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailSender.SendEmail(await _userManager.GetEmailAsync(user), "Security Code", message, "Hi Sir");
+                if (_configuration.GetValue<bool>("UseSmtpEmail"))
+                    await _emailService.SendEmailAsync(
+                        "Hi Sir",
+                        await _userManager.GetEmailAsync(user),
+                        "Security Code",
+                        message);
+                else
+                    await _emailSender.SendEmail(
+                       await _userManager.GetEmailAsync(user),
+                       "Security Code",
+                       message,
+                       "Hi Sir");
+
             }
 
-            return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, model.RememberMe });
         }
 
         //
@@ -573,7 +603,7 @@ namespace EventManager.Identity.Service.Controllers
         public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
         {
             // Require that the user has already logged in via username/password or external login
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            User user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 return View("Error");
@@ -607,7 +637,7 @@ namespace EventManager.Identity.Service.Controllers
             // The following code protects for brute force attacks against the two factor codes.
             // If a user enters incorrect codes for a specified amount of time then the user account
             // will be locked out for a specified amount of time.
-            var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, model.RememberMe, model.RememberBrowser);
+            SignInResult result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, model.RememberMe, model.RememberBrowser);
             if (result.Succeeded)
             {
                 return RedirectToLocal(model.ReturnUrl);
@@ -626,13 +656,13 @@ namespace EventManager.Identity.Service.Controllers
 
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
-                var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
+                bool local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
 
                 // this is meant to short circuit the UI and only trigger the one external IdP
-                var vm = new LoginViewModel
+                LoginViewModel vm = new LoginViewModel
                 {
                     EnableLocalLogin = local,
                     ReturnUrl = returnUrl,
@@ -647,9 +677,9 @@ namespace EventManager.Identity.Service.Controllers
                 return vm;
             }
 
-            var schemes = await _schemeProvider.GetAllSchemesAsync();
+            IEnumerable<AuthenticationScheme> schemes = await _schemeProvider.GetAllSchemesAsync();
 
-            var providers = schemes
+            List<ExternalProvider> providers = schemes
                 .Where(x => x.DisplayName != null)
                 .Select(x => new ExternalProvider
                 {
@@ -657,10 +687,10 @@ namespace EventManager.Identity.Service.Controllers
                     AuthenticationScheme = x.Name
                 }).ToList();
 
-            var allowLocal = true;
+            bool allowLocal = true;
             if (context?.Client.ClientId != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
+                Client client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
                 if (client != null)
                 {
                     allowLocal = client.EnableLocalLogin;
@@ -684,7 +714,7 @@ namespace EventManager.Identity.Service.Controllers
 
         private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
         {
-            var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
+            LoginViewModel vm = await BuildLoginViewModelAsync(model.ReturnUrl);
             vm.Email = model.Email;
             vm.RememberLogin = model.RememberLogin;
             return vm;
@@ -692,7 +722,7 @@ namespace EventManager.Identity.Service.Controllers
 
         private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
         {
-            var vm = new LogoutViewModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
+            LogoutViewModel vm = new LogoutViewModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
 
             if (User?.Identity.IsAuthenticated != true)
             {
@@ -701,7 +731,7 @@ namespace EventManager.Identity.Service.Controllers
                 return vm;
             }
 
-            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            LogoutRequest context = await _interaction.GetLogoutContextAsync(logoutId);
             if (context?.ShowSignoutPrompt == false)
             {
                 // it's safe to automatically sign-out
@@ -717,9 +747,9 @@ namespace EventManager.Identity.Service.Controllers
         private async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
+            LogoutRequest logout = await _interaction.GetLogoutContextAsync(logoutId);
 
-            var vm = new LoggedOutViewModel
+            LoggedOutViewModel vm = new LoggedOutViewModel
             {
                 AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut,
                 PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
@@ -730,10 +760,10 @@ namespace EventManager.Identity.Service.Controllers
 
             if (User?.Identity.IsAuthenticated == true)
             {
-                var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
+                string idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
                 if (idp != null && idp != IdentityServer4.IdentityServerConstants.LocalIdentityProvider)
                 {
-                    var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
+                    bool providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
                     if (providerSupportsSignout)
                     {
                         if (vm.LogoutId == null)
@@ -755,7 +785,7 @@ namespace EventManager.Identity.Service.Controllers
 
         private void AddErrors(IdentityResult result)
         {
-            foreach (var error in result.Errors)
+            foreach (IdentityError error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
@@ -773,6 +803,23 @@ namespace EventManager.Identity.Service.Controllers
             }
         }
 
+        private async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            if (result?.Succeeded != true || result?.None == true)
+                throw new Exception("External Authentication Error");
+
+            ClaimsPrincipal principal = result.Principal;
+            Claim userIdClaim = principal.FindFirst(JwtClaimTypes.Subject) ??
+                                principal.FindFirst(ClaimTypes.NameIdentifier) ??
+                                throw new Exception("Unknown User Id Claim");
+
+            if (!result.Properties.Items.ContainsKey("LoginProvider"))
+                throw new Exception("Unknown Login Provider");
+            string loginProvider = result.Properties.Items["LoginProvider"];
+
+            return new ExternalLoginInfo(principal, loginProvider, userIdClaim.Value, loginProvider);
+        }
         #endregion
     }
 }

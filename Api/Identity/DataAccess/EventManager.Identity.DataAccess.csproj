@@ -12,6 +12,11 @@
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="4.1.1" />
+    <PackageReference Include="JPProject.Admin.Application" Version="3.2.11" />
+    <PackageReference Include="JPProject.Admin.Domain" Version="3.2.11" />
+    <PackageReference Include="JPProject.Admin.EntityFramework.Repository" Version="3.2.11" />
+    <PackageReference Include="JPProject.AspNet.Core" Version="3.2.11" />
+    <PackageReference Include="JPProject.EntityFrameworkCore" Version="3.2.11" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
@@ -40,8 +45,14 @@
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="2.1.1" />
+    <PackageReference Include="JPProject.Domain.Core" Version="3.2.11" />
   </ItemGroup>
-
+  <ItemGroup Label="Databases">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.1" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Core\EventManager.Shared.Core.csproj" />
     <ProjectReference Include="..\..\..\Shared\DataAccess\EventManager.Shared.DataAccess.csproj" />

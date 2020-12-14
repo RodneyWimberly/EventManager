@@ -21,12 +21,14 @@ namespace EventManager.Identity.Service.Controllers
     [Route("api/[controller]")]
     public class MfaFido2RegisterController : Controller
     {
-        private Fido2 _lib;
-        public static IMetadataService _mds;
+        private readonly Fido2 _lib;
+        private static IMetadataService mds;
         private readonly Fido2Storage _fido2Storage;
         private readonly UserManager<User> _userManager;
         private readonly IOptions<Fido2Configuration> _optionsFido2Configuration;
         private readonly IStringLocalizer _sharedLocalizer;
+
+        public static IMetadataService Mds { get => mds; set => mds = value; }
 
         public MfaFido2RegisterController(
             Fido2Storage fido2Storage,
@@ -51,10 +53,7 @@ namespace EventManager.Identity.Service.Controllers
             });
         }
 
-        private string FormatException(Exception e)
-        {
-            return string.Format("{0}{1}", e.Message, e.InnerException != null ? " (" + e.InnerException.Message + ")" : "");
-        }
+        private static string FormatException(Exception e) => string.Format("{0}{1}", e.Message, e.InnerException != null ? " (" + e.InnerException.Message + ")" : "");
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -68,7 +67,7 @@ namespace EventManager.Identity.Service.Controllers
                     username = $"{displayName} (Usernameless user created at {DateTime.UtcNow})";
                 }
 
-                var identityUser = await _userManager.FindByEmailAsync(username);
+                var identityUser = await _userManager.FindByNameAsync(username);
                 var user = new Fido2User
                 {
                     DisplayName = identityUser.UserName,
@@ -122,13 +121,13 @@ namespace EventManager.Identity.Service.Controllers
                 var options = CredentialCreateOptions.FromJson(jsonOptions);
 
                 // 2. Create callback so that lib can verify credential id is unique to this user
-                IsCredentialIdUniqueToUserAsyncDelegate callback = async (IsCredentialIdUniqueToUserParams args) =>
+                async Task<bool> callback(IsCredentialIdUniqueToUserParams args)
                 {
                     var users = await _fido2Storage.GetUsersByCredentialIdAsync(args.CredentialId);
                     if (users.Count > 0) return false;
 
                     return true;
-                };
+                }
 
                 // 2. Verify and make the credentials
                 var success = await _lib.MakeNewCredentialAsync(attestationResponse, options, callback);

@@ -1,5 +1,7 @@
 ﻿using Arch.EntityFrameworkCore.UnitOfWork;
+using EventManager.Identity.DataAccess.Fido;
 using EventManager.Shared.DataAccess;
+using Fido2NetLib;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Storage;
 using IdentityServer4.EntityFramework.Stores;
@@ -23,12 +25,18 @@ namespace EventManager.Identity.DataAccess.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureFidoStorage(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<Fido2Configuration>(configuration.GetSection("fido2"));
+            services.AddScoped<Fido2Storage>();
+            return services;
+        }
+
         public static IServiceCollection ConfigIdentityDbContext(this IServiceCollection services,
-            IConfiguration configuration, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
+            IConfiguration configuration, string migrationsAssembly, bool enableSensitiveDataLogging = false, bool useLazyLoadingProxies = false)
         {
             // Setup DB connections and migrations
-            string migrationsAssembly = typeof(IServiceCollectionExtensions).Assembly.FullName,
-                identityDbConnection = configuration.GetConnectionString("IdentityDb");
+            string identityDbConnection = configuration.GetConnectionString("IdentityDb");
 
             services.TryAddScoped<IClientStore, ClientStore>();
             services.TryAddScoped<IPersistedGrantStore, PersistedGrantStore>();

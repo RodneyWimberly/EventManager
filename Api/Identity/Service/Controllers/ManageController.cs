@@ -3,10 +3,13 @@ using EventManager.Identity.DataAccess.Models;
 using EventManager.Identity.DataAccess.Models.ManageViewModels;
 using EventManager.Identity.Service.Resources;
 using EventManager.Shared.Core.Email;
+using IdentityModel;
+using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -26,7 +30,9 @@ namespace EventManager.Identity.Service.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailService _emailService;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
 
@@ -39,7 +45,9 @@ namespace EventManager.Identity.Service.Controllers
         public ManageController(
           UserManager<User> userManager,
           SignInManager<User> signInManager,
-          IEmailSender emailSender,
+          IEmailService emailService,
+            IEmailSender emailSender,
+            IConfiguration configuration,
           ILogger<ManageController> logger,
           UrlEncoder urlEncoder,
           IStringLocalizerFactory factory,
@@ -47,7 +55,9 @@ namespace EventManager.Identity.Service.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
             _emailSender = emailSender;
+            _configuration = configuration;
             _logger = logger;
             _urlEncoder = urlEncoder;
             _fido2Storage = fido2Storage;
@@ -137,12 +147,19 @@ namespace EventManager.Identity.Service.Controllers
 
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-            await _emailSender.SendEmail(
-               model.Email,
-               "EventManager.Identity.Service Verification Email",
-               $"Please verify by clicking here: {callbackUrl}",
-               "Hi Sir");
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
+            if (_configuration.GetValue<bool>("UseSmtpEmail"))
+                await _emailService.SendEmailAsync(
+                    "Hi Sir",
+                    model.Email,
+                    "Identity Verification Email",
+                    $"Please verify by clicking here: {callbackUrl}");
+            else
+                await _emailSender.SendEmail(
+                   model.Email,
+                   "Security Code",
+                   $"Please verify by clicking here: {callbackUrl}",
+                   "Hi Sir");
 
             StatusMessage = _sharedLocalizer["STATUS_UPDATE_PROFILE_EMAIL_SEND"];
             return RedirectToAction(nameof(Index));
@@ -285,11 +302,7 @@ namespace EventManager.Identity.Service.Controllers
                 return NotFound(_sharedLocalizer["USER_NOTFOUND", _userManager.GetUserId(User)]);
             }
 
-            var info = await _signInManager.GetExternalLoginInfoAsync(user.Id);
-            if (info == null)
-            {
-                throw new ApplicationException($"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
-            }
+            var info = await GetExternalLoginInfoAsync();
 
             var result = await _userManager.AddLoginAsync(user, info);
             if (!result.Succeeded)
@@ -531,8 +544,10 @@ namespace EventManager.Identity.Service.Controllers
                 return NotFound(_sharedLocalizer["USER_NOTFOUND", _userManager.GetUserId(User)]);
             }
 
-            var deletePersonalDataViewModel = new DeletePersonalDataViewModel();
-            deletePersonalDataViewModel.RequirePassword = await _userManager.HasPasswordAsync(user);
+            var deletePersonalDataViewModel = new DeletePersonalDataViewModel
+            {
+                RequirePassword = await _userManager.HasPasswordAsync(user)
+            };
             return View(deletePersonalDataViewModel);
         }
 
@@ -611,6 +626,23 @@ namespace EventManager.Identity.Service.Controllers
         }
 
         #region Helpers
+        private async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            if (result?.Succeeded != true || result?.None == true)
+                throw new Exception("External authentication error");
+
+            ClaimsPrincipal principal = result.Principal;
+            Claim userIdClaim = principal.FindFirst(JwtClaimTypes.Subject) ??
+                                principal.FindFirst(ClaimTypes.NameIdentifier) ??
+                                throw new Exception("Unknown user id claim");
+
+            if (!result.Properties.Items.ContainsKey("LoginProvider"))
+                throw new Exception("Unknown Login Provider");
+            string loginProvider = result.Properties.Items["LoginProvider"];
+
+            return new ExternalLoginInfo(principal, loginProvider, userIdClaim.Value, loginProvider);
+        }
 
         private void AddErrors(IdentityResult result)
         {
@@ -620,18 +652,18 @@ namespace EventManager.Identity.Service.Controllers
             }
         }
 
-        private string FormatKey(string unformattedKey)
+        private static string FormatKey(string unformattedKey)
         {
             var result = new StringBuilder();
             int currentPosition = 0;
             while (currentPosition + 4 < unformattedKey.Length)
             {
-                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
+                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(' ');
                 currentPosition += 4;
             }
             if (currentPosition < unformattedKey.Length)
             {
-                result.Append(unformattedKey.Substring(currentPosition));
+                result.Append(unformattedKey[currentPosition..]);
             }
 
             return result.ToString().ToLowerInvariant();

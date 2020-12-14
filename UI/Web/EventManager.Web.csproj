@@ -7,7 +7,7 @@
     <Configurations>Debug;Release;DebugNgBuild;ReleaseNgBuild</Configurations>
   </PropertyGroup>
   
-  <Target Name="SpaDependencies" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+  <Target Name="SpaDependencies" BeforeTargets="Rebuild" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
@@ -16,14 +16,14 @@
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
 
-  <Target Name="SpaBuild" BeforeTargets="Build" AfterTargets="SpaDependencies">
+  <Target Name="SpaRebuild" BeforeTargets="Rebuild" AfterTargets="SpaDependencies">
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" Condition=" '$(Configuration)' == 'DebugNgBuild' " />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr" Condition=" '$(Configuration)' == 'DebugNgBuild' And '$(BuildServerSideRenderer)' == 'true' " />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" Condition=" '$(Configuration)' == 'ReleaseNgBuild' " />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(Configuration)' == 'ReleaseNgBuild' And '$(BuildServerSideRenderer)' == 'true' " />
   </Target>
 
-  <Target Name="SpaPublish" AfterTargets="SpaBuild">
+  <Target Name="SpaPublish" AfterTargets="SpaRebuild">
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)wwwroot\**" />
       <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />

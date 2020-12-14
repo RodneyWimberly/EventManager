@@ -1,0 +1,1 @@
+{"version":3,"file":"identity-resource.model.js","sourceRoot":"","sources":["../../../../../../src/app/shared/viewModel/identity-resource.model.ts"],"names":[],"mappings":"AACA,MAAM,OAAO,gBAAgB;IACzB;QACI,IAAI,CAAC,OAAO,GAAG,IAAI,CAAC;QACpB,IAAI,CAAC,uBAAuB,GAAG,IAAI,CAAC;QACpC,IAAI,CAAC,UAAU,GAAG,EAAE,CAAC;IACzB,CAAC;CASJ"}

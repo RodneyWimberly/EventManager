@@ -1,0 +1,1 @@
+{"version":3,"file":"email.model.js","sourceRoot":"","sources":["../../../../../../src/app/shared/viewModel/email.model.ts"],"names":[],"mappings":"AACA,MAAM,OAAO,GAAG;CAEf;AAED,MAAM,OAAO,MAAM;CAGlB;AAED,MAAM,OAAO,KAAK;IACd;QACI,IAAI,CAAC,GAAG,GAAG,IAAI,GAAG,EAAE,CAAC;QACrB,IAAI,CAAC,MAAM,GAAG,IAAI,MAAM,EAAE,CAAC;QAC3B,IAAI,CAAC,OAAO,GAAG,EAAE,CAAC;IACtB,CAAC;CAMJ"}

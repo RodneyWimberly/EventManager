@@ -1,0 +1,1 @@
+{"version":3,"file":"userProfile.model.js","sourceRoot":"","sources":["../../../../../../src/app/shared/viewModel/userProfile.model.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,WAAW;IAwBb,YAAY;QACf,MAAM,EAAE,GAAG,yJAAyJ,CAAC;QACrK,OAAO,EAAE,CAAC,IAAI,CAAC,MAAM,CAAC,IAAI,CAAC,KAAK,CAAC,CAAC,WAAW,EAAE,CAAC,CAAC;IACrD,CAAC;CACJ;AAED,MAAM,OAAO,WAAW;CAGvB"}

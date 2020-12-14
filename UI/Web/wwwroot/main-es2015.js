@@ -3883,12 +3883,12 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    webBaseUrl: 'https://localhost:6000',
+    webBaseUrl: 'https://localhost:60000',
     authorityBaseUrl: 'https://localhost:6002',
     apiBaseUrl: 'https://localhost:6001/api',
     apiVersion: '1.0',
     loginUrl: '/login',
-    authCallbackUrl: 'https://localhost:6000/callback'
+    authCallbackUrl: 'https://localhost:60000/callback'
 };
 /*
  * For easier debugging in development mode, you can import the following file

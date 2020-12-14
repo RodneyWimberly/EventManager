@@ -1,0 +1,1 @@
+{"version":3,"file":"api-resource.model.js","sourceRoot":"","sources":["../../../../../../src/app/shared/viewModel/api-resource.model.ts"],"names":[],"mappings":"AAEA,MAAM,OAAO,WAAW;IACpB;QACI,IAAI,CAAC,OAAO,GAAG,IAAI,CAAC;QACpB,IAAI,CAAC,UAAU,GAAG,EAAE,CAAC;IACzB,CAAC;CAQJ;AAGD,MAAM,OAAO,iBAAiB;IAC1B;QACI,IAAI,CAAC,QAAQ,GAAG,CAAC,CAAC;IACtB,CAAC;CAOJ"}

@@ -4,9 +4,8 @@ using EventManager.Identity.DataAccess.Fido;
 using EventManager.Identity.DataAccess.Models;
 using EventManager.Identity.Service.Filters;
 using EventManager.Identity.Service.Resources;
-using EventManager.Shared.Core.Email;
+using EventManager.Shared.Core.Extensions;
 using EventManager.Shared.Service.Certificate;
-using Fido2NetLib;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +16,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System;
@@ -50,10 +50,8 @@ namespace EventManager.Identity.Service
                 options.OnDeleteCookie = cookieContext =>
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
-
-            (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) x509Certificate2 = GetCertificates(Environment, Configuration).GetAwaiter().GetResult();
+            (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) = GetCertificates(Environment, Configuration).GetAwaiter().GetResult();
             AddLocalizationConfigurations(services);
-
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -62,8 +60,8 @@ namespace EventManager.Identity.Service
                         builder
                             .AllowCredentials()
                             .WithOrigins(
-                                "http://localhost:5000",
-                                "https://localhost:6000",
+                                "https://localhost:6001",
+                                "https://localhost:60000",
                                 "http://em-web.azurewebsites.net",
                                 "https://em-web.azurewebsites.net")
                             .SetIsOriginAllowedToAllowWildcardSubdomains()
@@ -71,34 +69,25 @@ namespace EventManager.Identity.Service
                             .AllowAnyMethod();
                     });
             });
-
-            services.ConfigIdentityDbContext(Configuration);
-
-            services.Configure<IdentityConfig>(Configuration.GetSection("IdentityConfig"));
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-
+            services.ConfigIdentityDbContext(Configuration, GetType().Assembly.FullName);
             services.AddSingleton<LocService>();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-
+            services.Configure<IdentityConfig>(Configuration.GetSection("IdentityConfig"));
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddErrorDescriber<IdentityServiceErrorDescriber>()
                 .AddDefaultTokenProviders()
                 .AddTokenProvider<Fifo2UserTwoFactorTokenProvider>("FIDO2");
-
-
-            services.AddTransient<IEmailSender, EmailSender>();
-
+            services.ConfigureEmailSender(Configuration);
+            services.ConfigureEmailService(Configuration);
             services.AddAntiforgery(options =>
             {
                 options.SuppressXFrameOptionsHeader = true;
                 options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
-
-            services.AddOidcStateDataFormatterCache(GoogleDefaults.AuthenticationScheme);
             IConfigurationSection authenticationOptions = Configuration.GetSection("Authentication");
-
+            services.AddOidcStateDataFormatterCache(GoogleDefaults.AuthenticationScheme);
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
@@ -107,9 +96,7 @@ namespace EventManager.Identity.Service
                     options.ClientSecret = authenticationOptions.GetValue<string>("GoogleClientSecret");
                     options.Scope.Add("email");
                 });
-
             services.AddAuthorization();
-
             services.AddControllersWithViews(options =>
                 {
                     options.Filters.Add(new SecurityHeadersAttribute());
@@ -124,15 +111,13 @@ namespace EventManager.Identity.Service
                     };
                 })
                 .AddNewtonsoftJson();
-
-            services.AddIdentityServer()
-                .AddSigningCredential(x509Certificate2.ActiveCertificate)
+            IIdentityServerBuilder builder = services.AddIdentityServer()
+                .AddSigningCredential(ActiveCertificate)
                 .AddAspNetIdentity<User>()
                 .AddProfileService<ProfileService>();
-
-            services.Configure<Fido2Configuration>(Configuration.GetSection("fido2"));
-            services.AddScoped<Fido2Storage>();
-            // Adds a default in-memory implementation of IDistributedCache.
+            if (Environment.IsProduction())
+                builder.AddConfigurationStoreCache();
+            services.ConfigureFidoStorage(Configuration);
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -143,29 +128,20 @@ namespace EventManager.Identity.Service
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            logger.LogInformation("Configuring the HTTP request pipeline");
             app.UseCookiePolicy();
-
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
                 app.UseExceptionHandler("/Error");
-                app.UseHsts(hsts => hsts.MaxAge(365).IncludeSubdomains());
-            }
-
             app.UseCors("AllowAllOrigins");
-
             app.UseHsts(hsts => hsts.MaxAge(365).IncludeSubdomains());
             app.UseXContentTypeOptions();
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
-
             string allowedAncestors = Configuration.GetSection("IdentityConfig")["AllowedAncestors"];
-
             app.UseCsp(opts =>
             {
                 opts
@@ -184,11 +160,9 @@ namespace EventManager.Identity.Service
 
             IOptions<RequestLocalizationOptions> locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);
-
             // https://nblumhardt.com/2019/10/serilog-in-aspnetcore-3/
             // https://nblumhardt.com/2019/10/serilog-mvc-logging/
             app.UseSerilogRequestLogging();
-
             app.UseStaticFiles(new StaticFileOptions()
             {
                 OnPrepareResponse = context =>
@@ -208,14 +182,10 @@ namespace EventManager.Identity.Service
                     }
                 }
             });
-
             app.UseRouting();
-
             app.UseIdentityServer();
             app.UseAuthorization();
-
             app.UseSession();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -226,19 +196,20 @@ namespace EventManager.Identity.Service
 
         private static async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificates(IWebHostEnvironment environment, IConfiguration configuration)
         {
+            IConfigurationSection configSection = configuration.GetSection("CertificateConfiguration");
             CertificateConfiguration certificateConfiguration = new CertificateConfiguration
             {
                 // Use an Azure key vault
-                CertificateNameKeyVault = configuration["CertificateNameKeyVault"], //"IdentityCert",
-                KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"], // "https://damienbod.vault.azure.net"
+                CertificateNameKeyVault = configSection["CertificateNameKeyVault"], //"IdentityCert",
+                KeyVaultEndpoint = configSection["AzureKeyVaultEndpoint"], // "https://damienbod.vault.azure.net"
 
                 // Use a local store with thumbprint
-                UseLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]),
-                CertificateThumbprint = configuration["CertificateThumbprint"],
+                UseLocalCertStore = Convert.ToBoolean(configSection["UseLocalCertStore"]),
+                CertificateThumbprint = configSection["CertificateThumbprint"],
 
                 // development certificate
-                DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, "identity_dev_cert.pfx"),
-                DevelopmentCertificatePassword = "1234" //configuration["DevelopmentCertificatePassword"] //"1234",
+                DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, configSection["DevelopmentCertificatePfx"]), // "identity_dev_cert.pfx"
+                DevelopmentCertificatePassword = configSection["DevelopmentCertificatePassword"] //"1234",
             };
 
             (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) certs = await CertificateService.GetCertificates(

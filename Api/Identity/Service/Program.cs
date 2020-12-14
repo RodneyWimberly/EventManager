@@ -1,6 +1,7 @@
 ﻿using EventManager.Identity.DataAccess;
 using EventManager.Shared.Core.Constants;
 using EventManager.Shared.Service;
+using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 
 namespace EventManager.Identity.Service
@@ -12,5 +13,8 @@ namespace EventManager.Identity.Service
             title = $"{ApplicationValues.Title} Identity Service";
             return await ProgramBase<Startup, IdentityDbSeeder>.Main(args);
         }
+
+        public static new IHostBuilder CreateHostBuilder(string[] args) =>
+            ProgramBase<Startup, IdentityDbSeeder>.CreateHostBuilder(args);
     }
 }
