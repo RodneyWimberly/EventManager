@@ -2,7 +2,7 @@
 # Exposed Port Summary (PORT = DESCRIPTION)
 ###################################################
 
-# nginx-proxy
+# nginx
 ###################################################
 # 80 = HTTP
 # 443 = HTTPS
@@ -34,8 +34,8 @@
 
 version: '3'
 services:
-  nginx.proxy:
-    container_name: 'nginx-proxy'
+  nginx:
+    container_name: 'nginx'
     image: jwilder/nginx-proxy
     ports:
       - '80:80'
@@ -174,14 +174,26 @@ services:
       - 'AdminConfiguration__IdentityAdminBaseUrl=https://id-web.em.local'
       - 'AdvancedConfiguration__PublicOrigin=https://id.em.local'
       - 'AdvancedConfiguration__IssuerUri=https://id.em.local'
+      - 'CertificateConfiguration__UseTemporarySigningKeyForDevelopment=false'
+      - 'CertificateConfiguration__UseSigningCertificatePfxFile=true'
+      - 'CertificateConfiguration__SigningCertificatePfxFilePath=/https/https.pfx'
+      - 'CertificateConfiguration__SigningCertificatePfxFilePassword=eventmanagersecret'
+      - 'CertificateConfiguration__UseValidationCertificatePfxFile=true'
+      - 'CertificateConfiguration__ValidationCertificatePfxFilePath=/https/https.pfx'
+      - 'CertificateConfiguration__ValidationCertificatePfxFilePassword=eventmanagersecret'
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/https.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=eventmanagersecret
+
     depends_on:
       - mssql
       - graylog
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+      - './shared/nginx/certs:/https:ro'
     networks:
       eventmanager:
         aliases:
@@ -194,7 +206,7 @@ services:
     container_name: eventmanager-identity-admin-api
     environment:
       - VIRTUAL_HOST=id-api.em.local
-      - AdminApiConfiguration__RequireHttpsMetadata=false
+      - AdminApiConfiguration__RequireHttpsMetadata=true
       - 'AdminApiConfiguration__ApiBaseUrl=https://id-api.em.local'
       - 'AdminApiConfiguration__IdentityServerBaseUrl=https://id.em.local'
       - 'ConnectionStrings__ConfigurationDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
@@ -205,6 +217,9 @@ services:
       - 'ConnectionStrings__DataProtectionDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/https.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=eventmanagersecret
     depends_on:
       - mssql
       - graylog
@@ -212,6 +227,7 @@ services:
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+      - './shared/nginx/certs:/https:ro'
     networks:
       eventmanager:
         aliases:
@@ -233,7 +249,7 @@ services:
       - 'AdminConfiguration__IdentityAdminBaseUrl=https://id-web.em.local'
       - 'AdminConfiguration__IdentityAdminRedirectUri=https://id-web.em.local/signin-oidc'
       - 'AdminConfiguration__IdentityServerBaseUrl=https://id.em.local'
-      - 'AdminConfiguration__RequireHttpsMetadata=false'
+      - 'AdminConfiguration__RequireHttpsMetadata=true'
       - 'IdentityServerData__Clients__0__ClientUri=https://id-web.em.local'
       - 'IdentityServerData__Clients__0__RedirectUris__0=https://id-web.em.local/signin-oidc'
       - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://id-web.em.local/signin-oidc'
@@ -243,6 +259,10 @@ services:
       - 'Serilog__WriteTo__1__Args__connectionString=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/https.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=eventmanagersecret
+
     #command: dotnet EventManager.Identity.Admin.dll /seed
     depends_on:
       - mssql
@@ -254,6 +274,7 @@ services:
       - './shared/identitydata.json:/app/identitydata.json'
       - './shared/identityserverdata.json:/app/identityserverdata.json'
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+      - './shared/nginx/certs:/https:ro'
     networks:
       eventmanager:
         aliases:
