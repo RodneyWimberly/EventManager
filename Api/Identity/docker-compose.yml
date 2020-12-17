@@ -1,0 +1,276 @@
+###################################################
+# Exposed Port Summary (PORT = DESCRIPTION)
+###################################################
+
+# nginx-proxy
+###################################################
+# 80 = HTTP
+# 443 = HTTPS
+
+# mssql
+###################################################
+# 1433 = TCP
+
+# consul
+###################################################
+# 8300 = Agent LAN
+# 8301 = Cluster LAN
+# 8302 = Cluster WAN
+# 8500 = HTTP Web UI and REST API
+# 8501 = HTTPS Web UI and REST API
+# 8502 = gRPC
+# 8600 = DNS /TCP
+# 8600/udp = DNS /UDP
+
+# graylog
+###################################################
+# 1514 = Syslog /TCP
+# 1514/udp = Syslog /UDP
+# 5555 = Raw/PlainText /TCP
+# 5555/udp = Raw/PlainText /UDP
+# 9000 = HTTP Web UI and REST API
+# 12201 = GELF /TCP
+# 12201/udp = GELF /UDP
+
+version: '3'
+services:
+  nginx.proxy:
+    container_name: 'nginx-proxy'
+    image: jwilder/nginx-proxy
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+      - './shared/nginx/vhost.d:/etc/nginx/vhost.d'
+      - './shared/nginx/certs:/etc/nginx/certs:ro'
+      - './shared/nginx/config.d:/etc/nginx/config.d'
+    networks:
+      proxy: null
+      eventmanager:
+        aliases:
+          - id.em.local
+          - id-web.em.local
+          - id-api.em.local
+          - logs.em.local
+          - config.em.local
+    restart: always
+  consul:
+    image: consul
+    ports:
+      # Agent LAN
+      - '8300:8300'
+      # Cluster LAN
+      - '8301:8301'
+      # Cluster WAN
+      - '8302:8302'
+      # HTTP
+      - '8500:8500'
+      # HTTPS
+      - '8501:8501'
+      # gRPC
+      - '8502:8502'
+      # DNS /TCP
+      - '8600:8600'
+      # DNS /UDP
+      - '8600:8600/udp'
+    container_name: consul
+    volumes:
+      - /root/vault/consul:/consul
+      - /root/vault:/vault
+      - ./shared/consul/config:/consul/config
+      #- ./shared/vault/config:/consul/config
+      - consul_data:/consul/data
+    networks:
+      eventmanager:
+        aliases:
+          - config.em.local 
+  mongo:
+    image: mongo:4.2
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - eventmanager
+  elasticsearch:
+    container_name: 'elasticsearch'
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.0
+    environment:
+      - http.host=elasticsearch
+      - transport.host=elasticsearch
+      - network.host=elasticsearch
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - eventmanager
+  graylog:
+    container_name: 'graylog'
+    image: graylog/graylog:4.0
+    environment:
+      # CHANGE ME (must be at least 16 characters)!
+      - GRAYLOG_PASSWORD_SECRET=eventmanagersecret
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://logs.em.local:9000/
+    depends_on:
+      - mongo
+      - elasticsearch
+    ports:
+      # Graylog web interface and REST API
+      - 9000:9000
+      # Syslog /TCP
+      - 1514:1514
+      # Syslog /UDP
+      - 1514:1514/udp
+      # Raw/PlainText /TCP
+      - 5555:5555
+      # Raw/PlainText /UDP
+      - 5555:5555/udp
+      # GELF /TCP
+      - 12201:12201
+      # GELF /UDP
+      - 12201:12201/udp
+    restart: always
+    volumes:
+      - graylog_data:/usr/share/graylog/data
+    networks:
+      eventmanager:
+        aliases:
+          - logs.em.local 
+  mssql:
+    container_name: 'mssql'
+    image: 'mcr.microsoft.com/mssql/server:2017-CU20-ubuntu-16.04'
+    ports:
+      - '1433:1433'
+    environment:
+      SA_PASSWORD: '${DB_PASSWORD:-Password_123}'
+      ACCEPT_EULA: 'Y'
+    volumes:
+      - 'mssql_data:/var/opt/mssql'
+    networks:
+      - eventmanager
+  eventmanager.identity.sts.identity:
+    image: '${DOCKER_REGISTRY-}eventmanager-identity-sts-identity'
+    build:
+      context: .
+      dockerfile: src/EventManager.Identity.STS.Identity/Dockerfile
+    container_name: eventmanager-identity-sts-identity
+    environment:
+      - VIRTUAL_HOST=id.em.local
+      - 'ConnectionStrings__ConfigurationDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__IdentityDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://id-web.em.local'
+      - 'AdvancedConfiguration__PublicOrigin=https://id.em.local'
+      - 'AdvancedConfiguration__IssuerUri=https://id.em.local'
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - mssql
+      - graylog
+    volumes:
+      - './shared/serilog.json:/app/serilog.json'
+      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+    networks:
+      eventmanager:
+        aliases:
+          - id.em.local
+  eventmanager.identity.admin.api:
+    image: '${DOCKER_REGISTRY-}eventmanager-identity-admin-api'
+    build:
+      context: .
+      dockerfile: src/EventManager.Identity.Admin.Api/Dockerfile
+    container_name: eventmanager-identity-admin-api
+    environment:
+      - VIRTUAL_HOST=id-api.em.local
+      - AdminApiConfiguration__RequireHttpsMetadata=false
+      - 'AdminApiConfiguration__ApiBaseUrl=https://id-api.em.local'
+      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://id.em.local'
+      - 'ConnectionStrings__ConfigurationDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__IdentityDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminLogDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminAuditLogDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - mssql
+      - graylog
+      - eventmanager.identity.sts.identity
+    volumes:
+      - './shared/serilog.json:/app/serilog.json'
+      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+    networks:
+      eventmanager:
+        aliases:
+          - id-api.em.local 
+  eventmanager.identity.admin:
+    image: '${DOCKER_REGISTRY-}eventmanager-identity-admin'
+    build:
+      context: .
+      dockerfile: src/EventManager.Identity.Admin/Dockerfile
+    container_name: eventmanager-identity-admin
+    environment:
+      - VIRTUAL_HOST=id-web.em.local
+      - 'ConnectionStrings__ConfigurationDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__IdentityDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminLogDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__AdminAuditLogDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://id-web.em.local'
+      - 'AdminConfiguration__IdentityAdminRedirectUri=https://id-web.em.local/signin-oidc'
+      - 'AdminConfiguration__IdentityServerBaseUrl=https://id.em.local'
+      - 'AdminConfiguration__RequireHttpsMetadata=false'
+      - 'IdentityServerData__Clients__0__ClientUri=https://id-web.em.local'
+      - 'IdentityServerData__Clients__0__RedirectUris__0=https://id-web.em.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://id-web.em.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://id-web.em.local/signout-callback-oidc'
+      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://id-web.em.local'
+      - 'IdentityServerData__Clients__1__RedirectUris__0=https://id-api.em.local/swagger/oauth2-redirect.html'
+      - 'Serilog__WriteTo__1__Args__connectionString=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - DockerConfiguration__UpdateCaCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
+    #command: dotnet EventManager.Identity.Admin.dll /seed
+    depends_on:
+      - mssql
+      - graylog
+      - eventmanager.identity.sts.identity
+      - eventmanager.identity.admin.api
+    volumes:
+      - './shared/serilog.json:/app/serilog.json'
+      - './shared/identitydata.json:/app/identitydata.json'
+      - './shared/identityserverdata.json:/app/identityserverdata.json'
+      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
+    networks:
+      eventmanager:
+        aliases:
+          - id-web.em.local 
+volumes:
+  consul_data:
+    driver: local
+  mssql_data:
+    driver: local
+  mongo_data:
+    driver: local
+  es_data:
+    driver: local
+  graylog_data:
+    driver: local
+networks:
+  proxy:
+    driver: bridge
+  eventmanager:
+    driver: bridge

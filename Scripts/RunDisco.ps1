@@ -7,4 +7,4 @@ $logFile = "c:\Projects\EventManager\Api\Consul\RunDisco.log"
 if (Test-Path -Path $logFile -PathType Leaf) {
     Remove-Item $logFile
 }
-consul agent -dev -enable-script-checks -config-dir=c:\projects\eventmanager\api\consul | Out-File -FilePath $logFile
+consul agent -dns-port=53 -dev -enable-script-checks -recursor 8.8.8.8 -config-dir=c:\projects\eventmanager\api\consul | Out-File -FilePath $logFile
