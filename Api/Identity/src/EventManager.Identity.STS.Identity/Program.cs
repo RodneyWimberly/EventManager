@@ -13,7 +13,7 @@ namespace EventManager.Identity.STS.Identity
     {
         public static void Main(string[] args)
         {
-            var configuration = GetConfiguration(args);
+            IConfiguration configuration = GetConfiguration(args);
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
@@ -21,7 +21,6 @@ namespace EventManager.Identity.STS.Identity
             try
             {
                 DockerHelpers.ApplyDockerConfiguration(configuration);
-
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
@@ -36,10 +35,10 @@ namespace EventManager.Identity.STS.Identity
 
         private static IConfiguration GetConfiguration(string[] args)
         {
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var isDevelopment = environment == Environments.Development;
+            string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            bool isDevelopment = environment == Environments.Development;
 
-            var configurationBuilder = new ConfigurationBuilder()
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
@@ -47,14 +46,10 @@ namespace EventManager.Identity.STS.Identity
                 .AddJsonFile($"serilog.{environment}.json", optional: true, reloadOnChange: true);
 
             if (isDevelopment)
-            {
                 configurationBuilder.AddUserSecrets<Startup>();
-            }
 
-            var configuration = configurationBuilder.Build();
-
+            IConfigurationRoot configuration = configurationBuilder.Build();
             configuration.AddAzureKeyVaultConfiguration(configurationBuilder);
-
             configurationBuilder.AddCommandLine(args);
             configurationBuilder.AddEnvironmentVariables();
 
@@ -65,21 +60,15 @@ namespace EventManager.Identity.STS.Identity
             Host.CreateDefaultBuilder(args)
                  .ConfigureAppConfiguration((hostContext, configApp) =>
                  {
-                     var configurationRoot = configApp.Build();
-
+                     IConfigurationRoot configurationRoot = configApp.Build();
                      configApp.AddJsonFile("serilog.json", optional: true, reloadOnChange: true);
 
-                     var env = hostContext.HostingEnvironment;
-
+                     IHostEnvironment env = hostContext.HostingEnvironment;
                      configApp.AddJsonFile($"serilog.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
                      if (env.IsDevelopment())
-                     {
                          configApp.AddUserSecrets<Startup>();
-                     }
 
                      configurationRoot.AddAzureKeyVaultConfiguration(configApp);
-
                      configApp.AddEnvironmentVariables();
                      configApp.AddCommandLine(args);
                  })
@@ -97,8 +86,3 @@ namespace EventManager.Identity.STS.Identity
                 });
     }
 }
-
-
-
-
-

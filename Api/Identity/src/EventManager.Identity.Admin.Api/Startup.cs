@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Skoruba.AuditLogging.EntityFramework.Entities;
-using EventManager.Identity.Admin.Api.Configuration;
+﻿using EventManager.Identity.Admin.Api.Configuration;
 using EventManager.Identity.Admin.Api.Configuration.Authorization;
 using EventManager.Identity.Admin.Api.ExceptionHandling;
 using EventManager.Identity.Admin.Api.Helpers;
@@ -22,6 +9,15 @@ using EventManager.Identity.Admin.EntityFramework.Shared.Entities.Identity;
 using EventManager.Identity.Shared.Dtos;
 using EventManager.Identity.Shared.Dtos.Identity;
 using EventManager.Identity.Shared.Helpers;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Skoruba.AuditLogging.EntityFramework.Entities;
+using System;
+using System.Collections.Generic;
 
 namespace EventManager.Identity.Admin.Api
 {
@@ -135,10 +131,10 @@ namespace EventManager.Identity.Admin.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapHealthChecks("/health", new HealthCheckOptions
-                {
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
+                //endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                //{
+                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                //});
             });
         }
 

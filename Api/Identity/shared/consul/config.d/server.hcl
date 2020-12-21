@@ -1,0 +1,12 @@
+server = true
+bootstrap_expect = 1
+ui = true
+datacenter = "dc"
+data_dir = "/consul/data"
+encrypt = "ssAJDi6sHrKZKsXKZMUZ90NPT+FKGGymRKqu+Y5fv1A="
+ca_file = "/etc/consul.d/consul-agent-ca.pem"
+cert_file = "/etc/consul.d/dc-server-consul-0.pem"
+key_file = "/etc/consul.d/dc-server-consul-0-key.pem"
+verify_incoming = true
+verify_outgoing = true
+verify_server_hostname = true

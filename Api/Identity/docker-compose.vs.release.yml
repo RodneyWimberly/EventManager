@@ -1,16 +1,26 @@
 version: '3'
 
 services:
-  eventmanager.identity.admin:
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-    labels:
-      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages --additionalProbingPath /root/.nuget/fallbackpackages  "bin/Debug/netcoreapp3.1/EventManager.Identity.Admin.dll" /seed'
-
-  eventmanager.identity.admin.api:
-    volumes:
+  em_identity_web:
+   environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+   build:
+      dockerfile: src/EventManager.Identity.Admin/Dockerfile.release  
+   volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  eventmanager.identity.sts.identity:
-    volumes:
+  em_identity_api:
+   environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+   build:
+      dockerfile: src/EventManager.Identity.Admin.Api/Dockerfile.release  
+   volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+
+  em_identity_tokenservice:
+   environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+   build:
+      dockerfile: src/EventManager.Identity.STS.Identity/Dockerfile.release  
+   volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro

@@ -7,9 +7,7 @@ using EventManager.Identity.Admin.Helpers;
 using EventManager.Identity.Shared.Dtos;
 using EventManager.Identity.Shared.Dtos.Identity;
 using EventManager.Identity.Shared.Helpers;
-using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -122,10 +120,10 @@ namespace EventManager.Identity.Admin
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapDefaultControllerRoute();
-                endpoint.MapHealthChecks("/health", new HealthCheckOptions
-                {
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
+                //endpoint.MapHealthChecks("/health", new HealthCheckOptions
+                //{
+                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                //});
             });
         }
 

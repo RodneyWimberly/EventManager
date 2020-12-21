@@ -5,9 +5,7 @@ using EventManager.Identity.STS.Identity.Configuration;
 using EventManager.Identity.STS.Identity.Configuration.Constants;
 using EventManager.Identity.STS.Identity.Configuration.Interfaces;
 using EventManager.Identity.STS.Identity.Helpers;
-using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -86,10 +84,10 @@ namespace EventManager.Identity.STS.Identity
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapDefaultControllerRoute();
-                endpoint.MapHealthChecks("/healthcheck", new HealthCheckOptions
-                {
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
+                //endpoint.MapHealthChecks("/healthcheck", new HealthCheckOptions
+                //{
+                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                //});
             });
         }
 

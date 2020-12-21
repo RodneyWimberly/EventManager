@@ -1,14 +1,14 @@
 version: '3'
 
 services:
-  eventmanager.identity.admin:
+  em_identity_web:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
   
-  eventmanager.identity.admin.api:
+  em_identity_api:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  eventmanager.identity.sts.identity:
+  em_identity_tokenservice:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro

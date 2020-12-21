@@ -3,6 +3,7 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Skoruba.IdentityServer4.Admin.EntityFramework.Interfaces;
+using IdentityServer4.EntityFramework.Interfaces;
 
 namespace EventManager.Identity.Admin.EntityFramework.Shared.DbContexts
 {

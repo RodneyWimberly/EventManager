@@ -1,41 +1,25 @@
-###################################################
-# Exposed Port Summary (PORT = DESCRIPTION)
-###################################################
-
-# nginx
-###################################################
-# 80 = HTTP
-# 443 = HTTPS
-
-# mssql
-###################################################
-# 1433 = TCP
-
-# consul
-###################################################
-# 8300 = Agent LAN
-# 8301 = Cluster LAN
-# 8302 = Cluster WAN
-# 8500 = HTTP Web UI and REST API
-# 8501 = HTTPS Web UI and REST API
-# 8502 = gRPC
-# 8600 = DNS /TCP
-# 8600/udp = DNS /UDP
-
-# graylog
-###################################################
-# 1514 = Syslog /TCP
-# 1514/udp = Syslog /UDP
-# 5555 = Raw/PlainText /TCP
-# 5555/udp = Raw/PlainText /UDP
-# 9000 = HTTP Web UI and REST API
-# 12201 = GELF /TCP
-# 12201/udp = GELF /UDP
+# 53/tcp:udp = em_service_disco_server:DNS
+# 80/tcp = em_service_proxy:HTTP
+# 443/tcp = em_service_proxy:HTTPS
+# 1433/tcp = em_identity_db:MSSql
+# 1514/tcp:udp = em_logs_web:Syslog
+# *5555/tcp:udp = em_logs_web:RawPlainText
+# 8300/tcp = em_service_disco_server:Replication
+# *8301/tcp:udp = em_service_disco_server:Gossip LAN
+# 8302/tcp:udp = em_service_disco_server:Gossip WAN
+# 8500/tcp = em_service_disco_server:HTTP Web UI and REST API
+# *8501/tcp = em_service_disco_server:HTTPS Web UI and REST API
+# 8502/tcp = em_service_disco_server:gRPC
+# 9000/tcp = em_logs_web:HTTP Web UI and REST API
+# 12201/tcp:udp = em_logs_web:GELF
 
 version: '3'
 services:
-  nginx:
-    container_name: 'nginx'
+  em_service_proxy:
+    cgroup_parent: em-service
+    container_name: 'em-service-proxy'
+    depends_on: 
+       - em_service_disco_server
     image: jwilder/nginx-proxy
     ports:
       - '80:80'
@@ -46,55 +30,142 @@ services:
       - './shared/nginx/certs:/etc/nginx/certs:ro'
       - './shared/nginx/config.d:/etc/nginx/config.d'
     networks:
-      proxy: null
-      eventmanager:
+      service_disco_network:
         aliases:
-          - id.em.local
-          - id-web.em.local
-          - id-api.em.local
+          - nginx
+          - proxy.em.local
+          - api.em.local
+          - events.em.local
+          - sts.em.local
+          - identity.em.local
           - logs.em.local
-          - config.em.local
+          - disco.em.local
+      service_proxy_network:
+        aliases:
+          - nginx
+          - eventmanager.phc.org
+      external_network: {}
+      backbone_network:
+        aliases:
+          - nginx
+          - proxy.em.local
+          - api.em.local
+          - events.em.local
+          - sts.em.local
+          - identity.em.local
+          - logs.em.local
+          - em_service_disco_server
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
     restart: always
-  consul:
+
+  em_service_disco_server:
+    cgroup_parent: em-service
     image: consul
+    command: consul agent -config-dir=/consul/config -dns-port=53 -recursor=8.8.8.8
     ports:
-      # Agent LAN
+      - '53:53'
+      - '53:53/udp'
       - '8300:8300'
-      # Cluster LAN
-      - '8301:8301'
-      # Cluster WAN
       - '8302:8302'
-      # HTTP
+      - '8302:8302/udp'
       - '8500:8500'
-      # HTTPS
-      - '8501:8501'
-      # gRPC
       - '8502:8502'
-      # DNS /TCP
-      - '8600:8600'
-      # DNS /UDP
-      - '8600:8600/udp'
-    container_name: consul
+    container_name: em-service-disco-server
+    environment:
+        - CONSUL_CACERT=/consul/config/consul-agent-ca.pem
+        - CONSUL_CLIENT_CERT=/consul/config/dc-server-consul-0.pem
+        - CONSUL_CLIENT_KEY=/consul/config/dc-server-consul-0-key.pem
     volumes:
       - /root/vault/consul:/consul
       - /root/vault:/vault
       - ./shared/consul/config:/consul/config
+      #- ./shared/consul/config.d:/etc/consul.d
       #- ./shared/vault/config:/consul/config
-      - consul_data:/consul/data
+      #- service_disco_volume:/opt/consul
+      - service_disco_volume:/consul/data
     networks:
-      eventmanager:
+      service_disco_network:
         aliases:
-          - config.em.local 
-  mongo:
-    image: mongo:4.2
-    container_name: mongo
-    volumes:
-      - mongo_data:/data/db
+          - consul
+          - disco.em.local 
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_logs_agent: 
+    cgroup_parent: em-logs
+    image: 'sematext/logagent:latest' 
+    container_name: em-logs-agent
+    depends_on:
+      - em_service_disco_server
+      - em_service_proxy
+      - em_logs_api
+    environment: 
+        # The index where the agent should log to (for Sematext Cloud users the logs token)
+        - LOGS_TOKEN=177434fe-0862-43e4-a162-de767c346723 
+        # Sematext Cloud region US or EU (default: US). The receiver URL will be set to EU/US default values. When using REGION, you don't need to set LOGS_RECEIVER_URL
+        #- REGION=US 
+        # The URL of your Elasticsearch Endpoint (defaults to Sematext Cloud US https://logsene-receiver.sematext.com).
+        - LOGS_RECEIVER_URL=https://elasticsearch:9200
+        # Semicolon-separated list of file globs
+        #- LOG_GLOB=/mylogs//*.log;/var/log//*.log
+        # Additional command line arguments for Logagent
+        #- LOGAGENT_ARGS="-n httpd"
+    cap_add: 
+        - SYS_ADMIN  
+    restart: always 
+    volumes: 
+        - '/var/run/docker.sock:/var/run/docker.sock' 
     networks:
-      - eventmanager
-  elasticsearch:
-    container_name: 'elasticsearch'
+     service_disco_network:
+        aliases:
+          - logagent
+     log_api_network: 
+        aliases:
+          - logagent 
+     backbone_network:
+        aliases:
+          - logagent 
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_logs_db:
+    cgroup_parent: em-logs
+    image: mongo:4.2
+    depends_on: 
+       - em_service_disco_server
+    container_name: em-logs-db
+    volumes:
+      - logs_db_volume:/data/db
+    networks:
+      service_disco_network:
+        aliases:
+          - mongo
+      log_db_network:
+        aliases:
+          - mongo
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_logs_api:
+    cgroup_parent: em-logs
+    container_name: 'em-logs-api'
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.0
+    depends_on: 
+       - em_service_disco_server
+       - em_logs_db
     environment:
       - http.host=elasticsearch
       - transport.host=elasticsearch
@@ -110,11 +181,26 @@ services:
         limits:
           memory: 1g
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - logs_api_volume:/usr/share/elasticsearch/data
     networks:
-      - eventmanager
-  graylog:
-    container_name: 'graylog'
+      service_disco_network:
+        aliases:
+          - elasticsearch
+      log_api_network: 
+        aliases:
+          - elasticsearch
+      log_db_network:
+         aliases:
+          - elasticsearch
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_logs_web:
+    cgroup_parent: em-logs
+    container_name: 'em-logs-web'
     image: graylog/graylog:4.0
     environment:
       # CHANGE ME (must be at least 16 characters)!
@@ -123,57 +209,80 @@ services:
       - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
       - GRAYLOG_HTTP_EXTERNAL_URI=http://logs.em.local:9000/
     depends_on:
-      - mongo
-      - elasticsearch
+      - em_service_disco_server
+      - em_service_proxy
+      - em_logs_api
     ports:
-      # Graylog web interface and REST API
-      - 9000:9000
-      # Syslog /TCP
       - 1514:1514
-      # Syslog /UDP
       - 1514:1514/udp
-      # Raw/PlainText /TCP
-      - 5555:5555
-      # Raw/PlainText /UDP
-      - 5555:5555/udp
-      # GELF /TCP
+      #- 5555:5555
+      #- 5555:5555/udp
+      - 9000:9000
       - 12201:12201
-      # GELF /UDP
       - 12201:12201/udp
     restart: always
     volumes:
-      - graylog_data:/usr/share/graylog/data
+      - logs_web_volume:/usr/share/graylog/data
     networks:
-      eventmanager:
+     service_disco_network:
         aliases:
+          - graylog
+     log_api_network: 
+        aliases:
+          - graylog 
+     backbone_network:
+        aliases:
+          - graylog 
           - logs.em.local 
-  mssql:
-    container_name: 'mssql'
-    image: 'mcr.microsoft.com/mssql/server:2017-CU20-ubuntu-16.04'
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_identity_db:
+    cgroup_parent: em-identity
+    container_name: 'em-identity-db'
+    image: 'mcr.microsoft.com/mssql/server:2019-latest'
+    depends_on:
+      - em_service_disco_server
+      - em_logs_web
     ports:
       - '1433:1433'
     environment:
       SA_PASSWORD: '${DB_PASSWORD:-Password_123}'
       ACCEPT_EULA: 'Y'
     volumes:
-      - 'mssql_data:/var/opt/mssql'
+      - 'identity_db_volume:/var/opt/mssql'
     networks:
-      - eventmanager
-  eventmanager.identity.sts.identity:
-    image: '${DOCKER_REGISTRY-}eventmanager-identity-sts-identity'
+     service_disco_network:
+        aliases:
+          - mssql
+     identity_db_network:
+        aliases:
+          - mssql
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_identity_tokenservice:
+    cgroup_parent: em-identity
+    image: '${DOCKER_REGISTRY-}em-identity-tokenservice'
     build:
       context: .
-      dockerfile: src/EventManager.Identity.STS.Identity/Dockerfile
-    container_name: eventmanager-identity-sts-identity
+      dockerfile: src/EventManager.Identity.STS.Identity/Dockerfile.debug  
+    container_name: em-identity-tokenservice
     environment:
-      - VIRTUAL_HOST=id.em.local
+      - VIRTUAL_HOST=sts.em.local
       - 'ConnectionStrings__ConfigurationDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__PersistedGrantDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__IdentityDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'AdminConfiguration__IdentityAdminBaseUrl=https://id-web.em.local'
-      - 'AdvancedConfiguration__PublicOrigin=https://id.em.local'
-      - 'AdvancedConfiguration__IssuerUri=https://id.em.local'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://identity.em.local'
+      - 'AdvancedConfiguration__PublicOrigin=https://sts.em.local'
+      - 'AdvancedConfiguration__IssuerUri=https://sts.em.local'
       - 'CertificateConfiguration__UseTemporarySigningKeyForDevelopment=false'
       - 'CertificateConfiguration__UseSigningCertificatePfxFile=true'
       - 'CertificateConfiguration__SigningCertificatePfxFilePath=/https/https.pfx'
@@ -182,33 +291,48 @@ services:
       - 'CertificateConfiguration__ValidationCertificatePfxFilePath=/https/https.pfx'
       - 'CertificateConfiguration__ValidationCertificatePfxFilePassword=eventmanagersecret'
       - DockerConfiguration__UpdateCaCertificate=true
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/https.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eventmanagersecret
-
     depends_on:
-      - mssql
-      - graylog
+      - em_identity_db
+      - em_logs_web
+      - em_service_disco_server
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
       - './shared/nginx/certs:/https:ro'
     networks:
-      eventmanager:
+     service_disco_network:
         aliases:
-          - id.em.local
-  eventmanager.identity.admin.api:
-    image: '${DOCKER_REGISTRY-}eventmanager-identity-admin-api'
+          - em-identity-tokenservice
+          - sts.em.local
+     identity_api_network:
+        aliases:
+          - em-identity-tokenservice
+     backbone_network:
+        aliases:
+          - em-identity-tokenservice
+          - sts.em.local
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_identity_api:
+    cgroup_parent: em-identity
+    image: '${DOCKER_REGISTRY-}em-identity-api'
     build:
       context: .
-      dockerfile: src/EventManager.Identity.Admin.Api/Dockerfile
-    container_name: eventmanager-identity-admin-api
+      dockerfile: src/EventManager.Identity.Admin.Api/Dockerfile.debug  
+    container_name: em-identity-api
     environment:
       - VIRTUAL_HOST=id-api.em.local
       - AdminApiConfiguration__RequireHttpsMetadata=true
       - 'AdminApiConfiguration__ApiBaseUrl=https://id-api.em.local'
-      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://id.em.local'
+      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://sts.em.local'
       - 'ConnectionStrings__ConfigurationDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__PersistedGrantDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__IdentityDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
@@ -216,59 +340,75 @@ services:
       - 'ConnectionStrings__AdminAuditLogDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - DockerConfiguration__UpdateCaCertificate=true
-      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/https.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eventmanagersecret
     depends_on:
-      - mssql
-      - graylog
-      - eventmanager.identity.sts.identity
+      - em_identity_db
+      - em_logs_web
+      - em_identity_tokenservice
+      - em_service_proxy
+      - em_service_disco_server
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
       - './shared/nginx/certs:/https:ro'
     networks:
-      eventmanager:
+     service_disco_network:
         aliases:
-          - id-api.em.local 
-  eventmanager.identity.admin:
-    image: '${DOCKER_REGISTRY-}eventmanager-identity-admin'
+          - em-identity-api
+          - id-api.em.local
+     identity_api_network:
+      aliases:
+          - em-identity-api
+          - id-api.em.local
+     identity_db_network:
+        aliases:
+          - em-identity-api
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
+  em_identity_web:
+    cgroup_parent: em-identity
+    image: '${DOCKER_REGISTRY-}em-identity-web'
     build:
       context: .
-      dockerfile: src/EventManager.Identity.Admin/Dockerfile
-    container_name: eventmanager-identity-admin
+      dockerfile: src/EventManager.Identity.Admin/Dockerfile.debug
+    container_name: em-identity-web
     environment:
-      - VIRTUAL_HOST=id-web.em.local
+      - VIRTUAL_HOST=identity.em.local
       - 'ConnectionStrings__ConfigurationDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__PersistedGrantDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__IdentityDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__AdminLogDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__AdminAuditLogDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'AdminConfiguration__IdentityAdminBaseUrl=https://id-web.em.local'
-      - 'AdminConfiguration__IdentityAdminRedirectUri=https://id-web.em.local/signin-oidc'
-      - 'AdminConfiguration__IdentityServerBaseUrl=https://id.em.local'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://identity.em.local'
+      - 'AdminConfiguration__IdentityAdminRedirectUri=https://identity.em.local/signin-oidc'
+      - 'AdminConfiguration__IdentityServerBaseUrl=https://sts.em.local'
       - 'AdminConfiguration__RequireHttpsMetadata=true'
-      - 'IdentityServerData__Clients__0__ClientUri=https://id-web.em.local'
-      - 'IdentityServerData__Clients__0__RedirectUris__0=https://id-web.em.local/signin-oidc'
-      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://id-web.em.local/signin-oidc'
-      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://id-web.em.local/signout-callback-oidc'
-      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://id-web.em.local'
+      - 'IdentityServerData__Clients__0__ClientUri=https://identity.em.local'
+      - 'IdentityServerData__Clients__0__RedirectUris__0=https://identity.em.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://identity.em.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://identity.em.local/signout-callback-oidc'
+      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://identity.em.local'
       - 'IdentityServerData__Clients__1__RedirectUris__0=https://id-api.em.local/swagger/oauth2-redirect.html'
       - 'Serilog__WriteTo__1__Args__connectionString=Server=mssql;Database=em-identity;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
       - DockerConfiguration__UpdateCaCertificate=true
-      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/https.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eventmanagersecret
-
-    #command: dotnet EventManager.Identity.Admin.dll /seed
     depends_on:
-      - mssql
-      - graylog
-      - eventmanager.identity.sts.identity
-      - eventmanager.identity.admin.api
+      - em_logs_web
+      - em_identity_tokenservice
+      - em_identity_api
+      - em_service_proxy
+      - em_service_disco_server
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/identitydata.json:/app/identitydata.json'
@@ -276,22 +416,58 @@ services:
       - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
       - './shared/nginx/certs:/https:ro'
     networks:
-      eventmanager:
+      backbone_network:
         aliases:
-          - id-web.em.local 
+          - em-identity-web
+          - identity.em.local 
+      service_disco_network:
+        aliases:
+          - em-identity-web
+          - identity.em.local 
+      identity_api_network:
+        aliases:
+          - em-identity-web
+      identity_db_network:
+        aliases:
+          - em-identity-web
+    dns:
+      - em_service_disco_server
+      - 8.8.8.8
+      - 8.8.4.4
+      - host.docker.internal
+
 volumes:
-  consul_data:
+  service_disco_volume:
     driver: local
-  mssql_data:
+  identity_db_volume:
     driver: local
-  mongo_data:
+  logs_db_volume:
     driver: local
-  es_data:
+  logs_api_volume:
     driver: local
-  graylog_data:
+  logs_web_volume:
     driver: local
 networks:
-  proxy:
+  external_network:
     driver: bridge
-  eventmanager:
+  backbone_network:
     driver: bridge
+    external: false
+  log_db_network:
+    driver: bridge
+    external: false
+  log_api_network:
+    driver: bridge
+    external: false
+  identity_db_network:
+    driver: bridge
+    external: false
+  identity_api_network:
+    driver: bridge
+    external: false
+  service_proxy_network:
+    driver: bridge
+    external: false
+  service_disco_network:
+    driver: bridge
+    external: false

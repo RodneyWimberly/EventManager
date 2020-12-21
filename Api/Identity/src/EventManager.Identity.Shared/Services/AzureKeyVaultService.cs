@@ -1,5 +1,5 @@
 ﻿// Original file comes from: https://github.com/damienbod/IdentityServer4AspNetCoreIdentityTemplate
-// Modified by Jan Škoruba
+// Modified by Rodney Wimberly
 
 using System;
 using System.Collections.Generic;

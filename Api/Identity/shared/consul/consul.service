@@ -1,0 +1,5 @@
+t=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

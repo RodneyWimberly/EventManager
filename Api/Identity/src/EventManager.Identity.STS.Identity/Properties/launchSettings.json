@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/EventManager.Identity.STS.Identity",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "https://localhost:44310",
       "sslPort": 44310
@@ -21,7 +25,7 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": false
     }
   }
 }

@@ -3,25 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F817047F-018D-4F93-BDA5-58602073B634}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "EventManager.Docker.Compose", "EventManager.Docker.Compose.dcproj", "{F817047F-018D-4F93-BDA5-58602073B634}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.Admin", "src\EventManager.Identity.Admin\EventManager.Identity.Admin.csproj", "{CBB95412-A930-48F8-89CD-D76379A80749}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin", "src\EventManager.Identity.Admin\EventManager.Identity.Admin.csproj", "{CBB95412-A930-48F8-89CD-D76379A80749}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.STS.Identity", "src\EventManager.Identity.STS.Identity\EventManager.Identity.STS.Identity.csproj", "{91169D51-D3B6-4FE3-9109-58B7CC01A00B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.STS.Identity", "src\EventManager.Identity.STS.Identity\EventManager.Identity.STS.Identity.csproj", "{91169D51-D3B6-4FE3-9109-58B7CC01A00B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.Admin.Api", "src\EventManager.Identity.Admin.Api\EventManager.Identity.Admin.Api.csproj", "{76C9645D-6458-453A-A4C8-256C101B2CB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.Api", "src\EventManager.Identity.Admin.Api\EventManager.Identity.Admin.Api.csproj", "{76C9645D-6458-453A-A4C8-256C101B2CB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.Admin.EntityFramework.Shared", "src\EventManager.Identity.Admin.EntityFramework.Shared\EventManager.Identity.Admin.EntityFramework.Shared.csproj", "{768CB5D7-A825-401F-B160-63DADB60DC80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.Shared", "src\EventManager.Identity.Admin.EntityFramework.Shared\EventManager.Identity.Admin.EntityFramework.Shared.csproj", "{768CB5D7-A825-401F-B160-63DADB60DC80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.Admin.EntityFramework.MySql", "src\EventManager.Identity.Admin.EntityFramework.MySql\EventManager.Identity.Admin.EntityFramework.MySql.csproj", "{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.MySql", "src\EventManager.Identity.Admin.EntityFramework.MySql\EventManager.Identity.Admin.EntityFramework.MySql.csproj", "{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.Admin.EntityFramework.PostgreSQL", "src\EventManager.Identity.Admin.EntityFramework.PostgreSQL\EventManager.Identity.Admin.EntityFramework.PostgreSQL.csproj", "{C6BABCEF-CE17-469E-AE92-3E4501E8D124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.PostgreSQL", "src\EventManager.Identity.Admin.EntityFramework.PostgreSQL\EventManager.Identity.Admin.EntityFramework.PostgreSQL.csproj", "{C6BABCEF-CE17-469E-AE92-3E4501E8D124}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.Admin.EntityFramework.SqlServer", "src\EventManager.Identity.Admin.EntityFramework.SqlServer\EventManager.Identity.Admin.EntityFramework.SqlServer.csproj", "{95CBD89B-922F-4B21-8040-39D563DF3DF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.SqlServer", "src\EventManager.Identity.Admin.EntityFramework.SqlServer\EventManager.Identity.Admin.EntityFramework.SqlServer.csproj", "{95CBD89B-922F-4B21-8040-39D563DF3DF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManager.Identity.Shared", "src\EventManager.Identity.Shared\EventManager.Identity.Shared.csproj", "{0555E9BA-C73E-4804-875A-530BD91C3662}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Shared", "src\EventManager.Identity.Shared\EventManager.Identity.Shared.csproj", "{0555E9BA-C73E-4804-875A-530BD91C3662}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A4BB1D9-3863-448D-B45F-E6A7BEB61771}"
+	ProjectSection(SolutionItems) = preProject
+		ToDo.txt = ToDo.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -145,9 +150,6 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {549F6BA2-7BF0-4104-9088-47D242078F31}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CBB95412-A930-48F8-89CD-D76379A80749} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{91169D51-D3B6-4FE3-9109-58B7CC01A00B} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
@@ -157,5 +159,8 @@ Global
 		{C6BABCEF-CE17-469E-AE92-3E4501E8D124} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{95CBD89B-922F-4B21-8040-39D563DF3DF4} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{0555E9BA-C73E-4804-875A-530BD91C3662} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {549F6BA2-7BF0-4104-9088-47D242078F31}
 	EndGlobalSection
 EndGlobal

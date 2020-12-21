@@ -2,13 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Version>2.0.0-beta1</Version>
-        <Authors>Jan Škoruba</Authors>
+        <Version>1.0.0</Version>
+        <Authors>Rodney Wimberly</Authors>
         <LangVersion>latest</LangVersion>
         <UserSecretsId>8fe260ca-ef4c-4fa3-9364-029146f8d339</UserSecretsId>
-        <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+        <DockerComposeProjectPath>..\..\EventManager.Docker.Compose.dcproj</DockerComposeProjectPath>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <DockerfileContext>..\..</DockerfileContext>
+      <PublishReadyToRun>true</PublishReadyToRun>
+        <Configurations>Debug;Release;DebugDocker;ReleaseDocker</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
@@ -132,7 +134,21 @@
         <ProjectReference Include="..\EventManager.Identity.Shared\EventManager.Identity.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
+  <ItemGroup>
+    <None Include="Dockerfile.debug">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
+    <None Include="Dockerfile.release">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
+    <None Include=".dockerignore">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
+    <None Include="Dockerfile" />
+  </ItemGroup>
+
+
+  <ItemGroup>
       <EmbeddedResource Update="Resources\Views\Configuration\ApiScopeProperties.zh.resx">
         <Generator>PublicResXFileCodeGenerator</Generator>
       </EmbeddedResource>

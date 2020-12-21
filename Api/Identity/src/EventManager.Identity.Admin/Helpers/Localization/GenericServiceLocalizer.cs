@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 // https://github.com/aspnet/Extensions/blob/master/src/Localization/Abstractions/src/StringLocalizerOfT.cs
-// Modified by Jan Škoruba
+// Modified by Rodney Wimberly
 
 using System;
 using System.Collections.Generic;

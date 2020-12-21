@@ -1,0 +1,39 @@
+Logs
+- Get from Container
+- Get from files
+- Web Logs
+- System Logs
+- DB Logs
+- Log levels
+- SeriLog .NET Scope implementation
+Container
+- Kerbenaties
+- Docker Swarm
+- Multiple Instances
+- Put Angular site in NGINX
+- Full solution in docker
+Consul
+- Auto Container Registration
+- KV Vault using IConfiguration
+- KV Admin
+- Certs in vault
+- Layer 7 SideCar connectivity
+Service Health
+- Consul
+- NGINX
+- Gateway Reverse Proxy
+- Container Health
+- Service Health
+- DB Health
+Identity
+- Web not running
+- running in docker
+- Angular integration
+- Access Token across services
+APM
+- ApplicationInsights
+- NewRelic
+- AppDynamics
+
+
+echo '{"logsene-app-token":"177434fe-0862-43e4-a162-de767c346723", "message":"Hello from Sematext!"}' | nc logsene-syslog-receiver.sematext.com 12201

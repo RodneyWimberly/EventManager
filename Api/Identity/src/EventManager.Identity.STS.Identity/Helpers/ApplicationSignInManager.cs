@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 // File: https://github.com/IdentityServer/IdentityServer4/blob/main/samples/Quickstarts/3_AspNetCoreAndApis/src/IdentityServer/Quickstart/Account/ExternalController.cs
 
-// Modified by Jan Škoruba and J. Arturo
+// Modified by Rodney Wimberly and J. Arturo
 
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;

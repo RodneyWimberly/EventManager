@@ -14,6 +14,7 @@ using IdentityServer4;
 using IdentityServer4.EntityFramework.Storage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+//using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
@@ -418,15 +419,15 @@ namespace EventManager.Identity.STS.Identity.Helpers
             if (externalProviderConfiguration.UseAzureAdProvider)
             {
                 authenticationBuilder.AddAzureAD(AzureADDefaults.AuthenticationScheme, AzureADDefaults.OpenIdScheme, AzureADDefaults.CookieScheme, AzureADDefaults.DisplayName, options =>
-                     {
-                         options.ClientSecret = externalProviderConfiguration.AzureAdSecret;
-                         options.ClientId = externalProviderConfiguration.AzureAdClientId;
-                         options.TenantId = externalProviderConfiguration.AzureAdTenantId;
-                         options.Instance = externalProviderConfiguration.AzureInstance;
-                         options.Domain = externalProviderConfiguration.AzureDomain;
-                         options.CallbackPath = externalProviderConfiguration.AzureAdCallbackPath;
-                         options.CookieSchemeName = IdentityConstants.ExternalScheme;
-                     });
+                         {
+                             options.ClientSecret = externalProviderConfiguration.AzureAdSecret;
+                             options.ClientId = externalProviderConfiguration.AzureAdClientId;
+                             options.TenantId = externalProviderConfiguration.AzureAdTenantId;
+                             options.Instance = externalProviderConfiguration.AzureInstance;
+                             options.Domain = externalProviderConfiguration.AzureDomain;
+                             options.CallbackPath = externalProviderConfiguration.AzureAdCallbackPath;
+                             options.CookieSchemeName = IdentityConstants.ExternalScheme;
+                         });
             }
         }
 
