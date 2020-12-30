@@ -59,11 +59,13 @@ services:
         - em.host
         - api.em.host
         - www.em.host
+        - sts.em.host
       internet:
        aliases:
         - em.host
         - api.em.host
         - www.em.host
+        - sts.em.host
     ports:
       - '80:80'
       - '443:443'

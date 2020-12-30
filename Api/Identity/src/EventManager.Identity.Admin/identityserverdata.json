@@ -121,13 +121,13 @@
                 "RequireClientSecret": false,
                 "RequirePkce": true,
               "RedirectUris": [
-                "https://www.em.host/api/identity/docs/oauth2-redirect.html"
+                "https://api.em.host/docs/identity/oauth2-redirect.html"
               ],
                 "AllowedScopes": [
                     "urn:em:api:scope"
                 ],
               "AllowedCorsOrigins": [
-                "https://www.em.host"
+                "https://api.em.host"
               ]
             }
         ]
