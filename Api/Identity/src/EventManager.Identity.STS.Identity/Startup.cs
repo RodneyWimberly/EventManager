@@ -7,10 +7,10 @@ using EventManager.Identity.STS.Identity.Configuration.Interfaces;
 using EventManager.Identity.STS.Identity.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 
 namespace EventManager.Identity.STS.Identity
@@ -42,10 +42,10 @@ namespace EventManager.Identity.STS.Identity
             // Add services for authentication, including Identity model and external providers
             RegisterAuthentication(services);
 
-            //services.AddCertificateForwardingForNginx();
+            services.AddCertificateForwardingForNginx();
 
             // Add HSTS options
-            //RegisterHstsOptions(services);
+            RegisterHstsOptions(services);
 
             // Add all dependencies for Asp.Net Core Identity in MVC - these dependencies are injected into generic Controllers
             // Including settings for MVC and Localization
@@ -60,7 +60,7 @@ namespace EventManager.Identity.STS.Identity
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.AddForwardHeaders();
+            app.UseSerilogRequestLogging();
             app.UseCookiePolicy();
 
             if (env.IsDevelopment())
@@ -69,7 +69,7 @@ namespace EventManager.Identity.STS.Identity
             }
             else
             {
-                //app.UseHsts();
+                app.UseHsts();
             }
 
             app.UsePathBase(Configuration.GetValue<string>("BasePath"));

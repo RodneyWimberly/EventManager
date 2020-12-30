@@ -308,7 +308,7 @@ services:
     environment:
       - VIRTUAL_HOST=sts.service.em.docker
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-      - ASPNETCORE_URLS=http://+:50003
+      - ASPNETCORE_URLS=https://+:50003
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.dotnet/https/em.host.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=changeit
       - DockerConfiguration__UpdateCaCertificate=true
@@ -350,7 +350,7 @@ services:
     environment:
       - VIRTUAL_HOST=idapi.service.em.docker
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-      - ASPNETCORE_URLS=http://+:50002
+      - ASPNETCORE_URLS=https://+:50002
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.dotnet/https/em.host.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=changeit
       - DockerConfiguration__UpdateCaCertificate=true
@@ -393,7 +393,7 @@ services:
     environment:
       - VIRTUAL_HOST=idweb.service.em.docker
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-      - ASPNETCORE_URLS=http://+:50001
+      - ASPNETCORE_URLS=https://+:50001
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.dotnet/https/em.host.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=changeit
       - DockerConfiguration__UpdateCaCertificate=true

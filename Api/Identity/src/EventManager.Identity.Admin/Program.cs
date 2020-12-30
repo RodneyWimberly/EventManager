@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,11 +23,18 @@ namespace EventManager.Identity.Admin
 
         public static async Task Main(string[] args)
         {
+            Console.Title = "em Identity Administration UI";
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
             var configuration = GetConfiguration(args);
 
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
+               .ReadFrom.Configuration(configuration)
+               .MinimumLevel.Debug()
+               .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+               .MinimumLevel.Override("EntityFrameworkCore", LogEventLevel.Warning)
+               .Enrich.FromLogContext()
+               .WriteTo.Console()
+               .CreateLogger();
 
             try
             {

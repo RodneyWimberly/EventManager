@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using Skoruba.AuditLogging.EntityFramework.Entities;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -50,9 +51,9 @@ namespace EventManager.Identity.Admin
             RegisterAuthentication(services);
 
             // Add HSTS options
-            //RegisterHstsOptions(services);
+            RegisterHstsOptions(services);
 
-            //services.AddCertificateForwardingForNginx();
+            services.AddCertificateForwardingForNginx();
 
             // Add exception filters in MVC
             services.AddMvcExceptionFilters();
@@ -91,7 +92,7 @@ namespace EventManager.Identity.Admin
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.AddForwardHeaders();
+            app.UseSerilogRequestLogging();
             app.UseCookiePolicy();
 
             if (env.IsDevelopment())
@@ -101,7 +102,7 @@ namespace EventManager.Identity.Admin
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                //app.UseHsts();
+                app.UseHsts();
             }
 
             app.UsePathBase(Configuration.GetValue<string>("BasePath"));

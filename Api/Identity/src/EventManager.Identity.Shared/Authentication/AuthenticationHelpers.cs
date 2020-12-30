@@ -12,6 +12,8 @@ namespace EventManager.Identity.Shared.Authentication
         {
             if (options.SameSite == SameSiteMode.None)
             {
+                options.SameSite = SameSiteMode.Unspecified;
+                return;
                 var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
                 if (!httpContext.Request.IsHttps || DisallowsSameSiteNone(userAgent))
                 {

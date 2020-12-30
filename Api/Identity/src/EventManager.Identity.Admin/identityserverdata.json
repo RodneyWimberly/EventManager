@@ -82,8 +82,9 @@
         ],
         "Clients": [
           {
-            "ClientId": "urn:em:client",
-            "ClientName": "urn:em:client",
+            "ClientId": "urn:em:client:mvc",
+            "ClientName": "Event Manager Identity Admin UI",
+            "ClientClaimsPrefix": "urn:em:claim:",
             "ClientUri": "https://www.em.host/admin/identity",
             "AllowedGrantTypes": [
               "authorization_code"
@@ -102,7 +103,8 @@
               "https://www.em.host/admin/identity/signout-callback-oidc"
             ],
             "AllowedCorsOrigins": [
-              "https://www.em.host"
+              "https://www.em.host",
+              "https://sts.em.host"
             ],
             "AllowedScopes": [
               "openid",
@@ -113,8 +115,8 @@
             ]
           },
             {
-                "ClientId": "urn:em:client_api_swaggerui",
-                "ClientName": "urn:em:client_api_swaggerui",
+                "ClientId": "urn:em:client:swagger",
+                "ClientName": "Event Manager Identity Admin API Documentation",
                 "AllowedGrantTypes": [
                     "authorization_code"
                 ],

@@ -4,7 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace EventManager.Identity.STS.Identity
@@ -13,11 +15,19 @@ namespace EventManager.Identity.STS.Identity
     {
         public static void Main(string[] args)
         {
+            Console.Title = "em Identity oAuth Service";
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
             IConfiguration configuration = GetConfiguration(args);
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                .MinimumLevel.Override("EntityFrameworkCore", LogEventLevel.Warning)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
                 .CreateLogger();
+
             try
             {
                 DockerHelpers.ApplyDockerConfiguration(configuration);

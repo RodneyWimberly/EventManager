@@ -13,7 +13,7 @@
       },
       {
         "Args": {
-          "outputTemplate": "{Timestamp:o} - [{SourceContext}] {NewLine}{Level:u4}: {Message}{NewLine}{Exception}{NewLine}"
+          //"outputTemplate": "{Timestamp:o} - [{SourceContext}] {NewLine}{Level:u4}: {Message}{NewLine}{Exception}{NewLine}"
         },
         "Name": "Console"
       },

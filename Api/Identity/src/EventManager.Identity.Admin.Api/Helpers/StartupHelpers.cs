@@ -3,6 +3,7 @@ using EventManager.Identity.Admin.Api.Configuration;
 using EventManager.Identity.Admin.Api.Configuration.ApplicationParts;
 using EventManager.Identity.Admin.Api.Configuration.Constants;
 using EventManager.Identity.Admin.Api.Helpers.Localization;
+using EventManager.Identity.Admin.EntityFramework.MySql.Extensions;
 using EventManager.Identity.Admin.EntityFramework.PostgreSQL.Extensions;
 using EventManager.Identity.Admin.EntityFramework.Shared.Configuration;
 using EventManager.Identity.Admin.EntityFramework.SqlServer.Extensions;
@@ -159,7 +160,9 @@ namespace EventManager.Identity.Admin.Api.Helpers
                 case DatabaseProviderType.PostgreSQL:
                     services.RegisterNpgSqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TLogDbContext, TAuditLoggingDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, errorLoggingConnectionString, auditLoggingConnectionString, dataProtectionConnectionString);
                     break;
-
+                case DatabaseProviderType.MySql:
+                    services.RegisterMySqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TLogDbContext, TAuditLoggingDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, errorLoggingConnectionString, auditLoggingConnectionString, dataProtectionConnectionString);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(databaseProvider.ProviderType), $@"The value needs to be one of {string.Join(", ", Enum.GetNames(typeof(DatabaseProviderType)))}.");
             }

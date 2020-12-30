@@ -2,6 +2,7 @@
 using EventManager.Identity.Admin.Configuration.ApplicationParts;
 using EventManager.Identity.Admin.Configuration.Constants;
 using EventManager.Identity.Admin.Configuration.Interfaces;
+using EventManager.Identity.Admin.EntityFramework.MySql.Extensions;
 using EventManager.Identity.Admin.EntityFramework.PostgreSQL.Extensions;
 using EventManager.Identity.Admin.EntityFramework.Shared.Configuration;
 using EventManager.Identity.Admin.EntityFramework.SqlServer.Extensions;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -152,6 +154,9 @@ namespace EventManager.Identity.Admin.Helpers
                 case DatabaseProviderType.PostgreSQL:
                     services.RegisterNpgSqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TLogDbContext, TAuditLoggingDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, errorLoggingConnectionString, auditLoggingConnectionString, dataProtectionConnectionString);
                     break;
+                case DatabaseProviderType.MySql:
+                    services.RegisterMySqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TLogDbContext, TAuditLoggingDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, errorLoggingConnectionString, auditLoggingConnectionString, dataProtectionConnectionString);
+                    break;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(databaseProvider.ProviderType), $@"The value needs to be one of {string.Join(", ", Enum.GetNames(typeof(DatabaseProviderType)))}.");
@@ -204,7 +209,7 @@ namespace EventManager.Identity.Admin.Helpers
         /// <param name="configuration"></param>
         public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)
         {
-            /*ForwardedHeadersOptions forwardingOptions = new ForwardedHeadersOptions()
+            ForwardedHeadersOptions forwardingOptions = new ForwardedHeadersOptions()
             {
                 ForwardedHeaders = ForwardedHeaders.All
             };
@@ -212,7 +217,7 @@ namespace EventManager.Identity.Admin.Helpers
             forwardingOptions.KnownNetworks.Clear();
             forwardingOptions.KnownProxies.Clear();
 
-            app.UseForwardedHeaders(forwardingOptions);*/
+            app.UseForwardedHeaders(forwardingOptions);
 
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
             app.UseXContentTypeOptions();
@@ -439,8 +444,16 @@ namespace EventManager.Identity.Admin.Helpers
                     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                         options =>
                         {
+                            options.ExpireTimeSpan = TimeSpan.FromHours(8);
+                            options.SlidingExpiration = true;
                             options.Cookie.Name = adminConfiguration.IdentityAdminCookieName;
+                            options.Events.OnSigningIn = context =>
+                            {
+                                context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
+                                return Task.CompletedTask;
+                            };
                         })
+
                     .AddOpenIdConnect(AuthenticationConsts.OidcAuthenticationScheme, options =>
                     {
                         options.Authority = adminConfiguration.IdentityServerBaseUrl;
@@ -448,7 +461,6 @@ namespace EventManager.Identity.Admin.Helpers
                         options.ClientId = adminConfiguration.ClientId;
                         options.ClientSecret = adminConfiguration.ClientSecret;
                         options.ResponseType = adminConfiguration.OidcResponseType;
-
                         options.Scope.Clear();
                         foreach (var scope in adminConfiguration.Scopes)
                         {
@@ -458,7 +470,7 @@ namespace EventManager.Identity.Admin.Helpers
                         options.ClaimActions.MapJsonKey(adminConfiguration.TokenValidationClaimRole, adminConfiguration.TokenValidationClaimRole, adminConfiguration.TokenValidationClaimRole);
 
                         options.SaveTokens = true;
-
+                        options.RemoteAuthenticationTimeout = TimeSpan.FromMinutes(15);
                         options.GetClaimsFromUserInfoEndpoint = true;
 
                         options.TokenValidationParameters = new TokenValidationParameters
@@ -469,25 +481,24 @@ namespace EventManager.Identity.Admin.Helpers
 
                         options.Events = new OpenIdConnectEvents
                         {
-                            OnMessageReceived = context => OnMessageReceived(context, adminConfiguration),
-                            OnRedirectToIdentityProvider = context => OnRedirectToIdentityProvider(context, adminConfiguration)
+                            OnRemoteFailure = context =>
+                            {
+
+                                return Task.FromResult(0);
+                            },
+                            OnMessageReceived = context =>
+                            {
+                                context.Properties.IsPersistent = true;
+                                context.Properties.ExpiresUtc = new DateTimeOffset(DateTime.Now.AddHours(adminConfiguration.IdentityAdminCookieExpiresUtcHours));
+                                return Task.FromResult(0);
+                            },
+                            OnRedirectToIdentityProvider = context =>
+                            {
+                                context.ProtocolMessage.RedirectUri = adminConfiguration.IdentityAdminRedirectUri;
+                                return Task.FromResult(0);
+                            }
                         };
                     });
-        }
-
-        private static Task OnMessageReceived(MessageReceivedContext context, AdminConfiguration adminConfiguration)
-        {
-            context.Properties.IsPersistent = true;
-            context.Properties.ExpiresUtc = new DateTimeOffset(DateTime.Now.AddHours(adminConfiguration.IdentityAdminCookieExpiresUtcHours));
-
-            return Task.FromResult(0);
-        }
-
-        private static Task OnRedirectToIdentityProvider(RedirectContext n, AdminConfiguration adminConfiguration)
-        {
-            n.ProtocolMessage.RedirectUri = adminConfiguration.IdentityAdminRedirectUri;
-
-            return Task.FromResult(0);
         }
 
         public static void AddIdSHealthChecks<TConfigurationDbContext, TPersistedGrantDbContext, TIdentityDbContext, TLogDbContext, TAuditLoggingDbContext, TDataProtectionDbContext>(this IServiceCollection services, IConfiguration configuration, AdminConfiguration adminConfiguration)
@@ -560,7 +571,15 @@ namespace EventManager.Identity.Admin.Helpers
                              .AddNpgSql(dataProtectionDbConnectionString, name: "DataProtectionDb",
                                  healthQuery: $"SELECT * FROM \"{dataProtectionTableName}\"  LIMIT 1");
                          break;
-
+                 case DatabaseProviderType.MySql:
+                        healthChecksBuilder
+                            .AddMySql(configurationDbConnectionString, name: "ConfigurationDb")
+                            .AddMySql(persistedGrantsDbConnectionString, name: "PersistentGrantsDb")
+                            .AddMySql(identityDbConnectionString, name: "IdentityDb")
+                            .AddMySql(logDbConnectionString, name: "LogDb")
+                            .AddMySql(auditLogDbConnectionString, name: "AuditLogDb")
+                            .AddMySql(dataProtectionDbConnectionString, name: "DataProtectionDb");
+                        break;
                      default:
                          throw new NotImplementedException($"Health checks not defined for database provider {databaseProvider.ProviderType}");
                  }*/

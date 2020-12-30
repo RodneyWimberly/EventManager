@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Skoruba.AuditLogging.EntityFramework.Entities;
 using System;
 using System.Collections.Generic;
@@ -107,6 +108,7 @@ namespace EventManager.Identity.Admin.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AdminApiConfiguration adminApiConfiguration)
         {
+            app.UseSerilogRequestLogging();
             app.AddForwardHeaders();
 
             if (env.IsDevelopment())

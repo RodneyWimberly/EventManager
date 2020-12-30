@@ -1,4 +1,5 @@
-﻿using EventManager.Identity.Admin.EntityFramework.PostgreSQL.Extensions;
+﻿using EventManager.Identity.Admin.EntityFramework.MySql.Extensions;
+using EventManager.Identity.Admin.EntityFramework.PostgreSQL.Extensions;
 using EventManager.Identity.Admin.EntityFramework.Shared.Configuration;
 using EventManager.Identity.Admin.EntityFramework.SqlServer.Extensions;
 using EventManager.Identity.Shared.Authentication;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -98,9 +100,9 @@ namespace EventManager.Identity.STS.Identity.Helpers
         /// <param name="configuration"></param>
         public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)
         {
-            /*var forwardingOptions = new ForwardedHeadersOptions()
+            var forwardingOptions = new ForwardedHeadersOptions()
             {
-                ForwardedHeaders = ForwardedHeaders.All
+                ForwardedHeaders = ForwardedHeaders.All,
                 //ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost
 
             };
@@ -108,7 +110,7 @@ namespace EventManager.Identity.STS.Identity.Helpers
             forwardingOptions.KnownNetworks.Clear();
             forwardingOptions.KnownProxies.Clear();
 
-            app.UseForwardedHeaders(forwardingOptions);*/
+            app.UseForwardedHeaders(forwardingOptions);
 
             app.UseReferrerPolicy(options => options.NoReferrer());
 
@@ -224,7 +226,9 @@ namespace EventManager.Identity.STS.Identity.Helpers
                 case DatabaseProviderType.PostgreSQL:
                     services.RegisterNpgSqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, dataProtectionConnectionString);
                     break;
-
+                case DatabaseProviderType.MySql:
+                    services.RegisterMySqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, dataProtectionConnectionString);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(databaseProvider.ProviderType), $@"The value needs to be one of {string.Join(", ", Enum.GetNames(typeof(DatabaseProviderType)))}.");
             }
@@ -296,6 +300,7 @@ namespace EventManager.Identity.STS.Identity.Helpers
 
             services.Configure<CookiePolicyOptions>(options =>
             {
+               
                 options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
                 options.Secure = CookieSecurePolicy.SameAsRequest;
                 options.OnAppendCookie = cookieContext =>
