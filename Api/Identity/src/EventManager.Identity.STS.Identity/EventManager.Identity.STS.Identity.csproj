@@ -1,15 +1,58 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>1.0.0</Version>
     <Authors>Rodney Wimberly</Authors>
     <UserSecretsId>9c91d295-54c5-4d09-9bd6-fa56fb74011b</UserSecretsId>
     <DockerComposeProjectPath>..\..\EventManager.Docker.Compose.dcproj</DockerComposeProjectPath>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
-    <PublishReadyToRun>true</PublishReadyToRun>
+    <DockerfileContext>.\</DockerfileContext>
     <Configurations>Debug;Release;DebugDocker;ReleaseDocker</Configurations>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <IncrementVersionTarget>..\..\Directory.Build.targets</IncrementVersionTarget>
   </PropertyGroup>
+
+  <Import Project="$(IncrementVersionTarget)" Condition="Exists('$(IncrementVersionTarget)')"/>
+
+  <ItemGroup>
+    <None Remove="Certs\cacerts.crt" />
+    <None Remove="Certs\cacerts.pem" />
+    <None Remove="Certs\SignJwt.cer" />
+    <None Remove="Certs\SignJwt.pfx" />
+    <None Remove="Certs\SignJwt.pvk" />
+    <None Remove="Certs\ValidateJwt.cer" />
+    <None Remove="Certs\ValidateJwt.pfx" />
+    <None Remove="Certs\ValidateJwt.pvk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Certs\cacerts.crt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certs\cacerts.pem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certs\SignJwt.cer">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certs\SignJwt.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certs\SignJwt.pvk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certs\ValidateJwt.cer">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certs\ValidateJwt.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certs\ValidateJwt.pvk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.dockerignore" Link=".dockerignore" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="3.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="3.1.1" />
@@ -40,7 +83,6 @@
     <PackageReference Include="Skoruba.AuditLogging.EntityFramework" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.MySql\EventManager.Identity.Admin.EntityFramework.MySql.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.PostgreSQL\EventManager.Identity.Admin.EntityFramework.PostgreSQL.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.Shared\EventManager.Identity.Admin.EntityFramework.Shared.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.SqlServer\EventManager.Identity.Admin.EntityFramework.SqlServer.csproj" />
@@ -78,4 +120,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
 </Project>

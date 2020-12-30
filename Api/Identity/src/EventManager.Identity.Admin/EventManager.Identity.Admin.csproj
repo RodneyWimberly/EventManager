@@ -1,18 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>1.0.0</Version>
     <Authors>Rodney Wimberly</Authors>
     <LangVersion>latest</LangVersion>
     <UserSecretsId>8fe260ca-ef4c-4fa3-9364-029146f8d339</UserSecretsId>
     <DockerComposeProjectPath>..\..\EventManager.Docker.Compose.dcproj</DockerComposeProjectPath>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
-    <PublishReadyToRun>true</PublishReadyToRun>
+    <DockerfileContext>.\</DockerfileContext>
     <Configurations>Debug;Release;DebugDocker;ReleaseDocker</Configurations>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IncrementVersionTarget>..\..\Directory.Build.targets</IncrementVersionTarget>
   </PropertyGroup>
+  
+  <Import Project="$(IncrementVersionTarget)" Condition="Exists('$(IncrementVersionTarget)')"/>
+  
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="3.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="3.1.1" />
     <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" Version="3.1.1" />
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="3.2.0" />
@@ -25,16 +27,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.3" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
-    <PackageReference Include="MySqlConnector" Version="1.2.1" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
@@ -53,6 +50,7 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\.dockerignore" Link=".dockerignore" />
     <None Include="Views\Account\AccessDenied.cshtml" />
     <None Include="Views\Configuration\ApiResource.cshtml" />
     <None Include="Views\Configuration\ApiResourceDelete.cshtml" />
@@ -121,23 +119,10 @@
     <None Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.MySql\EventManager.Identity.Admin.EntityFramework.MySql.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.PostgreSQL\EventManager.Identity.Admin.EntityFramework.PostgreSQL.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.Shared\EventManager.Identity.Admin.EntityFramework.Shared.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.SqlServer\EventManager.Identity.Admin.EntityFramework.SqlServer.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Shared\EventManager.Identity.Shared.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Dockerfile.debug">
-      <DependentUpon>Dockerfile</DependentUpon>
-    </None>
-    <None Include="Dockerfile.release">
-      <DependentUpon>Dockerfile</DependentUpon>
-    </None>
-    <None Include=".dockerignore">
-      <DependentUpon>Dockerfile</DependentUpon>
-    </None>
-    <None Include="Dockerfile" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Views\Configuration\ApiScopeProperties.zh.resx">
@@ -174,4 +159,22 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
 </Project>

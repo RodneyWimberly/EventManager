@@ -1,5 +1,4 @@
-﻿using EventManager.Identity.Admin.EntityFramework.MySql.Extensions;
-using EventManager.Identity.Admin.EntityFramework.PostgreSQL.Extensions;
+﻿using EventManager.Identity.Admin.EntityFramework.PostgreSQL.Extensions;
 using EventManager.Identity.Admin.EntityFramework.Shared.Configuration;
 using EventManager.Identity.Admin.EntityFramework.SqlServer.Extensions;
 using EventManager.Identity.Shared.Authentication;
@@ -18,7 +17,6 @@ using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -28,7 +26,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Skoruba.IdentityServer4.Admin.EntityFramework.Helpers;
 using Skoruba.IdentityServer4.Admin.EntityFramework.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -101,7 +98,7 @@ namespace EventManager.Identity.STS.Identity.Helpers
         /// <param name="configuration"></param>
         public static void UseSecurityHeaders(this IApplicationBuilder app, IConfiguration configuration)
         {
-            var forwardingOptions = new ForwardedHeadersOptions()
+            /*var forwardingOptions = new ForwardedHeadersOptions()
             {
                 ForwardedHeaders = ForwardedHeaders.All
                 //ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost
@@ -111,7 +108,7 @@ namespace EventManager.Identity.STS.Identity.Helpers
             forwardingOptions.KnownNetworks.Clear();
             forwardingOptions.KnownProxies.Clear();
 
-            app.UseForwardedHeaders(forwardingOptions);
+            app.UseForwardedHeaders(forwardingOptions);*/
 
             app.UseReferrerPolicy(options => options.NoReferrer());
 
@@ -227,9 +224,7 @@ namespace EventManager.Identity.STS.Identity.Helpers
                 case DatabaseProviderType.PostgreSQL:
                     services.RegisterNpgSqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, dataProtectionConnectionString);
                     break;
-                case DatabaseProviderType.MySql:
-                    services.RegisterMySqlDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext, TDataProtectionDbContext>(identityConnectionString, configurationConnectionString, persistedGrantsConnectionString, dataProtectionConnectionString);
-                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(databaseProvider.ProviderType), $@"The value needs to be one of {string.Join(", ", Enum.GetNames(typeof(DatabaseProviderType)))}.");
             }
@@ -466,8 +461,10 @@ namespace EventManager.Identity.STS.Identity.Helpers
             var persistedGrantsDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.PersistedGrantDbConnectionStringKey);
             var identityDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.IdentityDbConnectionStringKey);
             var dataProtectionDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.DataProtectionDbConnectionStringKey);
+            return;
 
-            var healthChecksBuilder = services.AddHealthChecks()
+            var healthChecksBuilder = services.AddHealthChecks();
+            /*
                 .AddDbContextCheck<TConfigurationDbContext>("ConfigurationDbContext")
                 .AddDbContextCheck<TPersistedGrantDbContext>("PersistedGrantsDbContext")
                 .AddDbContextCheck<TIdentityDbContext>("IdentityDbContext")
@@ -518,7 +515,7 @@ namespace EventManager.Identity.STS.Identity.Helpers
                     default:
                         throw new NotImplementedException($"Health checks not defined for database provider {databaseProvider.ProviderType}");
                 }
-            }
+            }*/
         }
     }
 }

@@ -81,37 +81,37 @@
             }
         ],
         "Clients": [
-            {
-                "ClientId": "urn:em:client",
-                "ClientName": "urn:em:client",
-                "ClientUri": "https://localhost:44303",
-                "AllowedGrantTypes": [
-                    "authorization_code"
-                ],
-                "RequirePkce": true,
-                "ClientSecrets": [
-                    {
-                        "Value": "eventmanagersecret"
-                    }
-                ],
-                "RedirectUris": [
-                    "https://localhost:44303/signin-oidc"
-                ],
-                "FrontChannelLogoutUri": "https://localhost:44303/signout-oidc",
-                "PostLogoutRedirectUris": [
-                    "https://localhost:44303/signout-callback-oidc"
-                ],
-                "AllowedCorsOrigins": [
-                    "https://localhost:44303"
-                ],
-              "AllowedScopes": [
-                "openid",
-                "email",
-                "profile",
-                "roles",
-                "urn:em:api:scope"
-              ]
-            },
+          {
+            "ClientId": "urn:em:client",
+            "ClientName": "urn:em:client",
+            "ClientUri": "https://www.em.host/admin/identity",
+            "AllowedGrantTypes": [
+              "authorization_code"
+            ],
+            "RequirePkce": true,
+            "ClientSecrets": [
+              {
+                "Value": "eventmanagersecret"
+              }
+            ],
+            "RedirectUris": [
+              "https://www.em.host/admin/identity/signin-oidc"
+            ],
+            "FrontChannelLogoutUri": "https://www.em.host/admin/identity/signin-oidc",
+            "PostLogoutRedirectUris": [
+              "https://www.em.host/admin/identity/signout-callback-oidc"
+            ],
+            "AllowedCorsOrigins": [
+              "https://www.em.host"
+            ],
+            "AllowedScopes": [
+              "openid",
+              "email",
+              "profile",
+              "roles",
+              "urn:em:api:scope"
+            ]
+          },
             {
                 "ClientId": "urn:em:client_api_swaggerui",
                 "ClientName": "urn:em:client_api_swaggerui",
@@ -120,15 +120,15 @@
                 ],
                 "RequireClientSecret": false,
                 "RequirePkce": true,
-                "RedirectUris": [
-                    "https://localhost:44302/swagger/oauth2-redirect.html"
-                ],
+              "RedirectUris": [
+                "https://www.em.host/api/identity/docs/oauth2-redirect.html"
+              ],
                 "AllowedScopes": [
                     "urn:em:api:scope"
                 ],
-                "AllowedCorsOrigins": [
-                    "https://localhost:44302"
-                ]
+              "AllowedCorsOrigins": [
+                "https://www.em.host"
+              ]
             }
         ]
     }

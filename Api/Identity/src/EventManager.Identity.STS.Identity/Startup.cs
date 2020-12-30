@@ -7,6 +7,7 @@ using EventManager.Identity.STS.Identity.Configuration.Interfaces;
 using EventManager.Identity.STS.Identity.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,10 +42,10 @@ namespace EventManager.Identity.STS.Identity
             // Add services for authentication, including Identity model and external providers
             RegisterAuthentication(services);
 
-            services.AddCertificateForwardingForNginx();
+            //services.AddCertificateForwardingForNginx();
 
             // Add HSTS options
-            RegisterHstsOptions(services);
+            //RegisterHstsOptions(services);
 
             // Add all dependencies for Asp.Net Core Identity in MVC - these dependencies are injected into generic Controllers
             // Including settings for MVC and Localization
@@ -54,11 +55,12 @@ namespace EventManager.Identity.STS.Identity
             // Add authorization policies for MVC
             RegisterAuthorization(services);
 
-            services.AddIdSHealthChecks<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminIdentityDbContext, IdentityServerDataProtectionDbContext>(Configuration);
+            //services.AddIdSHealthChecks<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminIdentityDbContext, IdentityServerDataProtectionDbContext>(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.AddForwardHeaders();
             app.UseCookiePolicy();
 
             if (env.IsDevelopment())
@@ -67,7 +69,7 @@ namespace EventManager.Identity.STS.Identity
             }
             else
             {
-                app.UseHsts();
+                //app.UseHsts();
             }
 
             app.UsePathBase(Configuration.GetValue<string>("BasePath"));
@@ -84,10 +86,10 @@ namespace EventManager.Identity.STS.Identity
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapDefaultControllerRoute();
-                //endpoint.MapHealthChecks("/healthcheck", new HealthCheckOptions
-                //{
-                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                //});
+                /*endpoint.MapHealthChecks("/healthcheck", new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });*/
             });
         }
 

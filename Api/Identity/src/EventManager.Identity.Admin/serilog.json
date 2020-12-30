@@ -5,7 +5,7 @@
     "WriteTo": [
       {
         "Args": {
-          "hostnameOrAddress": "127.0.0.1",
+          "hostnameOrAddress": "graylog.service.em.docker",
           "port": "12201",
           "transportType": "Udp"
         },
@@ -13,7 +13,7 @@
       },
       {
         "Args": {
-          "outputTemplate": "[{Timestamp:o}][{Level:u4}][{ThreadId}][{SourceContext}] {Message}{NewLine}{Exception}"
+          "outputTemplate": "{Timestamp:o} - [{SourceContext}] {NewLine}{Level:u4}: {Message}{NewLine}{Exception}{NewLine}"
         },
         "Name": "Console"
       },
@@ -31,7 +31,7 @@
     ],
     "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
     "Properties": {
-      "Application": "Event Manager",
+      "Application": "em Identity Administration Website",
       "Env": "Development"
     }
   }

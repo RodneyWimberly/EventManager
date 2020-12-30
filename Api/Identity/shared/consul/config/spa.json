@@ -1,9 +1,0 @@
-{
-  "service": {
-    "name": "spa",
-    "tags": [
-      "eventmanager"
-    ],
-    "port": 60000
-  }
-} 

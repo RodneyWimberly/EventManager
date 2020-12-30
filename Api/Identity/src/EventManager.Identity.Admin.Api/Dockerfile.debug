@@ -1,7 +1,0 @@
-ARG REPO=mcr.microsoft.com/dotnet/aspnet
-ARG TAG=latest
-FROM $REPO:$TAG
-EXPOSE 80 443
-WORKDIR /app
-COPY src/EventManager.Identity.Admin.Api/bin/Debug/net5.0/. .
-ENTRYPOINT ["dotnet", "EventManager.Identity.Admin.Api.exe"]

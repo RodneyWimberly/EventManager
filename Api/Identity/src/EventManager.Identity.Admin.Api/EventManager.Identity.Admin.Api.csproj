@@ -1,16 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>1.0.0</Version>
     <Authors>Rodney Wimberly</Authors>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <UserSecretsId>1cc472a2-4e4b-48ce-846b-5219f71fc643</UserSecretsId>
     <DockerComposeProjectPath>..\..\EventManager.Docker.Compose.dcproj</DockerComposeProjectPath>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
-    <PublishReadyToRun>true</PublishReadyToRun>
+    <DockerfileContext>.\</DockerfileContext>
     <Configurations>Debug;Release;DebugDocker</Configurations>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IncrementVersionTarget>..\..\Directory.Build.targets</IncrementVersionTarget>
   </PropertyGroup>
+
+  <Import Project="$(IncrementVersionTarget)" Condition="Exists('$(IncrementVersionTarget)')"/>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\.dockerignore" Link=".dockerignore" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="3.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="3.1.1" />
@@ -42,7 +51,6 @@
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.MySql\EventManager.Identity.Admin.EntityFramework.MySql.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.PostgreSQL\EventManager.Identity.Admin.EntityFramework.PostgreSQL.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.Shared\EventManager.Identity.Admin.EntityFramework.Shared.csproj" />
     <ProjectReference Include="..\EventManager.Identity.Admin.EntityFramework.SqlServer\EventManager.Identity.Admin.EntityFramework.SqlServer.csproj" />
@@ -61,16 +69,19 @@
       <LastGenOutput>ApiErrorResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Dockerfile.debug">
-      <DependentUpon>Dockerfile</DependentUpon>
-    </None>
-    <None Include="Dockerfile.release">
-      <DependentUpon>Dockerfile</DependentUpon>
-    </None>
-    <None Include=".dockerignore">
-      <DependentUpon>Dockerfile</DependentUpon>
-    </None>
-    <None Include="Dockerfile" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 </Project>

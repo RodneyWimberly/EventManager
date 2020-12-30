@@ -50,9 +50,9 @@ namespace EventManager.Identity.Admin
             RegisterAuthentication(services);
 
             // Add HSTS options
-            RegisterHstsOptions(services);
+            //RegisterHstsOptions(services);
 
-            services.AddCertificateForwardingForNginx();
+            //services.AddCertificateForwardingForNginx();
 
             // Add exception filters in MVC
             services.AddMvcExceptionFilters();
@@ -85,12 +85,13 @@ namespace EventManager.Identity.Admin
             // Add audit logging
             services.AddAuditEventLogging<AdminAuditLogDbContext, AuditLog>(Configuration);
 
-            services.AddIdSHealthChecks<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminIdentityDbContext, AdminLogDbContext, AdminAuditLogDbContext, IdentityServerDataProtectionDbContext>(Configuration, rootConfiguration.AdminConfiguration);
+            //services.AddIdSHealthChecks<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminIdentityDbContext, AdminLogDbContext, AdminAuditLogDbContext, IdentityServerDataProtectionDbContext>(Configuration, rootConfiguration.AdminConfiguration);
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.AddForwardHeaders();
             app.UseCookiePolicy();
 
             if (env.IsDevelopment())
@@ -100,7 +101,7 @@ namespace EventManager.Identity.Admin
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+                //app.UseHsts();
             }
 
             app.UsePathBase(Configuration.GetValue<string>("BasePath"));
@@ -120,10 +121,10 @@ namespace EventManager.Identity.Admin
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapDefaultControllerRoute();
-                //endpoint.MapHealthChecks("/health", new HealthCheckOptions
-                //{
-                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                //});
+                /*endpoint.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });*/
             });
         }
 

@@ -11,6 +11,8 @@ using SendGrid;
 using EventManager.Identity.Shared.Configuration.Common;
 using EventManager.Identity.Shared.Configuration.Email;
 using EventManager.Identity.Shared.Email;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Builder;
 
 namespace EventManager.Identity.Shared.Helpers
 {
@@ -67,6 +69,18 @@ namespace EventManager.Identity.Shared.Helpers
                     dataProtectionBuilder.ProtectKeysWithAzureKeyVault(keyVaultClient, azureKeyVaultConfiguration.DataProtectionKeyIdentifier);
                 }
             }
+        }
+        public static void AddForwardHeaders(this IApplicationBuilder app)
+        {
+            var forwardingOptions = new ForwardedHeadersOptions()
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            };
+
+            forwardingOptions.KnownNetworks.Clear();
+            forwardingOptions.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(forwardingOptions);
         }
 
         public static void AddAzureKeyVaultConfiguration(this IConfiguration configuration, IConfigurationBuilder configurationBuilder)

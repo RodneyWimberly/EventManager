@@ -1,0 +1,742 @@
+[2020-12-28T04:31:46.7094977+00:00][INFO][1][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerPersistedGrantDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T04:31:47.9305194+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("54"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:48.0027179+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("42"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:48.0215456+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:48.0394990+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:48.0818663+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T04:31:48.1268560+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T04:31:48.4655579+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminIdentityDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T04:31:48.4911267+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:48.4971588+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:48.5120024+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("12"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:48.5344419+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("7"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:48.5492116+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T04:31:48.5606175+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T04:31:49.0283225+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T04:31:49.0424999+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.0668365+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.0807035+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("12"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.0841904+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.0899403+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T04:31:49.1014606+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T04:31:49.1276214+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T04:31:49.1413596+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("13"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.1550264+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.1577934+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.1722841+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.1865010+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("9"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T04:31:49.1901143+00:00][INFO][6][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T04:31:49.2138297+00:00][INFO][6][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminAuditLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T04:31:49.2341919+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("13"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.2381823+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.2485495+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("8"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.2829187+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("33"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.2940914+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T04:31:49.2974706+00:00][INFO][5][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T04:31:49.3256462+00:00][INFO][5][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerDataProtectionDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T04:31:49.3361505+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.3405322+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.3461150+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T04:31:49.3528560+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T04:31:49.3638037+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T04:31:49.3747582+00:00][INFO][5][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T04:31:49.5952853+00:00][INFO][5][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T04:31:49.9767065+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("41"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T04:31:49.9988066+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T04:31:50.0090040+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("9"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T04:31:50.0175446+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T04:31:50.0260687+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T04:31:50.0462656+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("10"ms) [Parameters=["@__apiScope_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [ApiScopes] AS [a]
+        WHERE [a].[Name] = @__apiScope_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T04:31:50.0608821+00:00][INFO][14][Mi[2020-12-28T22:02:20.5731507+00:00][INFO][1][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerPersistedGrantDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:02:22.0980745+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("49"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:22.2005007+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("71"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:22.2350778+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("18"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:22.2432511+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("7"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:22.2909406+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("11"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:02:22.3241325+00:00][INFO][8][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:02:22.5329098+00:00][INFO][8][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminIdentityDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:02:22.5590908+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("21"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:22.5635192+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:22.5663984+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:22.5750284+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("8"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:22.5832569+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:02:22.5875396+00:00][INFO][5][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:02:22.9474222+00:00][INFO][5][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:02:22.9573333+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:22.9679864+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("9"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:22.9721923+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:22.9771658+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:22.9887989+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:02:22.9909968+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:02:23.0117028+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:02:23.0357895+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:23.0395174+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:23.0445426+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:23.0481851+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:23.0546025+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:02:23.0559490+00:00][INFO][5][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:02:23.0666981+00:00][INFO][5][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminAuditLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:02:23.0718549+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:23.0742191+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:23.0789727+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:23.0834693+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:23.0907597+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:02:23.0935443+00:00][INFO][5][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:02:23.1035702+00:00][INFO][5][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerDataProtectionDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:02:23.1193206+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("14"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:23.1222427+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:23.1341874+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:02:23.1437466+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:02:23.1499307+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:02:23.1516523+00:00][INFO][9][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:02:23.3124135+00:00][INFO][9][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:02:23.6994987+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("41"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:02:23.7163341+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:02:23.7211060+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:02:23.7327438+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:02:23.7397780+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:02:23.7525572+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=["@__apiScope_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [ApiScopes] AS [a]
+        WHERE [a].[Name] = @__apiScope_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:02:23.7630681+00:00][INFO][5][Micros[2020-12-28T22:12:18.4071524+00:00][INFO][1][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerPersistedGrantDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:12:19.4445982+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("52"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:19.5003871+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("31"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:19.5151098+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("8"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:19.5296059+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("14"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:19.5524580+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:12:19.5814771+00:00][INFO][4][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:12:19.7921656+00:00][INFO][4][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminIdentityDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:12:19.7966219+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:19.8086480+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("10"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:19.8316542+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:19.8413977+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("9"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:19.8498916+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:12:19.8537933+00:00][INFO][6][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:12:20.1452735+00:00][INFO][6][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:12:20.1562366+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.1607712+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.1659272+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.1700702+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.1777038+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:12:20.1790378+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:12:20.2110297+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:12:20.2160444+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.2242250+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.2311236+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.2350206+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.2444728+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:12:20.2456035+00:00][INFO][11][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:12:20.2569932+00:00][INFO][11][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminAuditLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:12:20.2671030+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("7"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.2910852+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.2958938+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.3060593+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.3128795+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:12:20.3149128+00:00][INFO][6][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:12:20.3315029+00:00][INFO][6][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerDataProtectionDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:12:20.3403333+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("8"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.3491812+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.3531920+00:00][INFO][10][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:12:20.3618306+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("8"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:12:20.3755125+00:00][INFO][10][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:12:20.3783205+00:00][INFO][10][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:12:20.5228396+00:00][INFO][10][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:12:20.8473110+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("19"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:12:20.8655922+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:12:20.8764611+00:00][INFO][13][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:12:20.8838720+00:00][INFO][6][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:12:20.8903427+00:00][INFO][10][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:12:20.9000501+00:00][INFO][13][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=["@__apiScope_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [ApiScopes] AS [a]
+        WHERE [a].[Name] = @__apiScope_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:12:20.9170619+00:00][INFO][1[2020-12-28T22:21:58.4213094+00:00][INFO][1][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerPersistedGrantDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:22:00.1784961+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("66"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:00.2735304+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("53"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:00.3064047+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("26"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:00.3139920+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:00.3454534+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("10"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:22:00.3779227+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:22:00.6118139+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminIdentityDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:22:00.6184093+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:00.6235043+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:00.6695582+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("45"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:00.6724388+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:00.6810200+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:22:00.6841783+00:00][INFO][8][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:22:01.0502514+00:00][INFO][8][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:22:01.0598144+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.0663648+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.0945168+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.0968016+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.1141265+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:22:01.1162977+00:00][INFO][4][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:22:01.1459218+00:00][INFO][4][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:22:01.1747222+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.1787778+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.1833659+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.1873914+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.2128993+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("21"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:22:01.2147638+00:00][INFO][14][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:22:01.2298840+00:00][INFO][14][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminAuditLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:22:01.2336196+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.2386309+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.2476407+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("7"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.2517042+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.2570968+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:22:01.2582452+00:00][INFO][8][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:22:01.2669794+00:00][INFO][8][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerDataProtectionDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:22:01.2957162+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.3024097+00:00][INFO][13][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.3075791+00:00][INFO][13][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:22:01.3118121+00:00][INFO][16][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:22:01.3167738+00:00][INFO][13][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:22:01.3183892+00:00][INFO][13][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:22:01.5088069+00:00][INFO][13][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:22:01.8803550+00:00][INFO][16][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("34"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:22:01.9012674+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:22:01.9051959+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:22:01.9135670+00:00][INFO][16][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:22:01.9188306+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:22:01.9304225+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=["@__apiScope_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [ApiScopes] AS [a]
+        WHERE [a].[Name] = @__apiScope_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:22:01.9406471+00:00][INFO][1[2020-12-28T22:51:51.6809930+00:00][INFO][1][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerPersistedGrantDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:52.7082784+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("49"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:52.7731807+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("39"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:52.7814948+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:52.8052288+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:52.8353052+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("12"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:51:52.8695684+00:00][INFO][9][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:51:53.0871587+00:00][INFO][9][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminIdentityDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:53.1146404+00:00][INFO][9][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.1397252+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.1626033+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.1721540+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.1801584+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:51:53.1820779+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:51:53.6019987+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:53.6126401+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.6149151+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.6209147+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.6289458+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.6373657+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:51:53.6386555+00:00][INFO][4][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:51:53.6591486+00:00][INFO][4][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:53.6857516+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("21"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.6922278+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.6978951+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("5"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.7021324+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.7314072+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:51:53.7327531+00:00][INFO][12][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:51:53.7450618+00:00][INFO][12][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminAuditLogDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:53.7495124+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.7580192+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.7831976+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.7859363+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.7933530+00:00][INFO][11][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:51:53.7950439+00:00][INFO][11][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:51:53.8026273+00:00][INFO][11][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerDataProtectionDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:53.8059842+00:00][INFO][8][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.8292514+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.8342582+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1"
+[2020-12-28T22:51:53.8378385+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');"
+[2020-12-28T22:51:53.8443730+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];"
+[2020-12-28T22:51:53.8464897+00:00][INFO][14][Microsoft.EntityFrameworkCore.Migrations] No migrations were applied. The database is already up to date.
+[2020-12-28T22:51:54.0134111+00:00][INFO][14][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerConfigurationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:54.4283190+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("34"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.4456747+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.4580843+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.4658463+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("2"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.4753164+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [IdentityResources] AS [i]
+        WHERE [i].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.4905597+00:00][INFO][12][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("7"ms) [Parameters=["@__apiScope_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [ApiScopes] AS [a]
+        WHERE [a].[Name] = @__apiScope_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.5023308+00:00][INFO][5][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=["@__resource_Name_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [ApiResources] AS [a]
+        WHERE [a].[Name] = @__resource_Name_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.5262266+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("10"ms) [Parameters=["@__client_ClientId_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Clients] AS [c]
+        WHERE [c].[ClientId] = @__client_ClientId_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.5346243+00:00][INFO][13][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("6"ms) [Parameters=["@__client_ClientId_0='?' (Size = 200)"], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Clients] AS [c]
+        WHERE [c].[ClientId] = @__client_ClientId_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END"
+[2020-12-28T22:51:54.5587386+00:00][INFO][13][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"AdminIdentityDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:54.6246017+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("11"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[Name], [r].[NormalizedName]
+FROM [Roles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0"
+[2020-12-28T22:51:54.7041905+00:00][INFO][4][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("9"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Email], [u].[EmailConfirmed], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0"
+[2020-12-28T22:51:54.7618465+00:00][INFO][14][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("4"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(2) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Email], [u].[EmailConfirmed], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UserName]
+FROM [Users] AS [u]
+WHERE [u].[NormalizedEmail] = @__normalizedEmail_0"
+[2020-12-28T22:51:54.7961666+00:00][INFO][15][Microsoft.EntityFrameworkCore.Infrastructure] Entity Framework Core "5.0.1" initialized '"IdentityServerDataProtectionDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=EventManager.Identity.Admin.EntityFramework.SqlServer "
+[2020-12-28T22:51:54.8328245+00:00][INFO][15][Microsoft.EntityFrameworkCore.Database.Command] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [d].[Id], [d].[FriendlyName], [d].[Xml]
+FROM [DataProtectionKeys] AS [d]"
+[2020-12-28T22:51:55.9411792+00:00][INFO][15][Microsoft.Hosting.Lifetime] Now listening on: "http://[::]:80"
+[2020-12-28T22:51:55.9425094+00:00][INFO][15][Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+[2020-12-28T22:51:55.9430870+00:00][INFO][15][Microsoft.Hosting.Lifetime] Hosting environment: "Development"
+[2020-12-28T22:51:55.9435770+00:00][INFO][15][Microsoft.Hosting.Lifetime] Content root path: "/app"
+[2020-12-28T22:52:46.9044307+00:00][INFO][17][Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/1.1 GET http://www.em.host/ - -
+[2020-12-28T22:52:47.2793522+00:00][INFO][17][Microsoft.AspNetCore.Authorization.DefaultAuthorizationService] Authorization failed. "These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (Admin)"
+[2020-12-28T22:52:51.1800768+00:00][EROR][19][Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: IDX20803: Unable to obtain configuration from: 'https://www.em.host/.well-known/openid-configuration'.
+ ---> System.IO.IOException: IDX20804: Unable to retrieve document from: 'https://www.em.host/.well-known/openid-configuration'.
+ ---> System.Net.Http.HttpRequestException: Name or service not known (www.em.host:443)
+ ---> System.Net.Sockets.SocketException (0xFFFDFFFF): Name or service not known
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|283_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.DefaultConnectAsync(SocketsHttpConnectionContext context, CancellationToken cancellationToken)
+   at System.Net.Http.ConnectHelper.ConnectAsync(Func`3 callback, DnsEndPoint endPoint, HttpRequestMessage requestMessage, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(Func`3 callback, DnsEndPoint endPoint, HttpRequestMessage requestMessage, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttpConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.SendAsyncCore(HttpRequestMessage request, HttpCompletionOption completionOption, Boolean async, Boolean emitTelemetryStartStop, CancellationToken cancellationToken)
+   at Microsoft.IdentityModel.Protocols.HttpDocumentRetriever.GetDocumentAsync(String address, CancellationToken cancel)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.Protocols.HttpDocumentRetriever.GetDocumentAsync(String address, CancellationToken cancel)
+   at Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectConfigurationRetriever.GetAsync(String address, IDocumentRetriever retriever, CancellationToken cancel)
+   at Microsoft.IdentityModel.Protocols.ConfigurationManager`1.GetConfigurationAsync(CancellationToken cancel)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.Protocols.ConfigurationManager`1.GetConfigurationAsync(CancellationToken cancel)
+   at Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectHandler.HandleChallengeAsyncInternal(AuthenticationProperties properties)
+   at Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectHandler.HandleChallengeAsync(AuthenticationProperties properties)
+   at Microsoft.AspNetCore.Authentication.AuthenticationHandler`1.C

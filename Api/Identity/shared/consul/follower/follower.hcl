@@ -1,0 +1,15 @@
+server = true
+bootstrap_expect = 1
+ui = true
+datacenter = "dc"
+domain = "em.local"
+data_dir = "/consul/data"
+client_addr = "health.service.em"
+bind_addr = "health.service.em"
+encrypt = "ssAJDi6sHrKZKsXKZMUZ90NPT+FKGGymRKqu+Y5fv1A="
+ca_file = "/consul/config/consul-agent-ca.pem"
+cert_file = "/consul/config/dc-server-consul-0.pem"
+key_file = "/consul/config/dc-server-consul-0-key.pem"
+verify_incoming = true
+verify_outgoing = true
+verify_server_hostname = true

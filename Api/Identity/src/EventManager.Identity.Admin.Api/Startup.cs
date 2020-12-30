@@ -102,7 +102,7 @@ namespace EventManager.Identity.Admin.Api
 
             services.AddAuditEventLogging<AdminAuditLogDbContext, AuditLog>(Configuration);
 
-            services.AddIdSHealthChecks<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminIdentityDbContext, AdminLogDbContext, AdminAuditLogDbContext, IdentityServerDataProtectionDbContext>(Configuration, adminApiConfiguration);
+            //services.AddIdSHealthChecks<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminIdentityDbContext, AdminLogDbContext, AdminAuditLogDbContext, IdentityServerDataProtectionDbContext>(Configuration, adminApiConfiguration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AdminApiConfiguration adminApiConfiguration)
@@ -131,10 +131,10 @@ namespace EventManager.Identity.Admin.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                //endpoints.MapHealthChecks("/health", new HealthCheckOptions
-                //{
-                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                //});
+                /* endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                 {
+                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                 });*/
             });
         }
 

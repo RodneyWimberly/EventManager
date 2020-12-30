@@ -1,6 +1,6 @@
-![Logo](docs/Images/Skoruba.IdentityServer4.Admin-Logo-ReadMe.png)
+﻿![Logo](docs/Images/Skoruba.IdentityServer4.Admin-Logo-ReadMe.png)
 
-# Skoruba.IdentityServer4.Admin
+# EventManager.IdentityServer4.Admin
 
 > The administration of the IdentityServer4 and Asp.Net Core Identity
 

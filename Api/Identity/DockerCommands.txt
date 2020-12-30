@@ -1,0 +1,18 @@
+docker ps --filter "status=running" --filter "label=com.docker.compose.service" --filter "name=^/EventManager.Identity.Admin$" --format {{.ID}} -n 1
+baea62349a5f
+
+docker ps --filter "status=running" --filter "label=com.docker.compose.service" --filter "name=^/EventManager.Identity.STS.Identity$" --format {{.ID}} -n 1
+ff3f215f868b
+
+docker ps --filter "status=running" --filter "label=com.docker.compose.service" --filter "name=^/EventManager.Identity.Admin.Api$" --format {{.ID}} -n 1
+9516a71a68bb
+
+docker run -dit --log-driver=gelf --log-opt gelf-address=udp://127.0.0.1:12201 alpine sh
+
+docker network inspect my_isolated_brige_network
+
+docker run -d \
+--name wordpress \
+-p 8080:80 \
+--add-host yourdomain.com:127.0.0.1 \
+wordpress

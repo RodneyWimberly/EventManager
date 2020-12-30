@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.Shared", "src\EventManager.Identity.Admin.EntityFramework.Shared\EventManager.Identity.Admin.EntityFramework.Shared.csproj", "{768CB5D7-A825-401F-B160-63DADB60DC80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.MySql", "src\EventManager.Identity.Admin.EntityFramework.MySql\EventManager.Identity.Admin.EntityFramework.MySql.csproj", "{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.PostgreSQL", "src\EventManager.Identity.Admin.EntityFramework.PostgreSQL\EventManager.Identity.Admin.EntityFramework.PostgreSQL.csproj", "{C6BABCEF-CE17-469E-AE92-3E4501E8D124}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Admin.EntityFramework.SqlServer", "src\EventManager.Identity.Admin.EntityFramework.SqlServer\EventManager.Identity.Admin.EntityFramework.SqlServer.csproj", "{95CBD89B-922F-4B21-8040-39D563DF3DF4}"
@@ -25,8 +23,32 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManager.Identity.Share
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A4BB1D9-3863-448D-B45F-E6A7BEB61771}"
 	ProjectSection(SolutionItems) = preProject
+		DockerCommands.txt = DockerCommands.txt
+		Readme.md = Readme.md
 		ToDo.txt = ToDo.txt
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nginx", "Nginx", "{04186CFC-728D-4F6D-BA4D-9102B3F84095}"
+	ProjectSection(SolutionItems) = preProject
+		nginx\.dockerignore = nginx\.dockerignore
+		nginx\Dockerfile = nginx\Dockerfile
+		nginx\fastcgi.conf = nginx\fastcgi.conf
+		nginx\gzip.conf = nginx\gzip.conf
+		nginx\mimetypes.conf = nginx\mimetypes.conf
+		nginx\nginx.conf = nginx\nginx.conf
+		nginx\proxy.conf = nginx\proxy.conf
+		nginx\ssl.conf = nginx\ssl.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "certs", "certs", "{7D084730-086B-4D0E-BB7F-7684FC118295}"
+	ProjectSection(SolutionItems) = preProject
+		nginx\certs\cacerts.crt = nginx\certs\cacerts.crt
+		nginx\certs\em.host.crt = nginx\certs\em.host.crt
+		nginx\certs\em.host.key = nginx\certs\em.host.key
+		nginx\certs\em.host.pfx = nginx\certs\em.host.pfx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "www", "www", "{3EB11F8F-AD2F-4FC7-85E8-4670DB4D9210}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,18 +120,6 @@ Global
 		{768CB5D7-A825-401F-B160-63DADB60DC80}.Release|x64.Build.0 = Release|Any CPU
 		{768CB5D7-A825-401F-B160-63DADB60DC80}.Release|x86.ActiveCfg = Release|Any CPU
 		{768CB5D7-A825-401F-B160-63DADB60DC80}.Release|x86.Build.0 = Release|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Debug|x64.Build.0 = Debug|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Debug|x86.Build.0 = Debug|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Release|Any CPU.Build.0 = Release|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Release|x64.ActiveCfg = Release|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Release|x64.Build.0 = Release|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Release|x86.ActiveCfg = Release|Any CPU
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94}.Release|x86.Build.0 = Release|Any CPU
 		{C6BABCEF-CE17-469E-AE92-3E4501E8D124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6BABCEF-CE17-469E-AE92-3E4501E8D124}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6BABCEF-CE17-469E-AE92-3E4501E8D124}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -155,12 +165,15 @@ Global
 		{91169D51-D3B6-4FE3-9109-58B7CC01A00B} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{76C9645D-6458-453A-A4C8-256C101B2CB8} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{768CB5D7-A825-401F-B160-63DADB60DC80} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
-		{05FEDE43-D6FF-4F2E-90F4-5826B7CDEA94} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{C6BABCEF-CE17-469E-AE92-3E4501E8D124} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{95CBD89B-922F-4B21-8040-39D563DF3DF4} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
 		{0555E9BA-C73E-4804-875A-530BD91C3662} = {A9BB7CCF-FA88-4405-8A6F-6609DBDA10D8}
+		{7D084730-086B-4D0E-BB7F-7684FC118295} = {04186CFC-728D-4F6D-BA4D-9102B3F84095}
+		{3EB11F8F-AD2F-4FC7-85E8-4670DB4D9210} = {04186CFC-728D-4F6D-BA4D-9102B3F84095}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		BuildVersion_UseUniversalClock = True
+		BuildVersion_StartDate = 2020/1/1
 		SolutionGuid = {549F6BA2-7BF0-4104-9088-47D242078F31}
 	EndGlobalSection
 EndGlobal
