@@ -1,7 +1,14 @@
 {
   "Serilog": {
     "Using": [ "Serilog.Sinks.Graylog", "Serilog.Sinks.Console" ],
-    "MinimumLevel": "Information",
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "System": "Information",
+        "Microsoft": "Information",
+        "Microsoft.EntityFrameworkCore": "Warning"
+      }
+    },
     "WriteTo": [
       {
         "Args": {

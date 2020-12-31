@@ -85,7 +85,7 @@
             "ClientId": "urn:em:client:mvc",
             "ClientName": "Event Manager Identity Admin UI",
             "ClientClaimsPrefix": "urn:em:claim:",
-            "ClientUri": "https://www.em.host/admin/identity",
+            "ClientUri": "https://auth.em.host/admin",
             "AllowedGrantTypes": [
               "authorization_code"
             ],
@@ -96,15 +96,15 @@
               }
             ],
             "RedirectUris": [
-              "https://www.em.host/admin/identity/signin-oidc"
+              "https://auth.em.host/admin/signin-oidc"
             ],
-            "FrontChannelLogoutUri": "https://www.em.host/admin/identity/signin-oidc",
+            "FrontChannelLogoutUri": "https://auth.em.host/admin/signin-oidc",
             "PostLogoutRedirectUris": [
-              "https://www.em.host/admin/identity/signout-callback-oidc"
+              "https://auth.em.host/admin/signout-callback-oidc"
             ],
             "AllowedCorsOrigins": [
               "https://www.em.host",
-              "https://sts.em.host"
+              "https://auth.em.host"
             ],
             "AllowedScopes": [
               "openid",
@@ -123,13 +123,14 @@
                 "RequireClientSecret": false,
                 "RequirePkce": true,
               "RedirectUris": [
-                "https://api.em.host/docs/identity/oauth2-redirect.html"
+                "https://api.em.host/docs/auth/oauth2-redirect.html"
               ],
                 "AllowedScopes": [
                     "urn:em:api:scope"
                 ],
               "AllowedCorsOrigins": [
-                "https://api.em.host"
+                "https://api.em.host",
+                "https://auth.em.host"
               ]
             }
         ]

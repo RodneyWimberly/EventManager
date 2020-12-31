@@ -60,7 +60,11 @@ namespace EventManager.Identity.Admin.Helpers
                 options.CertificateHeader = "X-SSL-CERT";
                 options.HeaderConverter = (headerValue) =>
                 {
-                    if (string.IsNullOrWhiteSpace(headerValue)) return null;
+                    if (string.IsNullOrWhiteSpace(headerValue))
+                    {
+                        return null;
+                    }
+
                     return new X509Certificate2(Encoding.UTF8.GetBytes(Uri.UnescapeDataString(headerValue)));
                 };
             });
@@ -94,7 +98,7 @@ namespace EventManager.Identity.Admin.Helpers
             where TAuditLog : AuditLog, new()
             where TAuditLoggingDbContext : IAuditLoggingDbContext<TAuditLog>
         {
-            var auditLoggingConfiguration = configuration.GetSection(nameof(AuditLoggingConfiguration)).Get<AuditLoggingConfiguration>();
+            AuditLoggingConfiguration auditLoggingConfiguration = configuration.GetSection(nameof(AuditLoggingConfiguration)).Get<AuditLoggingConfiguration>();
 
             services.AddAuditLogging(options => { options.Source = auditLoggingConfiguration.Source; })
                 .AddDefaultHttpEventData(subjectOptions =>
@@ -137,14 +141,14 @@ namespace EventManager.Identity.Admin.Helpers
             where TAuditLoggingDbContext : DbContext, IAuditLoggingDbContext<AuditLog>
             where TDataProtectionDbContext : DbContext, IDataProtectionKeyContext
         {
-            var databaseProvider = configuration.GetSection(nameof(DatabaseProviderConfiguration)).Get<DatabaseProviderConfiguration>();
+            DatabaseProviderConfiguration databaseProvider = configuration.GetSection(nameof(DatabaseProviderConfiguration)).Get<DatabaseProviderConfiguration>();
 
-            var identityConnectionString = configuration.GetConnectionString(ConfigurationConsts.IdentityDbConnectionStringKey);
-            var configurationConnectionString = configuration.GetConnectionString(ConfigurationConsts.ConfigurationDbConnectionStringKey);
-            var persistedGrantsConnectionString = configuration.GetConnectionString(ConfigurationConsts.PersistedGrantDbConnectionStringKey);
-            var errorLoggingConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminLogDbConnectionStringKey);
-            var auditLoggingConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminAuditLogDbConnectionStringKey);
-            var dataProtectionConnectionString = configuration.GetConnectionString(ConfigurationConsts.DataProtectionDbConnectionStringKey);
+            string identityConnectionString = configuration.GetConnectionString(ConfigurationConsts.IdentityDbConnectionStringKey);
+            string configurationConnectionString = configuration.GetConnectionString(ConfigurationConsts.ConfigurationDbConnectionStringKey);
+            string persistedGrantsConnectionString = configuration.GetConnectionString(ConfigurationConsts.PersistedGrantDbConnectionStringKey);
+            string errorLoggingConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminLogDbConnectionStringKey);
+            string auditLoggingConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminAuditLogDbConnectionStringKey);
+            string dataProtectionConnectionString = configuration.GetConnectionString(ConfigurationConsts.DataProtectionDbConnectionStringKey);
 
             switch (databaseProvider.ProviderType)
             {
@@ -181,17 +185,17 @@ namespace EventManager.Identity.Admin.Helpers
             where TAuditLoggingDbContext : DbContext, IAuditLoggingDbContext<AuditLog>
             where TDataProtectionDbContext : DbContext, IDataProtectionKeyContext
         {
-            var persistedGrantsDatabaseName = Guid.NewGuid().ToString();
-            var configurationDatabaseName = Guid.NewGuid().ToString();
-            var logDatabaseName = Guid.NewGuid().ToString();
-            var identityDatabaseName = Guid.NewGuid().ToString();
-            var auditLoggingDatabaseName = Guid.NewGuid().ToString();
-            var dataProtectionDatabaseName = Guid.NewGuid().ToString();
+            string persistedGrantsDatabaseName = Guid.NewGuid().ToString();
+            string configurationDatabaseName = Guid.NewGuid().ToString();
+            string logDatabaseName = Guid.NewGuid().ToString();
+            string identityDatabaseName = Guid.NewGuid().ToString();
+            string auditLoggingDatabaseName = Guid.NewGuid().ToString();
+            string dataProtectionDatabaseName = Guid.NewGuid().ToString();
 
-            var operationalStoreOptions = new OperationalStoreOptions();
+            OperationalStoreOptions operationalStoreOptions = new OperationalStoreOptions();
             services.AddSingleton(operationalStoreOptions);
 
-            var storeOptions = new ConfigurationStoreOptions();
+            ConfigurationStoreOptions storeOptions = new ConfigurationStoreOptions();
             services.AddSingleton(storeOptions);
 
             services.AddDbContext<TIdentityDbContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase(identityDatabaseName));
@@ -226,7 +230,7 @@ namespace EventManager.Identity.Admin.Helpers
 
 
             // CSP Configuration to be able to use external resources
-            var cspTrustedDomains = new List<string>();
+            List<string> cspTrustedDomains = new List<string>();
             configuration.GetSection(ConfigurationConsts.CspTrustedDomainsKey).Bind(cspTrustedDomains);
             if (cspTrustedDomains.Any())
             {
@@ -275,7 +279,7 @@ namespace EventManager.Identity.Admin.Helpers
         /// <param name="app"></param>
         public static void ConfigureLocalization(this IApplicationBuilder app)
         {
-            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            IOptions<RequestLocalizationOptions> options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
         }
 
@@ -351,25 +355,32 @@ namespace EventManager.Identity.Admin.Helpers
                         TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto>());
                 });
 
-            var cultureConfiguration = configuration.GetSection(nameof(CultureConfiguration)).Get<CultureConfiguration>();
+            CultureConfiguration cultureConfiguration = configuration.GetSection(nameof(CultureConfiguration)).Get<CultureConfiguration>();
             services.Configure<RequestLocalizationOptions>(
             opts =>
             {
                 // If cultures are specified in the configuration, use them (making sure they are among the available cultures),
                 // otherwise use all the available cultures
-                var supportedCultureCodes = (cultureConfiguration?.Cultures?.Count > 0 ?
+                string[] supportedCultureCodes = (cultureConfiguration?.Cultures?.Count > 0 ?
                     cultureConfiguration.Cultures.Intersect(CultureConfiguration.AvailableCultures) :
                     CultureConfiguration.AvailableCultures).ToArray();
 
-                if (!supportedCultureCodes.Any()) supportedCultureCodes = CultureConfiguration.AvailableCultures;
-                var supportedCultures = supportedCultureCodes.Select(c => new CultureInfo(c)).ToList();
+                if (!supportedCultureCodes.Any())
+                {
+                    supportedCultureCodes = CultureConfiguration.AvailableCultures;
+                }
+
+                List<CultureInfo> supportedCultures = supportedCultureCodes.Select(c => new CultureInfo(c)).ToList();
 
                 // If the default culture is specified use it, otherwise use CultureConfiguration.DefaultRequestCulture ("en")
-                var defaultCultureCode = string.IsNullOrEmpty(cultureConfiguration?.DefaultCulture) ?
+                string defaultCultureCode = string.IsNullOrEmpty(cultureConfiguration?.DefaultCulture) ?
                     CultureConfiguration.DefaultRequestCulture : cultureConfiguration?.DefaultCulture;
 
                 // If the default culture is not among the supported cultures, use the first supported culture as default
-                if (!supportedCultureCodes.Contains(defaultCultureCode)) defaultCultureCode = supportedCultureCodes.FirstOrDefault();
+                if (!supportedCultureCodes.Contains(defaultCultureCode))
+                {
+                    defaultCultureCode = supportedCultureCodes.FirstOrDefault();
+                }
 
                 opts.DefaultRequestCulture = new RequestCulture(defaultCultureCode);
                 opts.SupportedCultures = supportedCultures;
@@ -414,7 +425,7 @@ namespace EventManager.Identity.Admin.Helpers
         public static void AddAuthenticationServices<TContext, TUserIdentity, TUserIdentityRole>(this IServiceCollection services, IConfiguration configuration)
             where TContext : DbContext where TUserIdentity : class where TUserIdentityRole : class
         {
-            var adminConfiguration = configuration.GetSection(nameof(AdminConfiguration)).Get<AdminConfiguration>();
+            AdminConfiguration adminConfiguration = configuration.GetSection(nameof(AdminConfiguration)).Get<AdminConfiguration>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -431,74 +442,87 @@ namespace EventManager.Identity.Admin.Helpers
                 .AddEntityFrameworkStores<TContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddAntiforgery(options =>
+            {
+                options.SuppressXFrameOptionsHeader = true;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+            services.AddDistributedMemoryCache();
+            services.AddOidcStateDataFormatterCache(AuthenticationConsts.OidcAuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
             services.AddAuthentication(options =>
-                {
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = AuthenticationConsts.OidcAuthenticationScheme;
-
-                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultForbidScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
-                        options =>
-                        {
-                            options.ExpireTimeSpan = TimeSpan.FromHours(8);
-                            options.SlidingExpiration = true;
-                            options.Cookie.Name = adminConfiguration.IdentityAdminCookieName;
-                            options.Events.OnSigningIn = context =>
-                            {
-                                context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
-                                return Task.CompletedTask;
-                            };
-                        })
-
-                    .AddOpenIdConnect(AuthenticationConsts.OidcAuthenticationScheme, options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = AuthenticationConsts.OidcAuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                     {
-                        options.Authority = adminConfiguration.IdentityServerBaseUrl;
-                        options.RequireHttpsMetadata = adminConfiguration.RequireHttpsMetadata;
-                        options.ClientId = adminConfiguration.ClientId;
-                        options.ClientSecret = adminConfiguration.ClientSecret;
-                        options.ResponseType = adminConfiguration.OidcResponseType;
-                        options.Scope.Clear();
-                        foreach (var scope in adminConfiguration.Scopes)
+                        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+                        options.SlidingExpiration = true;
+                        options.Cookie.Name = adminConfiguration.IdentityAdminCookieName;
+                        options.Events.OnSigningIn = context =>
                         {
-                            options.Scope.Add(scope);
+                            context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
+                            context.Properties.IsPersistent = true;
+                            return Task.CompletedTask;
+                        };
+                    })
+                .AddOpenIdConnect(AuthenticationConsts.OidcAuthenticationScheme, options =>
+                {
+                    options.ProtocolValidator.RequireNonce = false;
+                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.CorrelationCookie.Path = "/";
+                    options.Authority = adminConfiguration.IdentityServerBaseUrl;
+                    options.RequireHttpsMetadata = adminConfiguration.RequireHttpsMetadata;
+                    options.ClientId = adminConfiguration.ClientId;
+                    options.ClientSecret = adminConfiguration.ClientSecret;
+                    options.ResponseType = adminConfiguration.OidcResponseType;
+
+                    options.Scope.Clear();
+                    foreach (string scope in adminConfiguration.Scopes)
+                    {
+                        options.Scope.Add(scope);
+                    }
+
+                    options.ClaimActions.MapJsonKey(adminConfiguration.TokenValidationClaimRole, adminConfiguration.TokenValidationClaimRole, adminConfiguration.TokenValidationClaimRole);
+
+                    options.SaveTokens = true;
+                    options.RemoteAuthenticationTimeout = TimeSpan.FromMinutes(15);
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = adminConfiguration.TokenValidationClaimName,
+                        RoleClaimType = adminConfiguration.TokenValidationClaimRole
+                    };
+
+                    options.Events = new OpenIdConnectEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+
+                            context.Properties.IsPersistent = true;
+                            context.Properties.ExpiresUtc = new DateTimeOffset(DateTime.Now.AddHours(adminConfiguration.IdentityAdminCookieExpiresUtcHours));
+                            return Task.CompletedTask;
+                        },
+                        OnRedirectToIdentityProvider = context =>
+                        {
+                            context.ProtocolMessage.RedirectUri = adminConfiguration.IdentityAdminRedirectUri;
+                            return Task.CompletedTask;
                         }
-
-                        options.ClaimActions.MapJsonKey(adminConfiguration.TokenValidationClaimRole, adminConfiguration.TokenValidationClaimRole, adminConfiguration.TokenValidationClaimRole);
-
-                        options.SaveTokens = true;
-                        options.RemoteAuthenticationTimeout = TimeSpan.FromMinutes(15);
-                        options.GetClaimsFromUserInfoEndpoint = true;
-
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            NameClaimType = adminConfiguration.TokenValidationClaimName,
-                            RoleClaimType = adminConfiguration.TokenValidationClaimRole
-                        };
-
-                        options.Events = new OpenIdConnectEvents
-                        {
-                            OnRemoteFailure = context =>
-                            {
-
-                                return Task.FromResult(0);
-                            },
-                            OnMessageReceived = context =>
-                            {
-                                context.Properties.IsPersistent = true;
-                                context.Properties.ExpiresUtc = new DateTimeOffset(DateTime.Now.AddHours(adminConfiguration.IdentityAdminCookieExpiresUtcHours));
-                                return Task.FromResult(0);
-                            },
-                            OnRedirectToIdentityProvider = context =>
-                            {
-                                context.ProtocolMessage.RedirectUri = adminConfiguration.IdentityAdminRedirectUri;
-                                return Task.FromResult(0);
-                            }
-                        };
-                    });
+                    };
+                });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(2);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
         }
 
         public static void AddIdSHealthChecks<TConfigurationDbContext, TPersistedGrantDbContext, TIdentityDbContext, TLogDbContext, TAuditLoggingDbContext, TDataProtectionDbContext>(this IServiceCollection services, IConfiguration configuration, AdminConfiguration adminConfiguration)
@@ -509,15 +533,15 @@ namespace EventManager.Identity.Admin.Helpers
             where TAuditLoggingDbContext : DbContext, IAuditLoggingDbContext<AuditLog>
             where TDataProtectionDbContext : DbContext, IDataProtectionKeyContext
         {
-            var configurationDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.ConfigurationDbConnectionStringKey);
-            var persistedGrantsDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.PersistedGrantDbConnectionStringKey);
-            var identityDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.IdentityDbConnectionStringKey);
-            var logDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminLogDbConnectionStringKey);
-            var auditLogDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminAuditLogDbConnectionStringKey);
-            var dataProtectionDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.DataProtectionDbConnectionStringKey);
+            string configurationDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.ConfigurationDbConnectionStringKey);
+            string persistedGrantsDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.PersistedGrantDbConnectionStringKey);
+            string identityDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.IdentityDbConnectionStringKey);
+            string logDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminLogDbConnectionStringKey);
+            string auditLogDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.AdminAuditLogDbConnectionStringKey);
+            string dataProtectionDbConnectionString = configuration.GetConnectionString(ConfigurationConsts.DataProtectionDbConnectionStringKey);
 
-            var identityServerUri = adminConfiguration.IdentityServerBaseUrl;
-            var healthChecksBuilder = services.AddHealthChecks()
+            string identityServerUri = adminConfiguration.IdentityServerBaseUrl;
+            IHealthChecksBuilder healthChecksBuilder = services.AddHealthChecks()
                 //.AddDbContextCheck<TConfigurationDbContext>("ConfigurationDbContext")
                 //.AddDbContextCheck<TPersistedGrantDbContext>("PersistedGrantsDbContext")
                 //.AddDbContextCheck<TIdentityDbContext>("IdentityDbContext")
@@ -527,18 +551,18 @@ namespace EventManager.Identity.Admin.Helpers
 
                 .AddIdentityServer(new Uri(identityServerUri), "Identity Server");
 
-            var serviceProvider = services.BuildServiceProvider();
-            var scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            IServiceScopeFactory scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
+            using (IServiceScope scope = scopeFactory.CreateScope())
             {
-                var configurationTableName = DbContextHelpers.GetEntityTable<TConfigurationDbContext>(scope.ServiceProvider);
-                var persistedGrantTableName = DbContextHelpers.GetEntityTable<TPersistedGrantDbContext>(scope.ServiceProvider);
-                var identityTableName = DbContextHelpers.GetEntityTable<TIdentityDbContext>(scope.ServiceProvider);
-                var logTableName = DbContextHelpers.GetEntityTable<TLogDbContext>(scope.ServiceProvider);
-                var auditLogTableName = DbContextHelpers.GetEntityTable<TAuditLoggingDbContext>(scope.ServiceProvider);
-                var dataProtectionTableName = DbContextHelpers.GetEntityTable<TDataProtectionDbContext>(scope.ServiceProvider);
+                string configurationTableName = DbContextHelpers.GetEntityTable<TConfigurationDbContext>(scope.ServiceProvider);
+                string persistedGrantTableName = DbContextHelpers.GetEntityTable<TPersistedGrantDbContext>(scope.ServiceProvider);
+                string identityTableName = DbContextHelpers.GetEntityTable<TIdentityDbContext>(scope.ServiceProvider);
+                string logTableName = DbContextHelpers.GetEntityTable<TLogDbContext>(scope.ServiceProvider);
+                string auditLogTableName = DbContextHelpers.GetEntityTable<TAuditLoggingDbContext>(scope.ServiceProvider);
+                string dataProtectionTableName = DbContextHelpers.GetEntityTable<TDataProtectionDbContext>(scope.ServiceProvider);
 
-                var databaseProvider = configuration.GetSection(nameof(DatabaseProviderConfiguration)).Get<DatabaseProviderConfiguration>();
+                DatabaseProviderConfiguration databaseProvider = configuration.GetSection(nameof(DatabaseProviderConfiguration)).Get<DatabaseProviderConfiguration>();
                 /*  switch (databaseProvider.ProviderType)
                  {
                      case DatabaseProviderType.SqlServer:

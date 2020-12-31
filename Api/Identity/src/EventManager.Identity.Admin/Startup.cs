@@ -96,15 +96,11 @@ namespace EventManager.Identity.Admin
             app.UseCookiePolicy();
 
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
-
+            app.UseHsts();
+            app.UseHttpsRedirection();
             app.UsePathBase(Configuration.GetValue<string>("BasePath"));
 
             // Add custom security headers
@@ -119,6 +115,7 @@ namespace EventManager.Identity.Admin
 
             app.UseRouting();
             app.UseAuthorization();
+            app.UseSession();
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapDefaultControllerRoute();

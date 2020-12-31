@@ -62,15 +62,11 @@ namespace EventManager.Identity.STS.Identity
         {
             app.UseSerilogRequestLogging();
             app.UseCookiePolicy();
-
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
-                app.UseHsts();
-            }
+                app.UseExceptionHandler("/Error");
+            app.UseHsts();
 
             app.UsePathBase(Configuration.GetValue<string>("BasePath"));
 
